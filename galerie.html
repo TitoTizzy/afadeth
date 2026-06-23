@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Galerie AFADETH — Nos actions en images : événements, santé, économie, éducation et droits des femmes à Thomassin, Haïti." />
+  <title>Galerie — AFADETH</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/galerie.css" />
+  <link rel="icon" href="assets/images/logo.png" type="image/png" />
+  <style>
+    /* ---- Filter bar — orange pill style ---- */
+    .gallery-filters{
+      display:flex;align-items:center;justify-content:center;
+      gap:8px;flex-wrap:wrap;margin-bottom:3rem
+    }
+    /* Override galerie.css filter-btn for pill style */
+    .filter-btn{
+      padding:10px 22px;border-radius:var(--radius-full);
+      font-size:.8rem;font-weight:600;letter-spacing:.03em;
+      background:transparent;
+      border:2px solid var(--orange);
+      color:var(--orange);
+      transition:var(--transition);cursor:pointer;
+      box-shadow:none
+    }
+    .filter-btn:hover{
+      background:var(--orange-pale);
+      border-color:var(--orange);
+      color:var(--orange-dark)
+    }
+    .filter-btn.active{
+      background:var(--gradient-brand);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 4px 18px var(--orange-glow)
+    }
+
+    /* ---- Gallery section with subtle grid pattern ---- */
+    .gallery-section{
+      background:var(--cream);
+      background-image:
+        linear-gradient(rgba(184,115,51,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184,115,51,.06) 1px, transparent 1px);
+      background-size:40px 40px;
+      padding:80px 0
+    }
+
+    /* ---- Loading skeleton state ---- */
+    .gallery-loading{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      padding:4px
+    }
+    .gallery-loading__item{
+      border-radius:var(--radius-lg);
+      overflow:hidden;
+      position:relative
+    }
+    .gallery-loading__item:nth-child(3n+1) .gallery-loading__skel{height:340px}
+    .gallery-loading__item:nth-child(3n+2) .gallery-loading__skel{height:260px}
+    .gallery-loading__item:nth-child(3n)   .gallery-loading__skel{height:300px}
+    .gallery-loading__skel{
+      width:100%;
+      background:linear-gradient(90deg,
+        rgba(184,115,51,.1) 25%,
+        rgba(232,93,4,.12) 50%,
+        rgba(184,115,51,.1) 75%
+      );
+      background-size:200% 100%;
+      animation:shimmer 1.6s ease-in-out infinite;
+      border-radius:var(--radius-lg)
+    }
+    @keyframes shimmer{
+      0%{background-position:200% 0}
+      100%{background-position:-200% 0}
+    }
+
+    /* ---- Lightbox dark backdrop reinforcement ---- */
+    .lightbox{
+      background:rgba(6,3,12,.97);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px)
+    }
+
+    /* Close button — larger, more prominent ---- */
+    .lightbox__close{
+      width:48px;height:48px;
+      background:rgba(232,93,4,.18);
+      border:1.5px solid rgba(232,93,4,.4);
+      color:#fff;font-size:1.35rem;
+      transition:var(--transition)
+    }
+    .lightbox__close:hover{
+      background:var(--orange);
+      border-color:var(--orange);
+      transform:rotate(90deg) scale(1.05)
+    }
+
+    /* ---- CTA section ---- */
+    .galerie-cta{
+      background:var(--gradient-earth);
+      position:relative;overflow:hidden;
+      padding:80px 0
+    }
+    .galerie-cta::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 30% 60%,rgba(232,93,4,.18) 0%,transparent 55%);
+      pointer-events:none
+    }
+    .galerie-cta__inner{
+      position:relative;z-index:1;text-align:center
+    }
+    .galerie-cta__quote{
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1.5rem,3vw,2.5rem);
+      font-weight:600;color:#fff;
+      font-style:italic;margin-bottom:1rem;
+      line-height:1.25
+    }
+    .galerie-cta__sub{
+      font-size:.95rem;color:rgba(255,255,255,.72);
+      max-width:440px;margin:0 auto 2rem;line-height:1.7
+    }
+
+    /* Breadcrumb current page */
+    .page-hero__breadcrumb-current{color:rgba(255,255,255,.8)}
+
+    /* Gallery grid hidden state (JS removes this) */
+    .gallery-grid--hidden{display:none}
+
+    /* ── Albums grid ── */
+    .galerie-albums-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:28px
+    }
+    .galerie-album-card{
+      border-radius:var(--radius-lg);
+      overflow:hidden;
+      background:#fff;
+      border:1px solid var(--light-border);
+      transition:var(--transition);
+      box-shadow:0 2px 12px rgba(0,0,0,.06)
+    }
+    .galerie-album-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 16px 48px rgba(232,93,4,.18);
+      border-color:rgba(232,93,4,.3)
+    }
+    .galerie-album-cover{
+      position:relative;
+      aspect-ratio:4/3;
+      overflow:hidden;
+      background:linear-gradient(135deg,#E85D04cc,rgba(0,0,0,.45));
+      display:flex;align-items:center;justify-content:center
+    }
+    .galerie-album-cover img{
+      width:100%;height:100%;object-fit:cover;
+      transition:transform .5s ease
+    }
+    .galerie-album-card:hover .galerie-album-cover img{transform:scale(1.06)}
+    .galerie-album-badge-count{
+      position:absolute;bottom:10px;right:10px;
+      background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+      color:#fff;border-radius:var(--radius-md);
+      padding:5px 10px;font-size:.72rem;font-weight:700;
+      text-align:center;line-height:1.2
+    }
+    .galerie-album-badge-count span{font-weight:400;opacity:.8}
+    .galerie-album-badge-cat{
+      position:absolute;top:10px;left:10px;
+      color:#fff;border-radius:var(--radius-full);
+      padding:4px 12px;font-size:.62rem;font-weight:700;
+      letter-spacing:.06em;text-transform:uppercase
+    }
+    .galerie-album-body{
+      padding:20px 22px 22px
+    }
+    .galerie-album-name{
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.25rem;font-weight:700;color:var(--light-text);
+      margin-bottom:7px;line-height:1.25
+    }
+    .galerie-album-desc{
+      font-size:.845rem;color:var(--light-text-2);line-height:1.6;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+      margin-bottom:14px
+    }
+    .galerie-album-cta{
+      font-size:.8rem;font-weight:700;color:var(--orange);letter-spacing:.03em
+    }
+    .galerie-album-arrow{
+      display:inline-block;transition:transform .2s
+    }
+    .galerie-album-card:hover .galerie-album-arrow{transform:translateX(4px)}
+
+    /* ── Album header (photos view) ── */
+    .album-view-header{
+      display:flex;align-items:center;gap:16px;
+      padding:20px 0;margin-bottom:24px;
+      border-bottom:1px solid var(--light-border)
+    }
+    .album-view-back{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:9px 18px;border-radius:var(--radius-full);
+      background:var(--orange-pale);color:var(--orange);
+      font-size:.82rem;font-weight:700;border:1.5px solid rgba(232,93,4,.3);
+      cursor:pointer;transition:var(--transition);text-decoration:none
+    }
+    .album-view-back:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+    .album-view-name{
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.6rem;font-weight:700;color:var(--light-text);flex:1
+    }
+    .album-view-meta{
+      font-size:.8rem;color:var(--light-text-2);margin-top:3px
+    }
+
+    @media(max-width:900px){
+      .galerie-albums-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:580px){
+      .galerie-albums-grid{grid-template-columns:1fr}
+      .galerie-album-body{padding:16px 18px}
+    }
+
+    /* Load-more note */
+    .gallery-load-more__note{
+      font-size:.85rem;color:var(--light-text-2);
+      opacity:.6;margin-top:1.5rem
+    }
+
+    @media(max-width:768px){
+      .gallery-loading{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:480px){
+      .gallery-loading{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+<nav class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/logo.png" alt="Logo AFADETH" class="navbar__logo-img logo-medal-glow" />
+      <div class="navbar__logo-text">
+        <span class="navbar__logo-name">AFADETH</span>
+        <span class="navbar__logo-tagline">Unir pour Servir</span>
+      </div>
+    </a>
+    <ul class="navbar__nav">
+      <li><a href="index.html"    class="navbar__link">Accueil</a></li>
+      <li><a href="mission.html"  class="navbar__link">Mission</a></li>
+      <li><a href="actions.html"  class="navbar__link">Nos Actions</a></li>
+      <li><a href="galerie.html"  class="navbar__link active">Galerie</a></li>
+      <li><a href="blog.html"     class="navbar__link">Blog</a></li>
+      <li><a href="contact.html"  class="navbar__link">Contact</a></li>
+    </ul>
+    <div class="navbar__cta">
+      <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
+        Admin
+      </a>    </div>
+    <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="navbar__mobile" id="mobile-menu">
+  <a href="index.html"   class="navbar__mobile-link">Accueil</a>
+  <a href="mission.html" class="navbar__mobile-link">Mission</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="actions.html" class="navbar__mobile-link">Nos Actions</a>
+  <a href="galerie.html" class="navbar__mobile-link">Galerie</a>
+  <a href="blog.html"    class="navbar__mobile-link">Blog</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="contact.html" class="navbar__mobile-link">Contact</a>
+</div>
+
+<!-- =====================================================
+     PAGE HERO
+===================================================== -->
+<section class="page-hero">
+  <div class="page-hero__grid"></div>
+  <div class="container page-hero__content">
+    <div class="page-hero__breadcrumb">
+      <a href="index.html">Accueil</a>
+      <span>/</span>
+      <span class="page-hero__breadcrumb-current">Galerie</span>
+    </div>
+    <div class="section-label section-label--light">Nos images</div>
+    <h1 class="page-hero__title">L'AFADETH <em>en action</em></h1>
+    <p class="page-hero__desc">Découvrez nos moments forts, événements, programmes de santé, formations et activités communautaires à travers cette galerie.</p>
+  </div>
+</section>
+
+<!-- =====================================================
+     ALBUMS SECTION (vue par défaut)
+===================================================== -->
+<section id="albums-section" class="gallery-section">
+  <div class="container">
+    <div class="text-center reveal" style="margin-bottom:3rem">
+      <div class="section-label" style="justify-content:center">Notre Galerie</div>
+      <h2 style="font-size:clamp(1.8rem,3vw,2.8rem)">Photos <em style="font-style:italic;color:var(--orange)">par albums</em></h2>
+      <p style="font-size:1rem;color:var(--light-text-2);max-width:500px;margin:1rem auto 0;line-height:1.7">Explorez nos activités organisées en albums thématiques — cliquez pour découvrir les photos.</p>
+    </div>
+    <div id="albums-grid" class="galerie-albums-grid"></div>
+  </div>
+</section>
+
+<!-- =====================================================
+     PHOTOS SECTION (affichée quand un album est ouvert)
+===================================================== -->
+<section id="photos-section" class="gallery-section" style="display:none">
+  <div class="container">
+
+    <!-- En-tête album -->
+    <div class="album-view-header">
+      <button class="album-view-back" onclick="showAlbumsView()">← Tous les albums</button>
+      <div>
+        <div class="album-view-name" id="album-view-name"></div>
+        <div class="album-view-meta" id="album-view-meta"></div>
+      </div>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div id="gallery-loading" class="gallery-loading" style="display:none" aria-label="Chargement…" role="status">
+      <div class="gallery-loading__item"><div class="gallery-loading__skel"></div></div>
+      <div class="gallery-loading__item"><div class="gallery-loading__skel"></div></div>
+      <div class="gallery-loading__item"><div class="gallery-loading__skel"></div></div>
+    </div>
+
+    <!-- Grid — remplie par galerie.js -->
+    <div id="gallery-grid" class="gallery-grid gallery-grid--hidden"></div>
+
+    <!-- Note bas de page -->
+    <div class="gallery-load-more" style="margin-top:2rem">
+      <p class="gallery-load-more__note">
+        Toutes les photos de cet album sont affichées.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================
+     LIGHTBOX
+===================================================== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visionneuse d'image">
+  <!-- Contrôles navigation -->
+  <button class="lightbox__close" title="Fermer (Échap)" aria-label="Fermer">✕</button>
+  <button class="lightbox__nav lightbox__prev" title="Précédent (←)" aria-label="Image précédente">‹</button>
+  <button class="lightbox__nav lightbox__next" title="Suivant (→)" aria-label="Image suivante">›</button>
+  <span class="lightbox__counter"></span>
+
+  <!-- Zone image zoomable -->
+  <div class="lightbox__stage" id="lb-stage">
+    <img class="lightbox__img" id="lb-img" src="" alt="" style="display:none" />
+    <div class="lightbox__placeholder" id="lb-placeholder"></div>
+  </div>
+
+  <!-- Barre zoom -->
+  <div class="lightbox__zoom-bar" id="lb-zoom-bar">
+    <button class="lightbox__zoom-btn" id="lb-zoom-out" title="Zoom arrière">−</button>
+    <span class="lightbox__zoom-level" id="lb-zoom-level">100%</span>
+    <button class="lightbox__zoom-btn" id="lb-zoom-in" title="Zoom avant">+</button>
+    <button class="lightbox__zoom-btn lb-zoom-reset" id="lb-zoom-reset" title="Réinitialiser">
+      ↺
+    </button>
+  </div>
+
+  <!-- Infos photo -->
+  <div class="lightbox__info">
+    <div class="lightbox__info-cat"></div>
+    <div class="lightbox__info-title"></div>
+    <div class="lightbox__info-desc"></div>
+  </div>
+</div>
+
+<!-- =====================================================
+     CTA SECTION
+===================================================== -->
+<div class="galerie-cta">
+  <div class="container galerie-cta__inner">
+    <div class="galerie-cta__quote">
+      Vous avez des photos à partager ?
+    </div>
+    <p class="galerie-cta__sub">
+      Envoyez-nous vos clichés des activités AFADETH pour enrichir cette galerie.
+    </p>
+    <a href="contact.html" class="btn btn-primary btn-lg">
+      Nous contacter
+    </a>
+  </div>
+</div>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="assets/images/logo.png" alt="Logo AFADETH" class="footer__logo-img logo-medal-glow" />
+        <div class="footer__brand-name">AFADETH</div>
+        <div class="footer__brand-tag">❀ Unir pour Servir ❀</div>
+        <p class="footer__brand-desc">Association des Femmes Dévouées de Thomassin. Organisation humanitaire fondée en 2006, Pétion-Ville, Haïti.</p>
+        <div class="footer__social">
+          <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" title="Facebook AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" title="Instagram AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" title="YouTube AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.96-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.96 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20.06 12 20.06 12 20.06s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="currentColor" stroke="none" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">Navigation</div>
+        <ul class="footer__links">
+          <li><a href="index.html"   class="footer__link">→ Accueil</a></li>
+          <li><a href="mission.html" class="footer__link">→ Mission</a></li>
+          <li><a href="actions.html" class="footer__link">→ Nos Actions</a></li>
+          <li><a href="galerie.html" class="footer__link">→ Galerie</a></li>
+          <li><a href="blog.html"    class="footer__link">→ Blog</a></li>
+          <li><a href="contact.html" class="footer__link">→ Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Catégories</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">→ Événements</a></li>
+          <li><a href="#" class="footer__link">→ Santé</a></li>
+          <li><a href="#" class="footer__link">→ Économie</a></li>
+          <li><a href="#" class="footer__link">→ Droits &amp; VBG</a></li>
+          <li><a href="#" class="footer__link">→ Éducation</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Contact</div>
+        <div class="footer__contact-item"><span>📍</span><span>Laboule 22, #2, Pétion-Ville, Haïti</span></div>
+        <div class="footer__contact-item"><span>🌐</span><a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" style="color:inherit">Facebook AFADETH</a></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 AFADETH. Tous droits réservés.</p>
+      <div class="footer__legal">
+        <a href="#" class="footer__legal-link">Confidentialité</a>
+        <a href="#" class="footer__legal-link">Mentions légales</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/galerie.js"></script>
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(){
+    this.classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.body.style.overflow = this.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.navbar__mobile-link').forEach(l => {
+    l.addEventListener('click', () => {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+</script>
+</body>
+</html>

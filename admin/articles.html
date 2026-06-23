@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Articles Blog — AFADETH Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <link rel="icon" href="../assets/images/logo.png" type="image/png"/>
+  <style>
+    #view-editor{display:none}
+    .tags-input-wrap{
+      display:flex;flex-wrap:wrap;gap:5px;align-items:center;
+      padding:6px 10px;border:1.5px solid var(--border);border-radius:var(--r);
+      background:var(--surface);min-height:40px;cursor:text;transition:var(--t)
+    }
+    .tags-input-wrap:focus-within{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,93,4,.11)}
+    .tag-pill{
+      display:inline-flex;align-items:center;gap:5px;
+      background:var(--orange-pale);color:var(--orange);
+      border:1px solid rgba(232,93,4,.3);border-radius:12px;
+      font-size:.75rem;font-weight:600;padding:2px 10px
+    }
+    .tag-pill button{background:none;border:none;color:var(--orange);font-size:.85rem;cursor:pointer;line-height:1;padding:0;opacity:.7}
+    .tag-pill button:hover{opacity:1}
+    .tag-input{border:none;outline:none;font-size:.845rem;font-family:inherit;background:none;color:var(--text);min-width:80px;flex:1}
+    .cover-preview{
+      border-radius:var(--r-lg);overflow:hidden;aspect-ratio:16/9;
+      background:var(--surf-2);border:1.5px solid var(--border);
+      position:relative;margin-bottom:10px
+    }
+    .cover-preview img{width:100%;height:100%;object-fit:cover}
+    .cover-preview__empty{
+      width:100%;height:100%;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;color:var(--text-3);gap:8px
+    }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/images/logo.png" alt="AFADETH" class="sidebar-brand__logo"/>
+      <div><div class="sidebar-brand__name">AFADETH</div><div class="sidebar-brand__sub">Back-office</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="index.html" class="sidebar-link"><span class="sidebar-link__icon">📊</span>Dashboard</a>
+      <a href="albums.html" class="sidebar-link"><span class="sidebar-link__icon">🖼️</span>Albums photo</a>
+      <a href="articles.html" class="sidebar-link"><span class="sidebar-link__icon">📝</span>Articles blog</a>
+      <div class="sidebar-section">Communications</div>
+      <a href="contacts.html" class="sidebar-link">
+        <span class="sidebar-link__icon">💬</span>Messages
+        <span class="sidebar-badge" data-unread style="display:none"></span>
+      </a>
+      <div class="sidebar-section">Administration</div>
+      <a href="users.html" class="sidebar-link"><span class="sidebar-link__icon">👥</span>Utilisateurs</a>
+      <div class="sidebar-section">Site web</div>
+      <a href="../index.html" class="sidebar-link" target="_blank"><span class="sidebar-link__icon">🌐</span>Voir le site →</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sf-avatar" data-user-init>NV</div>
+      <div class="sf-info">
+        <div class="sf-name" data-user-name>Nancy VILCÉ</div>
+        <div class="sf-role">Administratrice</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-header__title" id="page-title">Articles blog <span>— Gestion du contenu</span></div>
+    <button class="hbtn hbtn-ghost" id="btn-back" onclick="showList()" style="display:none">← Retour aux articles</button>
+    <button class="hbtn hbtn-ghost" id="btn-draft" onclick="saveArticle('draft')" style="display:none">💾 Brouillon</button>
+    <button class="hbtn hbtn-primary" id="btn-publish" onclick="saveArticle('published')" style="display:none">🚀 Publier</button>
+    <button class="hbtn hbtn-primary" id="btn-new" onclick="openEditor(null)">✚ Nouvel article</button>
+  </header>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- ── Liste ── -->
+    <div id="view-list">
+      <div class="toolbar">
+        <div class="search-bar" style="width:260px">
+          <input type="text" id="art-search" placeholder="Rechercher un article…" oninput="renderList()"/>
+          <button>🔍</button>
+        </div>
+        <select class="form-select" id="status-filter" onchange="renderList()" style="width:auto;padding:7px 10px;font-size:.8rem">
+          <option value="">Tous statuts</option>
+          <option value="published">Publiés</option>
+          <option value="draft">Brouillons</option>
+        </select>
+        <select class="form-select" id="cat-filter" onchange="renderList()" style="width:auto;padding:7px 10px;font-size:.8rem">
+          <option value="">Toutes catégories</option>
+          <option>Économie</option><option>Santé</option>
+          <option>Droits & VBG</option><option>Éducation</option><option>Partenariats</option>
+        </select>
+        <div id="art-count" style="font-size:.8rem;color:var(--text-3)"></div>
+      </div>
+      <div class="admin-card">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Catégorie</th>
+              <th>Auteur</th>
+              <th>Date</th>
+              <th>Statut</th>
+              <th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="art-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Éditeur ── -->
+    <div id="view-editor">
+      <input type="hidden" id="art-id"/>
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start">
+
+        <!-- Colonne principale -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Titre -->
+          <div class="admin-card">
+            <div class="card-body">
+              <input class="form-input" id="art-title" type="text" placeholder="Titre de l'article…"
+                     style="font-size:1.1rem;font-weight:700;border:none;padding:0;border-radius:0;box-shadow:none;font-family:'Cormorant Garamond',serif"/>
+              <input class="form-input" id="art-excerpt" type="text" placeholder="Extrait / sous-titre (affiché dans les listes)…"
+                     style="border:none;padding:0;border-radius:0;box-shadow:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;font-size:.875rem;color:var(--text-2)"/>
+            </div>
+          </div>
+
+          <!-- RTE -->
+          <div class="admin-card">
+            <div class="card-head"><div class="card-title">✍️ Contenu de l'article</div></div>
+            <div class="card-body" style="padding-top:12px">
+              <!-- Toolbar -->
+              <div class="rte-toolbar" id="rte-toolbar">
+                <select class="rte-sel" id="rte-block" onchange="applyBlock(this.value)">
+                  <option value="p">Paragraphe</option>
+                  <option value="h2">Titre H2</option>
+                  <option value="h3">Titre H3</option>
+                  <option value="blockquote">Citation</option>
+                </select>
+                <div class="rte-sep"></div>
+                <button class="rte-btn" onmousedown="e(event,'bold')" title="Gras"><b>B</b></button>
+                <button class="rte-btn" onmousedown="e(event,'italic')" title="Italique"><i>I</i></button>
+                <button class="rte-btn" onmousedown="e(event,'underline')" title="Souligné"><u>U</u></button>
+                <button class="rte-btn" onmousedown="e(event,'strikeThrough')" title="Barré"><s>S</s></button>
+                <div class="rte-sep"></div>
+                <button class="rte-btn" onmousedown="e(event,'insertUnorderedList')" title="Liste à puces">≡</button>
+                <button class="rte-btn" onmousedown="e(event,'insertOrderedList')" title="Liste numérotée">1.</button>
+                <div class="rte-sep"></div>
+                <button class="rte-btn" onmousedown="eLink(event)" title="Lien">🔗</button>
+                <button class="rte-btn" onmousedown="eImg(event)" title="Image">🖼</button>
+                <div class="rte-sep"></div>
+                <button class="rte-btn" onmousedown="e(event,'removeFormat')" title="Effacer formatage">✕f</button>
+              </div>
+              <!-- Éditor zone -->
+              <div class="rte-body" id="rte-body" contenteditable="true"
+                   onkeydown="handleRteKey(event)"
+                   style="min-height:360px">
+                <p>Commencez à écrire votre article ici…</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar éditeur -->
+        <div style="display:flex;flex-direction:column;gap:14px;position:sticky;top:16px">
+
+          <!-- Actions -->
+          <div class="admin-card">
+            <div class="card-head"><div class="card-title">📤 Publication</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:9px">
+              <select class="form-select" id="art-status">
+                <option value="published">Publié</option>
+                <option value="draft">Brouillon</option>
+              </select>
+              <button class="btn btn-primary" onclick="saveArticle(document.getElementById('art-status').value)" style="width:100%;justify-content:center">
+                💾 Enregistrer
+              </button>
+              <button class="btn btn-danger btn-sm" id="btn-delete-art" onclick="deleteCurrentArticle()" style="width:100%;justify-content:center;display:none">
+                🗑 Supprimer l'article
+              </button>
+            </div>
+          </div>
+
+          <!-- Méta -->
+          <div class="admin-card">
+            <div class="card-head"><div class="card-title">📋 Métadonnées</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+              <div class="form-field" style="margin:0">
+                <label class="form-label">Catégorie</label>
+                <select class="form-select" id="art-cat">
+                  <option>Économie</option><option>Santé</option>
+                  <option>Droits & VBG</option><option>Éducation</option><option>Partenariats</option>
+                </select>
+              </div>
+              <div class="form-field" style="margin:0">
+                <label class="form-label">Auteur</label>
+                <input class="form-input" id="art-author" type="text" placeholder="Nancy VILCÉ"/>
+              </div>
+              <div class="form-field" style="margin:0">
+                <label class="form-label">Date de publication</label>
+                <input class="form-input" id="art-date" type="date"/>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="checkbox" id="art-featured" style="accent-color:var(--orange)"/>
+                <label for="art-featured" style="font-size:.8rem;font-weight:600;color:var(--text)">À la une</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="admin-card">
+            <div class="card-head"><div class="card-title">🏷️ Mots-clés</div></div>
+            <div class="card-body">
+              <div class="tags-input-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
+                <input class="tag-input" id="tag-input" type="text" placeholder="Ajouter un mot-clé…" onkeydown="handleTagKey(event)"/>
+              </div>
+              <div class="form-hint">Appuyez sur Entrée ou virgule pour ajouter.</div>
+            </div>
+          </div>
+
+          <!-- Photo de couverture -->
+          <div class="admin-card">
+            <div class="card-head"><div class="card-title">🖼️ Image de couverture</div></div>
+            <div class="card-body">
+              <div class="cover-preview" id="cover-preview">
+                <div class="cover-preview__empty">
+                  <span style="font-size:2rem">🖼️</span>
+                  <span style="font-size:.8rem">Aucune image</span>
+                </div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('cover-input').click()" style="width:100%;justify-content:center">
+                📷 Choisir une image
+              </button>
+              <input type="file" id="cover-input" accept="image/*" style="display:none" onchange="handleCover(this)"/>
+              <div id="cover-data" style="display:none"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+let currentTags = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderList();
+  // Set today as default date
+  document.getElementById('art-date').value = new Date().toISOString().slice(0,10);
+  if (new URLSearchParams(location.search).get('new') === '1') openEditor(null);
+});
+
+/* ── List ── */
+function renderList() {
+  const q      = document.getElementById('art-search').value.toLowerCase();
+  const status = document.getElementById('status-filter').value;
+  const cat    = document.getElementById('cat-filter').value;
+  let arts = getArticles();
+  if (status) arts = arts.filter(a=>a.status===status);
+  if (cat)    arts = arts.filter(a=>a.cat===cat);
+  if (q)      arts = arts.filter(a=>a.title.toLowerCase().includes(q)||a.author.toLowerCase().includes(q));
+  document.getElementById('art-count').textContent = `${arts.length} article${arts.length!==1?'s':''}`;
+  const badges = {published:'<span class="badge badge-green">Publié</span>',draft:'<span class="badge badge-gray">Brouillon</span>'};
+  document.getElementById('art-tbody').innerHTML = arts.length ? arts.map(a=>`
+    <tr>
+      <td>
+        <div style="font-weight:600;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.title}</div>
+        <div style="font-size:.72rem;color:var(--text-3);margin-top:2px">${a.excerpt?.substring(0,80)||''}</div>
+      </td>
+      <td><span class="badge badge-orange">${a.cat}</span></td>
+      <td style="color:var(--text-2);font-size:.82rem">${a.author}</td>
+      <td style="color:var(--text-3);font-size:.82rem;white-space:nowrap">${fmtDate(a.date)}</td>
+      <td>${badges[a.status]||''}</td>
+      <td>
+        <div class="td-actions">
+          <button class="btn-icon" onclick="openEditor(${a.id})" title="Modifier">✏️</button>
+          <button class="btn-icon danger" onclick="deleteArt(${a.id})" title="Supprimer">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3)">Aucun article trouvé</td></tr>`;
+}
+
+/* ── Editor ── */
+function openEditor(id) {
+  document.getElementById('view-list').style.display   = 'none';
+  document.getElementById('view-editor').style.display = 'block';
+  document.getElementById('btn-back').style.display    = 'inline-flex';
+  document.getElementById('btn-new').style.display     = 'none';
+  document.getElementById('btn-draft').style.display   = 'inline-flex';
+  document.getElementById('btn-publish').style.display = 'inline-flex';
+
+  currentTags = [];
+  if (id) {
+    const a = getArticles().find(x=>x.id===id);
+    if (!a) return;
+    document.getElementById('art-id').value      = id;
+    document.getElementById('art-title').value   = a.title;
+    document.getElementById('art-excerpt').value = a.excerpt||'';
+    document.getElementById('rte-body').innerHTML= a.content||'<p>Contenu de l\'article…</p>';
+    document.getElementById('art-cat').value     = a.cat;
+    document.getElementById('art-author').value  = a.author;
+    document.getElementById('art-date').value    = a.date;
+    document.getElementById('art-status').value  = a.status;
+    document.getElementById('art-featured').checked = a.featured||false;
+    document.getElementById('btn-delete-art').style.display = 'flex';
+    document.getElementById('page-title').innerHTML = 'Modifier l\'article <span>— Éditeur</span>';
+    currentTags = [...(a.tags||[])];
+    if (a.cover) showCoverPreview(a.cover);
+  } else {
+    document.getElementById('art-id').value       = '';
+    document.getElementById('art-title').value    = '';
+    document.getElementById('art-excerpt').value  = '';
+    document.getElementById('rte-body').innerHTML = '<p>Commencez à écrire votre article ici…</p>';
+    document.getElementById('art-cat').value      = 'Économie';
+    document.getElementById('art-author').value   = '';
+    document.getElementById('art-date').value     = new Date().toISOString().slice(0,10);
+    document.getElementById('art-status').value   = 'published';
+    document.getElementById('art-featured').checked = false;
+    document.getElementById('btn-delete-art').style.display = 'none';
+    document.getElementById('page-title').innerHTML = 'Nouvel article <span>— Éditeur</span>';
+    document.getElementById('cover-preview').innerHTML = `<div class="cover-preview__empty"><span style="font-size:2rem">🖼️</span><span style="font-size:.8rem">Aucune image</span></div>`;
+    document.getElementById('cover-data').textContent = '';
+  }
+  renderTags();
+}
+
+function showList() {
+  document.getElementById('view-list').style.display   = 'block';
+  document.getElementById('view-editor').style.display = 'none';
+  document.getElementById('btn-back').style.display    = 'none';
+  document.getElementById('btn-draft').style.display   = 'none';
+  document.getElementById('btn-publish').style.display = 'none';
+  document.getElementById('btn-new').style.display     = 'inline-flex';
+  document.getElementById('page-title').innerHTML = 'Articles blog <span>— Gestion du contenu</span>';
+  renderList();
+}
+
+function saveArticle(status) {
+  const id      = document.getElementById('art-id').value;
+  const title   = document.getElementById('art-title').value.trim();
+  if (!title) { showToast('Le titre est requis','error'); document.getElementById('art-title').focus(); return; }
+  const data = {
+    title,
+    excerpt:  document.getElementById('art-excerpt').value.trim(),
+    content:  document.getElementById('rte-body').innerHTML,
+    cat:      document.getElementById('art-cat').value,
+    author:   document.getElementById('art-author').value.trim()||'AFADETH',
+    date:     document.getElementById('art-date').value||new Date().toISOString().slice(0,10),
+    status:   status||document.getElementById('art-status').value,
+    featured: document.getElementById('art-featured').checked,
+    tags:     [...currentTags],
+    cover:    document.getElementById('cover-data').textContent||''
+  };
+  const arts = getArticles();
+  if (id) {
+    const idx = arts.findIndex(a=>a.id===parseInt(id));
+    if (idx!==-1) { Object.assign(arts[idx], data); saveArticles(arts); showToast('Article mis à jour','success'); }
+  } else {
+    const newId = nextArticleId();
+    arts.unshift({id:newId, slug:title.toLowerCase().replace(/[^a-z0-9]+/g,'-'), ...data});
+    saveArticles(arts);
+    document.getElementById('art-id').value = newId;
+    document.getElementById('btn-delete-art').style.display = 'flex';
+    showToast(status==='published'?'Article publié !':'Brouillon enregistré','success');
+  }
+}
+
+function deleteCurrentArticle() {
+  const id = document.getElementById('art-id').value;
+  if (!id) return;
+  confirmDelete('Supprimer cet article définitivement ?', () => {
+    saveArticles(getArticles().filter(a=>a.id!==parseInt(id)));
+    showList();
+    showToast('Article supprimé','success');
+  });
+}
+function deleteArt(id) {
+  confirmDelete('Supprimer cet article ?', () => {
+    saveArticles(getArticles().filter(a=>a.id!==id));
+    renderList();
+    showToast('Article supprimé','success');
+  });
+}
+
+/* ── RTE ── */
+function e(ev, cmd, val) { ev.preventDefault(); document.execCommand(cmd, false, val||null); document.getElementById('rte-body').focus(); }
+function applyBlock(tag) {
+  document.execCommand('formatBlock', false, tag);
+  document.getElementById('rte-body').focus();
+}
+function eLink(ev) {
+  ev.preventDefault();
+  const url = prompt('URL du lien :','https://');
+  if (url) document.execCommand('createLink', false, url);
+}
+function eImg(ev) {
+  ev.preventDefault();
+  const url = prompt('URL de l\'image :','https://');
+  if (url) document.execCommand('insertImage', false, url);
+}
+function handleRteKey(e) {
+  if (e.key === 'Tab') { e.preventDefault(); document.execCommand('insertHTML',false,'&nbsp;&nbsp;&nbsp;&nbsp;'); }
+}
+
+/* ── Tags ── */
+function renderTags() {
+  const wrap = document.getElementById('tags-wrap');
+  const input = document.getElementById('tag-input');
+  // Remove old pills
+  wrap.querySelectorAll('.tag-pill').forEach(el=>el.remove());
+  currentTags.forEach(tag => {
+    const pill = document.createElement('span');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `${tag}<button onclick="removeTag('${tag}')" type="button">×</button>`;
+    wrap.insertBefore(pill, input);
+  });
+}
+function addTag(val) {
+  const tag = val.trim().replace(/,$/,'').trim();
+  if (tag && !currentTags.includes(tag)) { currentTags.push(tag); renderTags(); }
+  document.getElementById('tag-input').value = '';
+}
+function removeTag(tag) { currentTags = currentTags.filter(t=>t!==tag); renderTags(); }
+function handleTagKey(e) {
+  if (e.key==='Enter'||e.key===','||e.key===';') { e.preventDefault(); addTag(e.target.value); }
+  if (e.key==='Backspace'&&!e.target.value&&currentTags.length) { currentTags.pop(); renderTags(); }
+}
+
+/* ── Cover image ── */
+function handleCover(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => showCoverPreview(ev.target.result);
+  reader.readAsDataURL(file);
+  input.value='';
+}
+function showCoverPreview(src) {
+  document.getElementById('cover-data').textContent = src;
+  document.getElementById('cover-preview').innerHTML = `<img src="${src}" alt="Couverture"/>`;
+}
+</script>
+</body>
+</html>

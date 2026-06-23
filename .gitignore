@@ -1,0 +1,17 @@
+# Claude Code config
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Node (si utilisé plus tard)
+node_modules/

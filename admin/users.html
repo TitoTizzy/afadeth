@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Utilisateurs — AFADETH Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <link rel="icon" href="../assets/images/logo.png" type="image/png"/>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/images/logo.png" alt="AFADETH" class="sidebar-brand__logo"/>
+      <div><div class="sidebar-brand__name">AFADETH</div><div class="sidebar-brand__sub">Back-office</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="index.html" class="sidebar-link"><span class="sidebar-link__icon">📊</span>Dashboard</a>
+      <a href="albums.html" class="sidebar-link"><span class="sidebar-link__icon">🖼️</span>Albums photo</a>
+      <a href="articles.html" class="sidebar-link"><span class="sidebar-link__icon">📝</span>Articles blog</a>
+      <div class="sidebar-section">Communications</div>
+      <a href="contacts.html" class="sidebar-link">
+        <span class="sidebar-link__icon">💬</span>Messages
+        <span class="sidebar-badge" data-unread style="display:none"></span>
+      </a>
+      <div class="sidebar-section">Administration</div>
+      <a href="users.html" class="sidebar-link"><span class="sidebar-link__icon">👥</span>Utilisateurs</a>
+      <div class="sidebar-section">Site web</div>
+      <a href="../index.html" class="sidebar-link" target="_blank"><span class="sidebar-link__icon">🌐</span>Voir le site →</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sf-avatar" data-user-init>NV</div>
+      <div class="sf-info">
+        <div class="sf-name" data-user-name>Nancy VILCÉ</div>
+        <div class="sf-role">Administratrice</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-header__title">Utilisateurs <span>— Gestion des accès</span></div>
+    <button class="hbtn hbtn-primary" onclick="openModal('modal-user')">✚ Créer un utilisateur</button>
+  </header>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <div class="admin-card">
+      <div class="card-head">
+        <div class="card-title">👥 Tous les utilisateurs</div>
+        <div class="search-bar" style="width:220px">
+          <input type="text" id="search-input" placeholder="Rechercher…" oninput="renderTable()"/>
+          <button>🔍</button>
+        </div>
+      </div>
+      <table class="admin-table" id="users-table">
+        <thead>
+          <tr>
+            <th>Utilisateur</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Créé le</th>
+            <th>Statut</th>
+            <th style="text-align:right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Info permissions -->
+    <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="admin-card">
+        <div class="card-head"><div class="card-title">🔑 Rôle Admin</div></div>
+        <div class="card-body" style="font-size:.845rem;color:var(--text-2);line-height:1.8">
+          Accès complet : dashboard, albums, articles, messages, utilisateurs. Peut créer/modifier/supprimer tout le contenu.
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="card-head"><div class="card-title">✏️ Rôle Éditeur</div></div>
+        <div class="card-body" style="font-size:.845rem;color:var(--text-2);line-height:1.8">
+          Accès limité : peut créer et modifier des albums et articles. Ne peut pas gérer les utilisateurs ni supprimer du contenu.
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal créer/modifier utilisateur -->
+<div class="modal-backdrop" id="modal-user">
+  <div class="modal">
+    <div class="modal__head">
+      <div class="modal__title" id="modal-user-title">Créer un utilisateur</div>
+      <button class="modal__close" data-modal-close="modal-user">✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="u-id" value=""/>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Prénom <span>*</span></label>
+          <input class="form-input" id="u-prenom" type="text" placeholder="Marie"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Nom <span>*</span></label>
+          <input class="form-input" id="u-nom" type="text" placeholder="JEAN"/>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email <span>*</span></label>
+        <input class="form-input" id="u-email" type="email" placeholder="marie@afadeth.org"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Mot de passe <span>*</span></label>
+        <input class="form-input" id="u-password" type="password" placeholder="Minimum 8 caractères"/>
+        <div class="form-hint">Laissez vide pour conserver le mot de passe actuel (modification).</div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Rôle</label>
+        <select class="form-select" id="u-role">
+          <option value="admin">Administrateur</option>
+          <option value="editor" selected>Éditeur</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 0">
+        <input type="checkbox" id="u-actif" checked style="accent-color:var(--orange);width:16px;height:16px"/>
+        <label for="u-actif" style="font-size:.845rem;font-weight:600;color:var(--text)">Compte actif</label>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn-ghost" data-modal-close="modal-user">Annuler</button>
+      <button class="btn btn-primary" onclick="saveUser()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  renderTable();
+  // Auto-open creation form if ?new=1
+  if (new URLSearchParams(location.search).get('new') === '1') openCreateModal();
+});
+
+function renderTable() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let users = getUsers();
+  if (q) users = users.filter(u =>
+    (u.prenom+' '+u.nom).toLowerCase().includes(q) ||
+    u.email.toLowerCase().includes(q)
+  );
+  const roles = {admin:'<span class="badge badge-orange">Admin</span>',editor:'<span class="badge badge-blue">Éditeur</span>'};
+  document.getElementById('users-tbody').innerHTML = users.length ? users.map(u => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar av-sm" style="background:linear-gradient(135deg,${u.role==='admin'?'var(--wine),#B8496A':'var(--orange),var(--orange-light)'})">${u.init||u.prenom[0]}</div>
+          <div>
+            <div style="font-weight:600">${u.prenom} ${u.nom}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--text-2)">${u.email}</td>
+      <td>${roles[u.role]||u.role}</td>
+      <td style="color:var(--text-3)">${fmtDate(u.created)}</td>
+      <td>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" ${u.actif?'checked':''} onchange="toggleActive(${u.id},this.checked)" style="accent-color:var(--orange)"/>
+          <span style="font-size:.78rem;color:var(--text-2)">${u.actif?'Actif':'Inactif'}</span>
+        </label>
+      </td>
+      <td>
+        <div class="td-actions">
+          <button class="btn-icon" onclick="editUser(${u.id})" title="Modifier">✏️</button>
+          <button class="btn-icon danger" onclick="deleteUser(${u.id})" title="Supprimer">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3)">Aucun utilisateur trouvé</td></tr>`;
+}
+
+function openCreateModal() {
+  document.getElementById('modal-user-title').textContent = 'Créer un utilisateur';
+  document.getElementById('u-id').value = '';
+  document.getElementById('u-prenom').value = '';
+  document.getElementById('u-nom').value = '';
+  document.getElementById('u-email').value = '';
+  document.getElementById('u-password').value = '';
+  document.getElementById('u-role').value = 'editor';
+  document.getElementById('u-actif').checked = true;
+  openModal('modal-user');
+}
+
+function editUser(id) {
+  const u = getUsers().find(x=>x.id===id);
+  if (!u) return;
+  document.getElementById('modal-user-title').textContent = 'Modifier l\'utilisateur';
+  document.getElementById('u-id').value = id;
+  document.getElementById('u-prenom').value = u.prenom;
+  document.getElementById('u-nom').value = u.nom;
+  document.getElementById('u-email').value = u.email;
+  document.getElementById('u-password').value = '';
+  document.getElementById('u-role').value = u.role;
+  document.getElementById('u-actif').checked = u.actif;
+  openModal('modal-user');
+}
+
+function saveUser() {
+  const id     = document.getElementById('u-id').value;
+  const prenom = document.getElementById('u-prenom').value.trim();
+  const nom    = document.getElementById('u-nom').value.trim();
+  const email  = document.getElementById('u-email').value.trim();
+  const role   = document.getElementById('u-role').value;
+  const actif  = document.getElementById('u-actif').checked;
+  if (!prenom || !nom || !email) { showToast('Prénom, nom et email sont requis','error'); return; }
+  const users = getUsers();
+  if (id) {
+    const idx = users.findIndex(u=>u.id===parseInt(id));
+    if (idx !== -1) {
+      users[idx] = {...users[idx], prenom, nom, email, role, actif, init: prenom[0]+nom[0]};
+      saveUsers(users);
+      showToast('Utilisateur modifié','success');
+    }
+  } else {
+    users.push({id:nextUserId(), prenom, nom, email, role, actif, created:nowISO().slice(0,10), init:prenom[0]+nom[0]});
+    saveUsers(users);
+    showToast('Utilisateur créé','success');
+  }
+  closeModal('modal-user');
+  renderTable();
+}
+
+function deleteUser(id) {
+  const users = getUsers();
+  if (users.length <= 1) { showToast('Impossible de supprimer le dernier utilisateur','error'); return; }
+  confirmDelete('Supprimer cet utilisateur ?', () => {
+    saveUsers(users.filter(u=>u.id!==id));
+    renderTable();
+    showToast('Utilisateur supprimé','success');
+  });
+}
+
+function toggleActive(id, val) {
+  const users = getUsers();
+  const idx = users.findIndex(u=>u.id===id);
+  if (idx !== -1) { users[idx].actif = val; saveUsers(users); renderTable(); }
+}
+</script>
+</body>
+</html>

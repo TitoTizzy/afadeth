@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Blog AFADETH — Actualités, témoignages et analyses sur les droits des femmes, la santé et l'autonomisation en Haïti." />
+  <title>Blog & Actualités — AFADETH</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/blog.css" />
+  <link rel="icon" href="assets/images/logo.png" type="image/png" />
+
+  <style>
+    /* =====================================================
+       BLOG PAGE — visual polish layer
+       ===================================================== */
+
+    /* ---- Blog layout: 2/3 main + 1/3 sidebar ---- */
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 56px;
+      align-items: start;
+      margin-top: 2.5rem;
+    }
+
+    /* ---- Featured article wrapper ---- */
+    #featured-article {
+      min-height: 320px;
+      border-radius: var(--radius-xl);
+      background: var(--orange-pale);
+      margin-bottom: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Override .article-featured to add orange top border accent */
+    .article-featured {
+      border-top: 5px solid var(--orange);
+    }
+
+    /* ---- Articles grid: vertical card list with hover lift ---- */
+    #articles-container {
+      min-height: 240px;
+      background: transparent;
+    }
+
+    .article-card {
+      border-left: 4px solid transparent;
+      transition: transform .28s cubic-bezier(.4,0,.2,1),
+                  box-shadow .28s cubic-bezier(.4,0,.2,1),
+                  border-color .28s cubic-bezier(.4,0,.2,1);
+    }
+    .article-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+      border-left-color: var(--orange);
+    }
+
+    /* Orange category pill (overrides gradient to solid orange) */
+    .article-card__cat {
+      background: var(--orange);
+      color: #fff;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      padding: 4px 13px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 2px 8px rgba(232,93,4,.35);
+    }
+
+    /* ---- Pagination ---- */
+    .blog-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 48px;
+    }
+    .page-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1.5px solid var(--light-border);
+      color: var(--light-text-2);
+      font-size: .9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .28s cubic-bezier(.4,0,.2,1);
+    }
+    .page-btn:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+    .page-btn.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(232,93,4,.35);
+    }
+    .page-btn-prev,
+    .page-btn-next {
+      width: auto;
+      padding: 0 22px;
+      border-radius: var(--radius-full);
+    }
+
+    /* ---- Sidebar widgets: wine header bar ---- */
+    .sidebar-widget {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--light-border);
+      margin-bottom: 24px;
+      padding: 0;
+    }
+
+    .sidebar-widget__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: #fff;
+      background: var(--gradient-wine);
+      padding: 14px 22px;
+      margin-bottom: 0;
+      border-bottom: none;
+      border-image: none;
+    }
+
+    /* Content area inside widget */
+    .sidebar-widget > *:not(.sidebar-widget__title) {
+      padding: 20px 22px;
+    }
+    /* Stack children padding correctly */
+    .sidebar-widget > .sidebar-search,
+    .sidebar-widget > .sidebar-cats,
+    .sidebar-widget > .sidebar-recent,
+    .sidebar-widget > .sidebar-tags,
+    .sidebar-widget > #sidebar-cats,
+    .sidebar-widget > #sidebar-recent,
+    .sidebar-widget > #sidebar-tags {
+      padding: 18px 22px 22px;
+    }
+
+    /* Mission card inside sidebar — keep gradient background, just fix padding */
+    .sidebar-widget[style*="gradient-hero"] {
+      padding: 0;
+    }
+    .sidebar-widget[style*="gradient-hero"] > * {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+    .sidebar-widget[style*="gradient-hero"] > *:first-child {
+      padding-top: 24px;
+    }
+    .sidebar-widget[style*="gradient-hero"] > *:last-child {
+      padding-bottom: 24px;
+    }
+
+    /* Search input inside widget */
+    .sidebar-search {
+      display: flex;
+      align-items: center;
+      background: var(--light-bg);
+      border-radius: var(--radius-full);
+      border: 1.5px solid var(--light-border);
+      overflow: hidden;
+      transition: .28s;
+    }
+    .sidebar-search:focus-within { border-color: var(--orange); }
+    .sidebar-search input {
+      flex: 1;
+      padding: 11px 16px;
+      background: none;
+      border: none;
+      outline: none;
+      font-size: .875rem;
+      color: var(--light-text);
+    }
+    .sidebar-search button {
+      width: 42px;
+      height: 42px;
+      background: var(--orange);
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+      transition: .2s;
+      flex-shrink: 0;
+    }
+    .sidebar-search button:hover { background: var(--orange-dark); }
+
+    /* Tags in sidebar */
+    .sidebar-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .sidebar-tag {
+      padding: 5px 13px;
+      border-radius: var(--radius-full);
+      font-size: .76rem;
+      font-weight: 500;
+      background: var(--light-bg);
+      border: 1.5px solid var(--light-border);
+      color: var(--light-text-2);
+      cursor: pointer;
+      transition: .2s;
+    }
+    .sidebar-tag:hover {
+      background: var(--orange);
+      color: #fff;
+      border-color: var(--orange);
+    }
+
+    /* ---- Newsletter / CTA banner ---- */
+    .mission-banner {
+      background: var(--gradient-wine);
+      position: relative;
+      overflow: hidden;
+    }
+    .mission-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(232,93,4,.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* Facebook CTA button — orange filled */
+    .mission-banner .btn-ghost {
+      background: var(--orange);
+      color: #fff;
+      border: 2px solid var(--orange);
+      border-radius: var(--radius-full);
+      padding: 14px 36px;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: .03em;
+      transition: .25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mission-banner .btn-ghost:hover {
+      background: var(--orange-dark);
+      border-color: var(--orange-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(232,93,4,.45);
+    }
+
+    /* "À la une" badge on featured article — wine colour */
+    .article-featured__badge {
+      background: var(--wine);
+      color: #fff;
+    }
+
+    /* Loading placeholder state while JS populates containers */
+    #featured-article:empty::after,
+    #articles-container:empty::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: inherit;
+      background: linear-gradient(90deg,
+        rgba(255,243,235,.6) 25%,
+        rgba(255,255,255,.9) 50%,
+        rgba(255,243,235,.6) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s infinite linear;
+      border-radius: var(--radius-lg);
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ---- Blog content section background ---- */
+    .blog-content-section { background: var(--light-bg); }
+
+    /* ---- Breadcrumb current page ---- */
+    .page-hero__breadcrumb-current { color: rgba(255,255,255,.8); }
+
+    /* ---- Articles column header ---- */
+    .blog-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .blog-col-header__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      color: var(--light-text);
+    }
+    .blog-col-header__count {
+      font-size: .82rem;
+      color: var(--light-text-2);
+      opacity: .65;
+    }
+
+    /* ---- CTA banner overrides ---- */
+    .blog-cta-banner { padding: 80px 0; }
+    .blog-cta-banner__inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .blog-cta-banner__label {
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+    .blog-cta-banner__desc {
+      font-size: 1rem;
+      color: rgba(255,255,255,.65);
+      max-width: 460px;
+      margin: 1rem auto 2rem;
+      line-height: 1.7;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 1024px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .blog-sidebar {
+        position: static;
+        order: 2;
+      }
+    }
+    @media (max-width: 640px) {
+      .mission-banner .btn-ghost {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="reading-bar"></div>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+<nav class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/logo.png" alt="Logo AFADETH" class="navbar__logo-img logo-medal-glow" />
+      <div class="navbar__logo-text">
+        <span class="navbar__logo-name">AFADETH</span>
+        <span class="navbar__logo-tagline">Unir pour Servir</span>
+      </div>
+    </a>
+    <ul class="navbar__nav">
+      <li><a href="index.html"    class="navbar__link">Accueil</a></li>
+      <li><a href="mission.html"  class="navbar__link">Mission</a></li>
+      <li><a href="actions.html"  class="navbar__link">Nos Actions</a></li>
+      <li><a href="galerie.html"  class="navbar__link">Galerie</a></li>
+      <li><a href="blog.html"     class="navbar__link active">Blog</a></li>
+      <li><a href="contact.html"  class="navbar__link">Contact</a></li>
+    </ul>
+    <div class="navbar__cta">
+      <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
+        Admin
+      </a>    </div>
+    <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="navbar__mobile" id="mobile-menu">
+  <a href="index.html"   class="navbar__mobile-link">Accueil</a>
+  <a href="mission.html" class="navbar__mobile-link">Mission</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="actions.html" class="navbar__mobile-link">Nos Actions</a>
+  <a href="galerie.html" class="navbar__mobile-link">Galerie</a>
+  <a href="blog.html"    class="navbar__mobile-link">Blog</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="contact.html" class="navbar__mobile-link">Contact</a>
+</div>
+
+<!-- =====================================================
+     PAGE HERO
+===================================================== -->
+<section class="page-hero">
+  <div class="page-hero__grid"></div>
+  <div class="container page-hero__content">
+    <div class="page-hero__breadcrumb">
+      <a href="index.html">Accueil</a>
+      <span>/</span>
+      <span class="page-hero__breadcrumb-current">Blog</span>
+    </div>
+    <div class="section-label section-label--light">Actualités & Analyses</div>
+    <h1 class="page-hero__title">Notre <em>Blog</em></h1>
+    <p class="page-hero__desc">Témoignages, bilans de programmes, analyses et actualités de l'Association des Femmes Dévouées de Thomassin.</p>
+  </div>
+</section>
+
+<!-- =====================================================
+     BLOG CONTENT
+===================================================== -->
+<section class="section blog-content-section">
+  <div class="container">
+
+    <!-- Article à la une -->
+    <div id="featured-article"></div>
+
+    <!-- Layout : articles + sidebar -->
+    <div class="blog-layout">
+
+      <!-- Colonne articles -->
+      <div>
+        <div class="blog-col-header">
+          <h2 class="blog-col-header__title">Tous les articles</h2>
+          <span id="article-count" class="blog-col-header__count"></span>
+        </div>
+        <div id="articles-container" class="articles-grid"></div>
+        <div id="pagination" class="blog-pagination"></div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="blog-sidebar">
+        <!-- Search -->
+        <div class="sidebar-widget">
+          <div class="sidebar-widget__title">Rechercher</div>
+          <div class="sidebar-search">
+            <input type="text" placeholder="Rechercher un article…" />
+            <button title="Rechercher">🔍</button>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="sidebar-widget">
+          <div class="sidebar-widget__title">Catégories</div>
+          <div id="sidebar-cats" class="sidebar-cats"></div>
+        </div>
+
+        <!-- Recent -->
+        <div class="sidebar-widget">
+          <div class="sidebar-widget__title">Articles récents</div>
+          <div id="sidebar-recent" class="sidebar-recent"></div>
+        </div>
+
+        <!-- Tags -->
+        <div class="sidebar-widget">
+          <div class="sidebar-widget__title">Mots-clés</div>
+          <div id="sidebar-tags" class="sidebar-tags"></div>
+        </div>
+
+        <!-- Mission card -->
+        <div class="sidebar-widget" style="background:var(--gradient-hero);border:none">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:#fff;margin-bottom:12px;padding:24px 22px 0">
+            ❀ Notre devise
+          </div>
+          <p style="font-size:.9rem;color:rgba(255,255,255,.7);line-height:1.7;font-style:italic;margin-bottom:16px;padding:0 22px">
+            « Unir pour Servir »
+          </p>
+          <div style="padding:0 22px 24px">
+            <a href="mission.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center">
+              En savoir plus
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================
+     NEWSLETTER / CTA
+===================================================== -->
+<div class="mission-banner blog-cta-banner">
+  <div class="container blog-cta-banner__inner">
+    <div class="section-label section-label--light blog-cta-banner__label">
+      Restez informé·e
+    </div>
+    <h2 class="mission-banner__quote">
+      Suivez l'AFADETH sur Facebook
+    </h2>
+    <p class="blog-cta-banner__desc">
+      Retrouvez toutes nos actualités, photos et annonces en temps réel sur notre page Facebook officielle.
+    </p>
+    <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener"
+       class="btn btn-ghost btn-lg">
+      🌐 Visiter notre page Facebook
+    </a>
+  </div>
+</div>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="assets/images/logo.png" alt="Logo AFADETH" class="footer__logo-img logo-medal-glow" />
+        <div class="footer__brand-name">AFADETH</div>
+        <div class="footer__brand-tag">❀ Unir pour Servir ❀</div>
+        <p class="footer__brand-desc">Association des Femmes Dévouées de Thomassin. Organisation humanitaire fondée en 2006, Pétion-Ville, Haïti.</p>
+        <div class="footer__social">
+          <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" title="Facebook AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" title="Instagram AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" title="YouTube AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.96-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.96 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20.06 12 20.06 12 20.06s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="currentColor" stroke="none" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">Navigation</div>
+        <ul class="footer__links">
+          <li><a href="index.html"   class="footer__link">→ Accueil</a></li>
+          <li><a href="mission.html" class="footer__link">→ Mission</a></li>
+          <li><a href="actions.html" class="footer__link">→ Nos Actions</a></li>
+          <li><a href="galerie.html" class="footer__link">→ Galerie</a></li>
+          <li><a href="blog.html"    class="footer__link">→ Blog</a></li>
+          <li><a href="contact.html" class="footer__link">→ Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Catégories</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">→ Économie</a></li>
+          <li><a href="#" class="footer__link">→ Santé</a></li>
+          <li><a href="#" class="footer__link">→ Droits & VBG</a></li>
+          <li><a href="#" class="footer__link">→ Éducation</a></li>
+          <li><a href="#" class="footer__link">→ Partenariats</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Contact</div>
+        <div class="footer__contact-item"><span>📍</span><span>Laboule 22, #2, Pétion-Ville, Haïti</span></div>
+        <div class="footer__contact-item"><span>🌐</span><a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" style="color:inherit">Facebook AFADETH</a></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 AFADETH. Tous droits réservés.</p>
+      <div class="footer__legal">
+        <a href="#" class="footer__legal-link">Confidentialité</a>
+        <a href="#" class="footer__legal-link">Mentions légales</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/blog.js"></script>
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(){
+    this.classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.body.style.overflow = this.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.navbar__mobile-link').forEach(l => {
+    l.addEventListener('click', () => {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+</script>
+</body>
+</html>

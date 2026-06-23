@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Messages Contact — AFADETH Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <link rel="icon" href="../assets/images/logo.png" type="image/png"/>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/images/logo.png" alt="AFADETH" class="sidebar-brand__logo"/>
+      <div><div class="sidebar-brand__name">AFADETH</div><div class="sidebar-brand__sub">Back-office</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="index.html" class="sidebar-link"><span class="sidebar-link__icon">📊</span>Dashboard</a>
+      <a href="albums.html" class="sidebar-link"><span class="sidebar-link__icon">🖼️</span>Albums photo</a>
+      <a href="articles.html" class="sidebar-link"><span class="sidebar-link__icon">📝</span>Articles blog</a>
+      <div class="sidebar-section">Communications</div>
+      <a href="contacts.html" class="sidebar-link">
+        <span class="sidebar-link__icon">💬</span>Messages
+        <span class="sidebar-badge" data-unread style="display:none"></span>
+      </a>
+      <div class="sidebar-section">Administration</div>
+      <a href="users.html" class="sidebar-link"><span class="sidebar-link__icon">👥</span>Utilisateurs</a>
+      <div class="sidebar-section">Site web</div>
+      <a href="../index.html" class="sidebar-link" target="_blank"><span class="sidebar-link__icon">🌐</span>Voir le site →</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sf-avatar" data-user-init>NV</div>
+      <div class="sf-info">
+        <div class="sf-name" data-user-name>Nancy VILCÉ</div>
+        <div class="sf-role">Administratrice</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-header__title">Messages <span>— Formulaire de contact</span></div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-2)">
+      📧 Notifications → <strong>myrthocharles95@gmail.com</strong>
+    </div>
+    <button class="hbtn hbtn-ghost" onclick="markAllRead()">✓ Tout marquer lu</button>
+  </header>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <div style="display:grid;grid-template-columns:360px 1fr;gap:18px;height:calc(100vh - 60px - 56px)">
+
+      <!-- Liste messages -->
+      <div class="admin-card" style="display:flex;flex-direction:column;overflow:hidden">
+        <!-- Toolbar -->
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
+          <div class="search-bar" style="flex:1">
+            <input id="search-input" type="text" placeholder="Rechercher…" oninput="renderList()"/>
+            <button>🔍</button>
+          </div>
+          <select class="form-select" id="filter-sel" onchange="renderList()" style="width:auto;padding:7px 10px;font-size:.78rem">
+            <option value="all">Tous</option>
+            <option value="unread">Non lus</option>
+            <option value="read">Lus</option>
+          </select>
+        </div>
+        <!-- Compteur -->
+        <div id="msg-count" style="padding:7px 16px;font-size:.72rem;color:var(--text-3);border-bottom:1px solid var(--border)"></div>
+        <!-- Liste -->
+        <div id="msg-list" style="flex:1;overflow-y:auto"></div>
+      </div>
+
+      <!-- Détail message -->
+      <div class="admin-card" style="display:flex;flex-direction:column;overflow:hidden">
+        <div id="msg-detail">
+          <div class="empty" style="padding:80px 36px">
+            <div class="empty__icon">💬</div>
+            <div class="empty__title">Sélectionnez un message</div>
+            <div class="empty__text">Cliquez sur un message dans la liste pour le lire.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Email notification info modal -->
+<div class="modal-backdrop" id="modal-email">
+  <div class="modal">
+    <div class="modal__head">
+      <div class="modal__title">📧 Notifications email</div>
+      <button class="modal__close" data-modal-close="modal-email">✕</button>
+    </div>
+    <div class="modal__body">
+      <div style="background:var(--orange-pale);border:1px solid rgba(232,93,4,.2);border-radius:var(--r-lg);padding:20px;margin-bottom:16px">
+        <div style="font-weight:700;color:var(--orange);margin-bottom:8px">📬 Email de notification AFADETH</div>
+        <div style="font-size:.875rem;color:var(--text-2);line-height:1.7">
+          Chaque nouveau message soumis via le formulaire de contact est automatiquement envoyé à :<br>
+          <strong style="color:var(--text)">myrthocharles95@gmail.com</strong>
+        </div>
+      </div>
+      <div style="font-size:.845rem;color:var(--text-2);line-height:1.7">
+        Pour activer l'envoi réel des emails, connectez un service comme <strong>EmailJS</strong>, <strong>Formspree</strong>, ou le backend <strong>Supabase Edge Functions</strong> (Phase 2).
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn-primary" data-modal-close="modal-email">Compris</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+let activeId = null;
+const params = new URLSearchParams(location.search);
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderList();
+  const id = params.get('id');
+  if (id) openMsg(parseInt(id));
+});
+
+function renderList() {
+  const q      = document.getElementById('search-input').value.toLowerCase();
+  const filter = document.getElementById('filter-sel').value;
+  let contacts = getContacts().filter(c => !c.archived);
+  if (filter === 'unread') contacts = contacts.filter(c=>!c.lu);
+  if (filter === 'read')   contacts = contacts.filter(c=>c.lu);
+  if (q) contacts = contacts.filter(c =>
+    (c.prenom+' '+c.nom).toLowerCase().includes(q) ||
+    c.email.toLowerCase().includes(q) ||
+    c.message.toLowerCase().includes(q)
+  );
+
+  document.getElementById('msg-count').textContent =
+    `${contacts.length} message${contacts.length!==1?'s':''} · ${unreadCount()} non lu(s)`;
+
+  const el = document.getElementById('msg-list');
+  if (!contacts.length) {
+    el.innerHTML = `<div class="empty" style="padding:40px 24px"><div class="empty__icon">🔍</div><div class="empty__title">Aucun résultat</div></div>`;
+    return;
+  }
+  el.innerHTML = contacts.map(c => `
+    <div class="msg-row${c.lu?'':' unread'}${activeId===c.id?' active':''}"
+         style="${activeId===c.id?'background:var(--orange-pale);border-left:3px solid var(--orange)':''}"
+         onclick="openMsg(${c.id})">
+      ${!c.lu?'<div class="msg-dot"></div>':'<div style="width:7px"></div>'}
+      <div class="avatar av-sm">${c.prenom[0]}${c.nom[0]}</div>
+      <div style="flex:1;min-width:0">
+        <div class="msg-name">${c.prenom} ${c.nom}</div>
+        <div class="msg-preview">${c.message}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <div class="msg-date">${fmtDate(c.date)}</div>
+        <span class="badge badge-gray" style="font-size:.55rem">${SUJET[c.sujet]||c.sujet}</span>
+      </div>
+    </div>`).join('');
+}
+
+function openMsg(id) {
+  const contacts = getContacts();
+  const idx = contacts.findIndex(c=>c.id===id);
+  if (idx === -1) return;
+  // Mark as read
+  if (!contacts[idx].lu) {
+    contacts[idx].lu = true;
+    saveContacts(contacts);
+    refreshBadges();
+  }
+  activeId = id;
+  renderList();
+  const c = contacts[idx];
+  document.getElementById('msg-detail').innerHTML = `
+    <div style="padding:24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px">
+      <div class="avatar av-lg">${c.prenom[0]}${c.nom[0]}</div>
+      <div style="flex:1">
+        <div style="font-size:1.05rem;font-weight:700;color:var(--text)">${c.prenom} ${c.nom}</div>
+        <div style="font-size:.78rem;color:var(--text-3);margin-top:2px">
+          <a href="mailto:${c.email}" style="color:var(--orange)">${c.email}</a>
+          ${c.telephone?`· ${c.telephone}`:''}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge badge-orange">${SUJET[c.sujet]||c.sujet}</span>
+        <div style="font-size:.72rem;color:var(--text-3)">${fmtDateTime(c.date)}</div>
+      </div>
+    </div>
+    <div style="padding:24px;flex:1;overflow-y:auto">
+      <div style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px">Message</div>
+      <div style="font-size:.95rem;color:var(--text);line-height:1.85;white-space:pre-wrap;background:var(--surf-2);border-radius:var(--r-lg);padding:20px;border:1px solid var(--border)">${escHtml(c.message)}</div>
+      <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap">
+        <a href="mailto:${c.email}?subject=Re: ${encodeURIComponent(SUJET[c.sujet]||'')} — AFADETH"
+           class="btn btn-primary">📧 Répondre par email</a>
+        <button class="btn btn-${c.lu?'outline':'ghost'}" onclick="toggleRead(${c.id})">
+          ${c.lu?'◯ Marquer non lu':'● Marquer lu'}
+        </button>
+        <button class="btn btn-danger" onclick="deleteMsg(${c.id})">🗑 Supprimer</button>
+      </div>
+    </div>`;
+}
+
+function toggleRead(id) {
+  const contacts = getContacts();
+  const idx = contacts.findIndex(c=>c.id===id);
+  if (idx===-1) return;
+  contacts[idx].lu = !contacts[idx].lu;
+  saveContacts(contacts);
+  refreshBadges();
+  renderList();
+  openMsg(id);
+  showToast(contacts[idx].lu?'Marqué comme lu':'Marqué comme non lu','success');
+}
+
+function deleteMsg(id) {
+  confirmDelete('Supprimer ce message définitivement ?', () => {
+    const contacts = getContacts().filter(c=>c.id!==id);
+    saveContacts(contacts);
+    activeId = null;
+    renderList();
+    refreshBadges();
+    document.getElementById('msg-detail').innerHTML = `<div class="empty" style="padding:80px 36px"><div class="empty__icon">💬</div><div class="empty__title">Sélectionnez un message</div></div>`;
+    showToast('Message supprimé','success');
+  });
+}
+
+function markAllRead() {
+  const contacts = getContacts().map(c=>({...c,lu:true}));
+  saveContacts(contacts);
+  refreshBadges();
+  renderList();
+  showToast('Tous les messages marqués comme lus','success');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

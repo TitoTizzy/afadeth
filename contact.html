@@ -1,0 +1,485 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contactez l'AFADETH — Association des Femmes Dévouées de Thomassin. Trois sites à Pétion-Ville, Fermathe et Centre-Ville." />
+  <title>Contact — AFADETH</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/images/logo.png" type="image/png" />
+  <style>
+    .form-group{margin-bottom:20px}
+    .form-label{display:block;font-size:.82rem;font-weight:600;color:var(--light-text);margin-bottom:8px;letter-spacing:.03em}
+    .form-control{
+      width:100%;padding:13px 18px;border-radius:var(--radius-md);
+      border:1.5px solid var(--light-border);background:var(--light-bg);
+      font-size:.95rem;font-family:'Inter',sans-serif;color:var(--light-text);
+      transition:var(--transition);outline:none
+    }
+    .form-control:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,93,4,.12)}
+    .form-control::placeholder{color:var(--light-text-2);opacity:.45}
+    textarea.form-control{resize:vertical;min-height:140px}
+    select.form-control{cursor:pointer}
+
+    .site-card{
+      background:#fff;border-radius:var(--radius-lg);padding:32px;
+      border:1px solid var(--light-border);transition:var(--transition);
+      position:relative;overflow:hidden
+    }
+    .site-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--gradient-brand)
+    }
+    .site-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
+    .site-card__name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--light-text);margin-bottom:4px}
+    .site-card__badge{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:3px 10px;border-radius:var(--radius-full);
+      font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+      background:var(--orange-pale);color:var(--orange);margin-bottom:14px
+    }
+    .site-card__info{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+    .site-card__info-item{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--light-text-2);line-height:1.55}
+    .site-card__info-icon{flex-shrink:0;margin-top:1px;opacity:.55}
+
+    .social-card{
+      display:flex;align-items:center;gap:16px;
+      background:#fff;border-radius:var(--radius-lg);padding:22px 28px;
+      border:1px solid var(--light-border);transition:var(--transition);cursor:pointer
+    }
+    .social-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-sm);border-color:var(--orange)}
+    .social-card__icon{
+      width:52px;height:52px;border-radius:50%;
+      background:var(--gradient-brand);flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff
+    }
+    .social-card__name{font-weight:700;font-size:1rem;color:var(--light-text)}
+    .social-card__handle{font-size:.8rem;color:var(--orange)}
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/logo.png" alt="Logo AFADETH" class="navbar__logo-img logo-medal-glow" />
+      <div class="navbar__logo-text">
+        <span class="navbar__logo-name">AFADETH</span>
+        <span class="navbar__logo-tagline">Unir pour Servir</span>
+      </div>
+    </a>
+    <ul class="navbar__nav">
+      <li><a href="index.html"    class="navbar__link">Accueil</a></li>
+      <li><a href="mission.html"  class="navbar__link">Mission</a></li>
+      <li><a href="actions.html"  class="navbar__link">Nos Actions</a></li>
+      <li><a href="galerie.html"  class="navbar__link">Galerie</a></li>
+      <li><a href="blog.html"     class="navbar__link">Blog</a></li>
+      <li><a href="contact.html"  class="navbar__link active">Contact</a></li>
+    </ul>
+    <div class="navbar__cta">
+      <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
+        Admin
+      </a>    </div>
+    <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobile-menu">
+  <a href="index.html"   class="navbar__mobile-link">Accueil</a>
+  <a href="mission.html" class="navbar__mobile-link">Mission</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="actions.html" class="navbar__mobile-link">Nos Actions</a>
+  <a href="galerie.html" class="navbar__mobile-link">Galerie</a>
+  <a href="blog.html"    class="navbar__mobile-link">Blog</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="contact.html" class="navbar__mobile-link">Contact</a>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero__grid"></div>
+  <div class="container page-hero__content">
+    <div class="page-hero__breadcrumb">
+      <a href="index.html">Accueil</a><span>/</span>
+      <span class="breadcrumb-current">Contact</span>
+    </div>
+    <div class="section-label section-label--light">Nous rejoindre</div>
+    <h1 class="page-hero__title">Contactez <em>l'AFADETH</em></h1>
+    <p class="page-hero__desc">Que vous souhaitiez nous soutenir, collaborer, rejoindre notre réseau ou simplement en savoir plus — nous sommes là pour vous.</p>
+  </div>
+</section>
+
+<!-- =====================================================
+     FORMULAIRE + INFO
+===================================================== -->
+<section class="section contact-form-section">
+  <div class="container">
+    <div class="contact-layout">
+
+      <!-- Formulaire -->
+      <div class="reveal-l">
+        <div class="section-label">Envoyez-nous un message</div>
+        <h2 class="contact-h2">
+          Parlons de votre <em class="h2-em-orange">projet ensemble</em>
+        </h2>
+
+        <form id="contact-form" onsubmit="handleSubmit(event)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-group">
+              <label class="form-label" for="prenom">Prénom *</label>
+              <input class="form-control" type="text" id="prenom" name="prenom" placeholder="Marie" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="nom">Nom *</label>
+              <input class="form-control" type="text" id="nom" name="nom" placeholder="JEAN" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Adresse email *</label>
+            <input class="form-control" type="email" id="email" name="email" placeholder="marie@exemple.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="telephone">Téléphone</label>
+            <input class="form-control" type="tel" id="telephone" name="telephone" placeholder="+509 ···· ····" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="sujet">Objet de votre message *</label>
+            <select class="form-control" id="sujet" name="sujet" required>
+              <option value="" disabled selected>Sélectionnez un sujet</option>
+              <option value="soutien">Soutenir l'AFADETH</option>
+              <option value="partenariat">Proposition de partenariat</option>
+              <option value="adhesion">Adhérer à l'association</option>
+              <option value="jeunesse">AFADETH Jeunesse</option>
+              <option value="media">Demande médias / presse</option>
+              <option value="clinique">Clinique Sante Fanm</option>
+              <option value="autre">Autre demande</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">Votre message *</label>
+            <textarea class="form-control" id="message" name="message" placeholder="Décrivez votre demande, votre projet ou vos questions…" required></textarea>
+          </div>
+
+          <div class="consent-row">
+            <input type="checkbox" id="consent" name="consent" required class="consent-check" />
+            <label for="consent" class="consent-label">
+              J'accepte que mes données soient utilisées pour répondre à ma demande conformément à la politique de confidentialité de l'AFADETH.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg submit-btn">
+            Envoyer mon message →
+          </button>
+        </form>
+
+        <div id="form-success" class="form-success-box" style="display:none">
+          <div class="form-success-icon">✅</div>
+          <div class="form-success-title">Message envoyé !</div>
+          <p class="form-success-text">Merci pour votre message. L'équipe AFADETH vous répondra dans les plus brefs délais.</p>
+        </div>
+      </div>
+
+      <!-- Sidebar infos -->
+      <div class="reveal-r">
+        <!-- Facebook CTA -->
+        <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" class="social-card" style="margin-bottom:20px;text-decoration:none">
+          <div class="social-card__icon">f</div>
+          <div>
+            <div class="social-card__name">Suivez-nous sur Facebook</div>
+            <div class="social-card__handle">AFADETH Officiel</div>
+            <div style="font-size:.78rem;color:var(--light-text-2);margin-top:2px">Actualités, photos, événements</div>
+          </div>
+        </a>
+
+        <!-- Présidente -->
+        <div style="background:var(--gradient-brand);border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:20px">
+          <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-bottom:10px">Direction</div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;flex-shrink:0">NV</div>
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700">Nancy VILCÉ</div>
+              <div style="font-size:.78rem;opacity:.8">Présidente — AFADETH</div>
+            </div>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,.2);margin:16px 0"></div>
+          <p style="font-size:.85rem;opacity:.8;line-height:1.65;font-style:italic">
+            « Notre porte est toujours ouverte pour ceux qui partagent notre vision d'une Haïti plus juste pour les femmes. »
+          </p>
+        </div>
+
+        <!-- Horaires indicatifs -->
+        <div style="background:#fff;border:1px solid var(--light-border);border-radius:var(--radius-lg);padding:24px">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--light-text);margin-bottom:14px">🕐 Disponibilité</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;font-size:.875rem">
+              <span style="color:var(--light-text-2)">Lundi – Vendredi</span>
+              <span style="font-weight:600;color:var(--light-text)">8h – 17h</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:.875rem">
+              <span style="color:var(--light-text-2)">Samedi</span>
+              <span style="font-weight:600;color:var(--light-text)">8h – 13h</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:.875rem">
+              <span style="color:var(--light-text-2)">Dimanche</span>
+              <span style="color:var(--light-text-2);font-style:italic">Fermé</span>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--light-border);font-size:.8rem;color:var(--light-text-2);line-height:1.6">
+            ⚡ Réponse habituelle sous <strong>48–72 heures</strong> ouvrables.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     NOS 3 SITES
+===================================================== -->
+<section class="section" style="background:var(--orange-pale)">
+  <div class="container">
+    <div class="text-center reveal" style="margin-bottom:3rem">
+      <div class="section-label" style="justify-content:center">Nous Trouver</div>
+      <h2 style="font-size:clamp(2rem,3.5vw,3rem)">Nos <em style="font-style:italic;color:var(--orange)">3 sites</em></h2>
+      <p style="font-size:1.05rem;color:var(--light-text-2);max-width:520px;margin:1rem auto 0;line-height:1.7">
+        L'AFADETH est présente à travers trois sites stratégiques pour servir au mieux les communautés haïtiennes.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <!-- Siège -->
+      <div class="site-card reveal d1">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--gradient-brand);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;box-shadow:var(--shadow-sm)">🏢</div>
+        <div class="site-card__badge">Siège Social</div>
+        <div class="site-card__name">Pétion-Ville</div>
+        <div class="site-card__info">
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">📍</span>
+            <span>Laboule 22, #2, Pétion-Ville, Haïti</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">🏥</span>
+            <span>Clinique Permanente Sante Fanm AFADETH</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">🏛️</span>
+            <span>Bureau de gouvernance et administration centrale</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">👥</span>
+            <span>Programmes principaux · Restaurant Solidaire</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fermathe -->
+      <div class="site-card reveal d2">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--gradient-brand);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;box-shadow:var(--shadow-sm)">🌿</div>
+        <div class="site-card__badge">Antenne Agricole</div>
+        <div class="site-card__name">Fermathe / Fort-Jacques</div>
+        <div class="site-card__info">
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">📍</span>
+            <span>4ᵉ Belle-Vue la Montagne, Fermathe / Fort-Jacques</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">🌱</span>
+            <span>Programme Kore Fanm Agrikòl yo</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">👩‍🌾</span>
+            <span>350+ femmes agricultrices formées</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">🚑</span>
+            <span>Clinique mobile mensuelle</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Centre-Ville -->
+      <div class="site-card reveal d3">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--gradient-brand);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;box-shadow:var(--shadow-sm)">📖</div>
+        <div class="site-card__badge">Antenne Formation</div>
+        <div class="site-card__name">Centre-Ville</div>
+        <div class="site-card__info">
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">📍</span>
+            <span>Rue Faubert #36, Centre-Ville, Port-au-Prince</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">📚</span>
+            <span>Ateliers leadership et formation professionnelle</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">🌟</span>
+            <span>AFADETH Jeunesse — 200+ membres</span>
+          </div>
+          <div class="site-card__info-item">
+            <span class="site-card__info-icon">🎓</span>
+            <span>Partenariats scolaires et universitaires</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     REJOINDRE / SOUTENIR
+===================================================== -->
+<section class="section" style="background:var(--light-bg)">
+  <div class="container">
+    <div class="text-center reveal" style="margin-bottom:3rem">
+      <div class="section-label" style="justify-content:center">Comment aider ?</div>
+      <h2 style="font-size:clamp(2rem,3.5vw,3rem)">Plusieurs façons de <em style="font-style:italic;color:var(--orange)">nous soutenir</em></h2>
+    </div>
+    <div class="card-grid-3">
+      <div class="info-card reveal d1" style="text-align:center">
+        <div class="info-card__icon" style="margin:0 auto 18px">💝</div>
+        <h3 class="info-card__title">Faire un Don</h3>
+        <p class="info-card__text">Soutenez financièrement nos programmes de santé, d'autonomisation économique et d'éducation. Chaque contribution compte.</p>
+        <a href="#contact-form" class="btn btn-primary btn-sm" style="margin-top:16px">Nous contacter</a>
+      </div>
+      <div class="info-card reveal d2" style="text-align:center;border-color:var(--orange);background:var(--orange)">
+        <div class="info-card__icon" style="margin:0 auto 18px;background:rgba(255,255,255,.2)">🤝</div>
+        <h3 class="info-card__title" style="color:#fff">Devenir Partenaire</h3>
+        <p class="info-card__text" style="color:rgba(255,255,255,.85)">ONG, entreprise, institution — rejoignez notre réseau de partenaires stratégiques et amplifiez notre impact ensemble.</p>
+        <a href="#contact-form" class="btn" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);margin-top:16px">Nous écrire</a>
+      </div>
+      <div class="info-card reveal d3" style="text-align:center">
+        <div class="info-card__icon" style="margin:0 auto 18px">🌟</div>
+        <h3 class="info-card__title">Rejoindre AFADETH</h3>
+        <p class="info-card__text">Devenez membre de l'association et participez activement à la transformation de la communauté. Toutes les femmes sont bienvenues.</p>
+        <a href="#contact-form" class="btn btn-outline btn-sm" style="margin-top:16px">S'adhérer</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Final -->
+<div class="mission-banner">
+  <div class="container" style="position:relative;z-index:1;text-align:center">
+    <div class="mission-banner__icon">
+      <img src="assets/images/logo.png" alt="" style="width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 0 18px var(--copper-glow));margin-bottom:.5rem" />
+    </div>
+    <div class="mission-banner__quote" style="font-size:clamp(1.8rem,3.5vw,3rem)">
+      « Unir pour Servir »
+    </div>
+    <p style="color:rgba(255,255,255,.7);font-size:1rem;max-width:460px;margin:1rem auto 2rem;line-height:1.7">
+      Rejoignez le mouvement AFADETH et contribuez à bâtir un Haïti plus juste pour toutes les femmes.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <a href="mission.html" class="btn btn-ghost btn-lg">Notre Mission</a>
+      <a href="actions.html" class="btn btn-outline-light btn-lg">Nos Actions</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="assets/images/logo.png" alt="Logo AFADETH" class="footer__logo-img logo-medal-glow" />
+        <div class="footer__brand-name">AFADETH</div>
+        <div class="footer__brand-tag">❀ Unir pour Servir ❀</div>
+        <p class="footer__brand-desc">Association des Femmes Dévouées de Thomassin. Organisation humanitaire fondée en 2006, Pétion-Ville, Haïti.</p>
+        <div class="footer__social">
+          <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" title="Facebook AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" title="Instagram AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="#" title="YouTube AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.96-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.96 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20.06 12 20.06 12 20.06s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="currentColor" stroke="none" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">Navigation</div>
+        <ul class="footer__links">
+          <li><a href="index.html"   class="footer__link">→ Accueil</a></li>
+          <li><a href="mission.html" class="footer__link">→ Mission</a></li>
+          <li><a href="actions.html" class="footer__link">→ Nos Actions</a></li>
+          <li><a href="galerie.html" class="footer__link">→ Galerie</a></li>
+          <li><a href="blog.html"    class="footer__link">→ Blog</a></li>
+          <li><a href="contact.html" class="footer__link">→ Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Nos Sites</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">→ Siège · Laboule 22, Pétion-Ville</a></li>
+          <li><a href="#" class="footer__link">→ Antenne Agricole · Fermathe</a></li>
+          <li><a href="#" class="footer__link">→ Antenne Formation · Centre-Ville</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Contact direct</div>
+        <div class="footer__contact-item"><span>📍</span><span>Laboule 22, #2, Pétion-Ville, Haïti</span></div>
+        <div class="footer__contact-item"><span>🌐</span><a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" style="color:inherit">Facebook AFADETH</a></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 AFADETH. Tous droits réservés.</p>
+      <div class="footer__legal">
+        <a href="#" class="footer__legal-link">Confidentialité</a>
+        <a href="#" class="footer__legal-link">Mentions légales</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(){
+    this.classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.body.style.overflow = this.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.navbar__mobile-link').forEach(l => {
+    l.addEventListener('click', () => {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    /* Save submission to localStorage so admin dashboard shows it */
+    try {
+      const raw = localStorage.getItem('afadeth_contacts');
+      const existing = raw ? JSON.parse(raw) : null;
+      /* If localStorage is empty, admin.js will seed it on first open — push onto seed IDs */
+      const contacts = existing || [];
+      const maxId    = contacts.length ? Math.max(...contacts.map(c => c.id||0)) : 4;
+      contacts.unshift({
+        id:        maxId + 1,
+        prenom:    document.getElementById('prenom').value.trim(),
+        nom:       document.getElementById('nom').value.trim(),
+        email:     document.getElementById('email').value.trim(),
+        telephone: document.getElementById('telephone').value.trim(),
+        sujet:     document.getElementById('sujet').value,
+        message:   document.getElementById('message').value.trim(),
+        date:      new Date().toISOString(),
+        lu:        false,
+        archived:  false
+      });
+      localStorage.setItem('afadeth_contacts', JSON.stringify(contacts));
+    } catch(err) {}
+
+    const form    = document.getElementById('contact-form');
+    const success = document.getElementById('form-success');
+    form.style.display    = 'none';
+    success.style.display = 'block';
+    success.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+</script>
+</body>
+</html>
+
+

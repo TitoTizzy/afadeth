@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Mission et vision de l'AFADETH — Association des Femmes Dévouées de Thomassin depuis 2006. Notre histoire, notre gouvernance, notre équipe." />
+  <title>Mission & Vision — AFADETH</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/images/logo.png" type="image/png" />
+  <style>
+    /* ── Stats grid ── */
+    .mission-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+    .mission-stat{
+      background:#fff;border-radius:var(--radius-lg);padding:28px;text-align:center;
+      border:1px solid var(--light-border);box-shadow:0 4px 24px rgba(232,93,4,.06)
+    }
+    .mission-stat--orange{background:var(--gradient-brand);border:none;box-shadow:0 4px 24px var(--orange-glow)}
+    .mission-stat--pale{background:var(--orange-pale);border:1px solid rgba(232,93,4,.18)}
+    .mission-stat__number{
+      font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;line-height:1
+    }
+    .mission-stat--orange .mission-stat__number{color:#fff}
+    .mission-stat__number--gradient{
+      background:var(--gradient-brand);
+      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent
+    }
+    .mission-stat__number--orange{color:var(--orange)}
+    .mission-stat__label{font-size:.78rem;font-weight:600;letter-spacing:.06em;margin-top:5px}
+    .mission-stat--orange .mission-stat__label{color:rgba(255,255,255,.85)}
+    .mission-stat__label--muted{color:var(--light-text-2)}
+
+    /* ── Mission/Vision cards (top-border variant) ── */
+    .mvd-card{
+      background:#fff;border-radius:var(--radius-lg);padding:40px 36px;
+      border:1px solid var(--light-border);
+      border-top:4px solid var(--orange);
+      box-shadow:0 4px 24px rgba(232,93,4,.07);
+      transition:var(--transition);position:relative;overflow:hidden
+    }
+    .mvd-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+    .mvd-card--featured{
+      background:var(--gradient-brand);border-top:4px solid rgba(255,255,255,.4);
+      border-color:transparent
+    }
+    .mvd-card__icon{
+      width:54px;height:54px;border-radius:var(--radius-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;margin-bottom:22px;
+      background:var(--wine-pale);box-shadow:0 4px 16px var(--wine-glow)
+    }
+    .mvd-card--featured .mvd-card__icon{background:rgba(255,255,255,.22);box-shadow:none}
+    .mvd-card__title{
+      font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;
+      color:var(--light-text);margin-bottom:14px
+    }
+    .mvd-card--featured .mvd-card__title{color:#fff}
+    .mvd-card__text{font-size:.92rem;color:var(--light-text-2);line-height:1.8}
+    .mvd-card--featured .mvd-card__text{color:rgba(255,255,255,.88)}
+    .mvd-card__devise{
+      font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-style:italic;
+      line-height:1.25;color:var(--orange);margin-bottom:10px
+    }
+
+    /* ── Timeline — alternating, striking ── */
+    .timeline-pro{
+      position:relative;max-width:900px;margin:0 auto;
+      padding-top:20px
+    }
+    .timeline-pro::before{
+      content:'';position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+      width:2px;
+      background:linear-gradient(to bottom, var(--orange), var(--copper), rgba(184,115,51,.15));
+    }
+    .timeline-pro__item{
+      display:grid;grid-template-columns:1fr 80px 1fr;
+      gap:0;align-items:start;margin-bottom:56px;position:relative
+    }
+    .timeline-pro__item:last-child{margin-bottom:0}
+    /* left-side content */
+    .timeline-pro__left{padding-right:40px;padding-top:10px}
+    .timeline-pro__right{padding-left:40px;padding-top:10px}
+    /* dot col */
+    .timeline-pro__dot-col{
+      display:flex;flex-direction:column;align-items:center;gap:0;z-index:2
+    }
+    .timeline-pro__dot{
+      width:64px;height:64px;border-radius:50%;flex-shrink:0;
+      background:var(--gradient-warm);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Cormorant Garamond',serif;font-size:.75rem;font-weight:700;
+      color:#fff;text-align:center;line-height:1.2;
+      box-shadow:0 0 0 4px #fff, 0 4px 20px var(--orange-glow)
+    }
+    /* for odd items: card on left, empty on right */
+    /* for even items: empty on left, card on right */
+    .timeline-pro__card{
+      background:#fff;border-radius:var(--radius-lg);padding:28px 32px;
+      border:1px solid var(--light-border);
+      border-left:4px solid var(--orange);
+      box-shadow:0 4px 20px rgba(232,93,4,.07);
+      transition:var(--transition)
+    }
+    .timeline-pro__card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+    .timeline-pro__year{
+      font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+      color:var(--orange);margin-bottom:8px
+    }
+    .timeline-pro__heading{
+      font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;
+      color:var(--light-text);margin-bottom:10px
+    }
+    .timeline-pro__text{font-size:.87rem;color:var(--light-text-2);line-height:1.75}
+    .timeline-pro__empty{/* placeholder */}
+
+    /* ── Governance org chart ── */
+    .org-root{
+      display:flex;justify-content:center;margin-bottom:28px
+    }
+    .org-node{
+      background:var(--gradient-brand);color:#fff;
+      padding:18px 44px;border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-md);text-align:center;display:inline-block
+    }
+    .org-node__role{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;opacity:.8;margin-bottom:4px}
+    .org-node__name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700}
+    .org-connector{width:2px;height:36px;background:var(--light-border);margin:0 auto 0}
+    .org-level{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0}
+    .org-card{
+      background:#fff;border:1px solid var(--light-border);border-radius:var(--radius-lg);
+      padding:22px 24px;text-align:center;
+      box-shadow:0 2px 12px rgba(122,30,50,.06)
+    }
+    .org-card--pale{background:var(--orange-pale)}
+    .org-card__role{
+      font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--light-text-2);margin-bottom:8px
+    }
+    .org-card__title{
+      font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;
+      color:var(--light-text)
+    }
+    .org-card--pale .org-card__title{color:var(--orange)}
+    .org-connector-2{display:grid;place-items:center;margin:0 auto 0;padding:0}
+    .org-programs{
+      background:var(--gradient-wine);border-radius:var(--radius-lg);padding:28px;
+      display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:center
+    }
+    .org-program{color:rgba(255,255,255,.92);font-size:.8rem;font-weight:500;line-height:1.45}
+    .org-program__icon{font-size:1.4rem;margin-bottom:6px}
+    .org-directions{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:28px
+    }
+    .org-dir{
+      background:#fff;border:1px solid var(--light-border);
+      border-radius:var(--radius-md);padding:18px 20px;
+      display:flex;align-items:center;gap:12px;
+      box-shadow:0 2px 10px rgba(122,30,50,.05)
+    }
+    .org-dir__icon{font-size:1.3rem;flex-shrink:0}
+    .org-dir__label{font-size:.85rem;font-weight:600;color:var(--light-text)}
+
+    /* ── Partner cards ── */
+    .partner-card{
+      background:#fff;border-radius:var(--radius-lg);padding:36px;
+      border:1px solid var(--light-border);
+      border-top:4px solid var(--orange);
+      box-shadow:0 4px 24px rgba(232,93,4,.07);
+      transition:var(--transition)
+    }
+    .partner-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+    .partner-card__icon{
+      width:56px;height:56px;border-radius:var(--radius-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.6rem;margin-bottom:20px;
+      background:var(--wine-pale);
+      box-shadow:0 4px 16px var(--wine-glow)
+    }
+    .partner-card__title{
+      font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;
+      color:var(--light-text);margin-bottom:16px
+    }
+    .partner-list{display:flex;flex-direction:column;gap:11px;margin-top:4px}
+    .partner-list__item{
+      display:flex;align-items:center;gap:10px;
+      font-size:.88rem;color:var(--light-text-2);line-height:1.5
+    }
+    .partner-list__dot{
+      width:7px;height:7px;border-radius:50%;
+      background:var(--gradient-brand);flex-shrink:0
+    }
+
+    /* ── CTA Banner wine override ── */
+    .cta-wine{
+      background:var(--gradient-wine);padding:100px 0;
+      position:relative;overflow:hidden;text-align:center
+    }
+    .cta-wine::before{
+      content:'';position:absolute;inset:0;
+      background:repeating-linear-gradient(
+        -45deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 1px,transparent 40px
+      )
+    }
+    .cta-wine__inner{position:relative;z-index:1}
+    .cta-wine__label{
+      display:inline-flex;align-items:center;gap:14px;
+      font-size:.68rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;
+      color:rgba(255,220,180,.8);margin-bottom:1.2rem
+    }
+    .cta-wine__label::before,.cta-wine__label::after{
+      content:'';display:block;height:1px;width:36px;
+      background:linear-gradient(90deg,rgba(184,115,51,.6),rgba(232,93,4,.8))
+    }
+    .cta-wine__heading{
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(2rem,4vw,3.4rem);font-weight:400;font-style:italic;
+      color:#fff;margin-bottom:1rem;line-height:1.2
+    }
+    .cta-wine__text{
+      color:rgba(255,255,255,.65);font-size:1rem;
+      max-width:460px;margin:0 auto 2.4rem;line-height:1.75
+    }
+    .cta-wine__actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+    /* ── Shared page utilities ── */
+    .section-h2{font-size:clamp(2rem,3.5vw,3rem);color:var(--light-text);margin-bottom:1.4rem}
+    .h2-em-orange{font-style:italic;color:var(--orange)}
+    .section-body-text{font-size:1rem;color:var(--light-text-2);line-height:1.85}
+    .section-intro-text{font-size:1.05rem;color:var(--light-text-2);max-width:520px;margin:1rem auto 0;line-height:1.75}
+    .section-label--center{justify-content:center}
+    .breadcrumb-current{color:rgba(255,255,255,.85)}
+
+    /* ── Responsive ── */
+    @media(max-width:900px){
+      .timeline-pro::before{left:32px;transform:none}
+      .timeline-pro__item{grid-template-columns:64px 1fr;grid-template-rows:auto auto}
+      .timeline-pro__left,.timeline-pro__right{padding:0}
+      .timeline-pro__dot-col{align-items:center}
+      .timeline-pro__item .timeline-pro__left{display:none}
+      .timeline-pro__right{grid-column:2/3;padding-left:20px}
+      /* flip: even items now show right card too */
+      .timeline-pro__item:nth-child(even) .timeline-pro__left,
+      .timeline-pro__item:nth-child(even) .timeline-pro__right{display:block}
+      .timeline-pro__item:nth-child(even) .timeline-pro__empty{display:none}
+      .org-programs{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:640px){
+      .mission-stats{grid-template-columns:1fr 1fr}
+      .org-level{grid-template-columns:1fr}
+      .org-directions{grid-template-columns:1fr}
+      .org-programs{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/logo.png" alt="Logo AFADETH" class="navbar__logo-img logo-medal-glow" />
+      <div class="navbar__logo-text">
+        <span class="navbar__logo-name">AFADETH</span>
+        <span class="navbar__logo-tagline">Unir pour Servir</span>
+      </div>
+    </a>
+    <ul class="navbar__nav">
+      <li><a href="index.html"    class="navbar__link">Accueil</a></li>
+      <li><a href="mission.html"    class="navbar__link active">Mission</a></li>
+      <li><a href="actions.html"    class="navbar__link">Nos Actions</a></li>
+      <li><a href="galerie.html"    class="navbar__link">Galerie</a></li>
+      <li><a href="blog.html"       class="navbar__link">Blog</a></li>
+      <li><a href="contact.html"    class="navbar__link">Contact</a></li>
+    </ul>
+    <div class="navbar__cta">
+      <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
+        Admin
+      </a>    </div>
+    <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobile-menu">
+  <a href="index.html"   class="navbar__mobile-link">Accueil</a>
+  <a href="mission.html" class="navbar__mobile-link">Mission</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="actions.html" class="navbar__mobile-link">Nos Actions</a>
+  <a href="galerie.html" class="navbar__mobile-link">Galerie</a>
+  <a href="blog.html"    class="navbar__mobile-link">Blog</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="contact.html" class="navbar__mobile-link">Contact</a>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero__grid"></div>
+  <div class="container page-hero__content">
+    <div class="page-hero__breadcrumb">
+      <a href="index.html">Accueil</a><span>/</span>
+      <span class="breadcrumb-current">Mission & Vision</span>
+    </div>
+    <div class="section-label section-label--light">Qui sommes-nous ?</div>
+    <h1 class="page-hero__title">Notre <em>Mission</em></h1>
+    <p class="page-hero__desc">20 ans de dévouement pour les femmes et les jeunes d'Haïti — notre histoire, notre vision, notre engagement.</p>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECTION 1 — MISSION / VISION / DEVISE
+===================================================== -->
+<section class="section" id="mission-vision">
+  <div class="container">
+
+    <!-- Trois cartes Mission/Vision/Devise -->
+    <div class="card-grid-3" style="margin-bottom:5rem" id="vision">
+
+      <!-- Vision -->
+      <div class="mvd-card reveal d1">
+        <div class="mvd-card__icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--wine)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3 class="mvd-card__title">Notre Vision</h3>
+        <p class="mvd-card__text">
+          Une société haïtienne juste où chaque femme vit libre de toute violence,
+          en pleine santé, autonome et actrice de son propre avenir en participant
+          activement aux décisions de la nation.
+        </p>
+      </div>
+
+      <!-- Mission (featured) -->
+      <div class="mvd-card mvd-card--featured reveal d2">
+        <div class="mvd-card__icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <h3 class="mvd-card__title">Notre Mission</h3>
+        <p class="mvd-card__text">
+          Protéger, soigner et autonomiser les femmes et les jeunes de notre
+          communauté en défendant leurs droits fondamentaux et en renforçant
+          leur résilience face aux injustices sociales.
+        </p>
+      </div>
+
+      <!-- Devise -->
+      <div class="mvd-card reveal d3">
+        <div class="mvd-card__icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--wine)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3 class="mvd-card__title">Notre Devise</h3>
+        <p class="mvd-card__devise">« Unir pour Servir »</p>
+        <p class="mvd-card__text">
+          Une devise qui résume l'essence même de notre engagement collectif
+          depuis 2006.
+        </p>
+      </div>
+    </div>
+
+    <!-- Texte intro + chiffres clés -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+
+      <div class="reveal-l">
+        <div class="section-label">Notre Organisation</div>
+        <h2 class="section-h2">
+          20 ans au service<br><em class="h2-em-orange">des femmes haïtiennes</em>
+        </h2>
+        <p class="section-body-text" style="margin-bottom:1.2rem">
+          Fondée en mai 2006 sous la présidence de <strong>Nancy VILCÉ</strong>,
+          l'Association des Fanm Devwe Thomasen (AFADETH) est une organisation
+          humanitaire et d'entrepreneuriat social de premier plan en Haïti.
+        </p>
+        <p class="section-body-text" style="margin-bottom:1.5rem">
+          En 20 ans d'existence, l'association a évolué d'un groupement de
+          solidarité locale vers une structure professionnelle capable de naviguer
+          au cœur des crises multidimensionnelles pour offrir des réponses durables
+          aux vulnérabilités socioéconomiques, sanitaires et éducatives des familles.
+        </p>
+        <div class="highlight-box">
+          <p><strong>Présidente :</strong> Nancy VILCÉ<br>
+          <strong>Siège :</strong> Laboule 22, #2, Pétion-Ville, Haïti<br>
+          <strong>Fondée en :</strong> Mai 2006</p>
+        </div>
+      </div>
+
+      <div class="reveal-r">
+        <div class="mission-stats">
+          <div class="mission-stat mission-stat--orange">
+            <div class="mission-stat__number">20</div>
+            <div class="mission-stat__label">Ans d'existence</div>
+          </div>
+          <div class="mission-stat">
+            <div class="mission-stat__number mission-stat__number--gradient">3 000+</div>
+            <div class="mission-stat__label mission-stat__label--muted">Femmes membres</div>
+          </div>
+          <div class="mission-stat">
+            <div class="mission-stat__number mission-stat__number--gradient">4</div>
+            <div class="mission-stat__label mission-stat__label--muted">Champs d'action</div>
+          </div>
+          <div class="mission-stat mission-stat--pale">
+            <div class="mission-stat__number mission-stat__number--orange">3</div>
+            <div class="mission-stat__label mission-stat__label--muted">Sites opérationnels</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECTION 2 — HISTOIRE / TIMELINE
+===================================================== -->
+<section class="section" id="histoire" style="background:var(--orange-pale)">
+  <div class="container">
+
+    <div class="text-center reveal" style="margin-bottom:4rem">
+      <div class="section-label section-label--center">Notre Parcours</div>
+      <h2 class="section-h2">
+        Une histoire de <em class="h2-em-orange">résilience</em>
+      </h2>
+      <p class="section-intro-text">
+        De 2006 à aujourd'hui, chaque étape a forgé une organisation plus forte,
+        plus structurée, plus engagée.
+      </p>
+    </div>
+
+    <div class="timeline-pro">
+
+      <!-- Item 1 — card LEFT -->
+      <div class="timeline-pro__item reveal d1">
+        <div class="timeline-pro__left">
+          <div class="timeline-pro__card">
+            <div class="timeline-pro__year">Mai 2006 — Fondation</div>
+            <div class="timeline-pro__heading">Les premières racines</div>
+            <p class="timeline-pro__text">
+              Création de l'AFADETH comme groupement de solidarité locale à Thomassin,
+              sous la présidence de <strong>Nancy VILCÉ</strong>, avec 100 membres fondatrices.
+              La première réunion se tient dans la modestie, portée par une vision audacieuse.
+            </p>
+          </div>
+        </div>
+        <div class="timeline-pro__dot-col">
+          <div class="timeline-pro__dot">2006</div>
+        </div>
+        <div class="timeline-pro__right timeline-pro__empty"></div>
+      </div>
+
+      <!-- Item 2 — card RIGHT -->
+      <div class="timeline-pro__item reveal d2">
+        <div class="timeline-pro__left timeline-pro__empty"></div>
+        <div class="timeline-pro__dot-col">
+          <div class="timeline-pro__dot">2006<br>2015</div>
+        </div>
+        <div class="timeline-pro__right">
+          <div class="timeline-pro__card">
+            <div class="timeline-pro__year">2006 – 2015 — Développement</div>
+            <div class="timeline-pro__heading">Expansion des programmes</div>
+            <p class="timeline-pro__text">
+              Déploiement des premiers programmes en santé reproductive, autonomisation
+              économique et protection des droits des femmes. Lancement de la clinique
+              mobile itinérante, première du genre dans la région de Thomassin.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 — card LEFT -->
+      <div class="timeline-pro__item reveal d3">
+        <div class="timeline-pro__left">
+          <div class="timeline-pro__card">
+            <div class="timeline-pro__year">2015 – 2020 — Structuration</div>
+            <div class="timeline-pro__heading">L'ancrage institutionnel</div>
+            <p class="timeline-pro__text">
+              Ouverture de la Clinique Permanente <strong>« Sante Fanm AFADETH »</strong>.
+              L'économie solidaire touche plus de 1&nbsp;000 femmes. Renforcement du cadre
+              institutionnel : gouvernance, transparence et redevabilité.
+            </p>
+          </div>
+        </div>
+        <div class="timeline-pro__dot-col">
+          <div class="timeline-pro__dot">2015<br>2020</div>
+        </div>
+        <div class="timeline-pro__right timeline-pro__empty"></div>
+      </div>
+
+      <!-- Item 4 — card RIGHT -->
+      <div class="timeline-pro__item reveal d4">
+        <div class="timeline-pro__left timeline-pro__empty"></div>
+        <div class="timeline-pro__dot-col">
+          <div class="timeline-pro__dot">2020<br>Auj.</div>
+        </div>
+        <div class="timeline-pro__right">
+          <div class="timeline-pro__card">
+            <div class="timeline-pro__year">2020 – Aujourd'hui — Premier Plan</div>
+            <div class="timeline-pro__heading">Organisation de référence</div>
+            <p class="timeline-pro__text">
+              3&nbsp;000+ femmes membres actives. Décentralisation sur trois sites.
+              Lancement du <strong>Restaurant Communautaire Solidaire AFADETH</strong>.
+              Ancrage académique avec l'UEH. Expansion des programmes à travers
+              les sections communales.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- .timeline-pro -->
+  </div>
+</section>
+
+<!-- =====================================================
+     SECTION 3 — GOUVERNANCE
+===================================================== -->
+<section class="section" id="gouvernance">
+  <div class="container">
+
+    <div class="text-center reveal" style="margin-bottom:3.5rem">
+      <div class="section-label section-label--center">Structure Organisationnelle</div>
+      <h2 class="section-h2">
+        Notre <em class="h2-em-orange">Gouvernance</em>
+      </h2>
+      <p class="section-intro-text" style="max-width:560px">
+        L'AFADETH se distingue par sa rigueur institutionnelle : gouvernance transparente,
+        redevabilité bidirectionnelle envers l'État, les bailleurs et les comités de base.
+      </p>
+    </div>
+
+    <div style="max-width:720px;margin:0 auto">
+
+      <!-- Présidente -->
+      <div class="org-root reveal">
+        <div class="org-node">
+          <div class="org-node__role">Présidente</div>
+          <div class="org-node__name">Nancy VILCÉ</div>
+        </div>
+      </div>
+      <div class="org-connector reveal"></div>
+
+      <!-- Conseil + Direction -->
+      <div class="org-level reveal d1">
+        <div class="org-card">
+          <div class="org-card__role">Conseil d'Administration</div>
+          <div class="org-card__title">Organe de supervision stratégique</div>
+        </div>
+        <div class="org-card org-card--pale">
+          <div class="org-card__role">Direction Exécutive</div>
+          <div class="org-card__title">Responsable exécutive</div>
+        </div>
+      </div>
+
+      <div class="org-connector reveal d1"></div>
+
+      <!-- 4 directions -->
+      <div class="org-directions reveal d2">
+        <div class="org-dir">
+          <div class="org-dir__icon">🌱</div>
+          <div class="org-dir__label">Autonomisation Économique</div>
+        </div>
+        <div class="org-dir">
+          <div class="org-dir__icon">🏥</div>
+          <div class="org-dir__label">Santé Globale & Reproductive</div>
+        </div>
+        <div class="org-dir">
+          <div class="org-dir__icon">⚖️</div>
+          <div class="org-dir__label">Protection & Droits VBG</div>
+        </div>
+        <div class="org-dir">
+          <div class="org-dir__icon">📚</div>
+          <div class="org-dir__label">Éducation & Jeunesse</div>
+        </div>
+      </div>
+
+      <div class="org-connector reveal d2"></div>
+
+      <!-- Programmes opérationnels -->
+      <div class="org-programs reveal d3">
+        <div class="org-program">
+          <div class="org-program__icon">🌾</div>
+          Kore Fanm Agrikòl yo
+        </div>
+        <div class="org-program">
+          <div class="org-program__icon">❤️</div>
+          Sante Fanm AFADETH
+        </div>
+        <div class="org-program">
+          <div class="org-program__icon">🛡️</div>
+          Unité PSEA &amp; Accomp. juridique
+        </div>
+        <div class="org-program">
+          <div class="org-program__icon">⭐</div>
+          AFADETH Jeunesse
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECTION 4 — PARTENAIRES
+===================================================== -->
+<section class="section" id="partenaires" style="background:var(--orange-pale)">
+  <div class="container">
+
+    <div class="text-center reveal" style="margin-bottom:3.5rem">
+      <div class="section-label section-label--center">Synergie Multi-Sectorielle</div>
+      <h2 class="section-h2">
+        Nos <em class="h2-em-orange">Partenaires</em>
+      </h2>
+      <p class="section-intro-text">
+        L'AFADETH maximise son impact grâce à un solide réseau de partenaires
+        stratégiques nationaux et internationaux.
+      </p>
+    </div>
+
+    <div class="card-grid-3">
+
+      <!-- Étatique -->
+      <div class="partner-card reveal d1">
+        <div class="partner-card__icon">🏛️</div>
+        <h3 class="partner-card__title">Ancrage Étatique</h3>
+        <ul class="partner-list">
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            Ministère MCFDF
+          </li>
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            Ministère de la Santé (MSPP)
+          </li>
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            ONI (Office National d'Identification)
+          </li>
+        </ul>
+      </div>
+
+      <!-- International -->
+      <div class="partner-card reveal d2">
+        <div class="partner-card__icon">🌍</div>
+        <h3 class="partner-card__title">Partenaires Internationaux</h3>
+        <ul class="partner-list">
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            UNFPA (Fonds des Nations Unies)
+          </li>
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            ONU Femmes
+          </li>
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            Avocats Sans Frontières
+          </li>
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            RAPHA
+          </li>
+        </ul>
+      </div>
+
+      <!-- Académique -->
+      <div class="partner-card reveal d3">
+        <div class="partner-card__icon">🎓</div>
+        <h3 class="partner-card__title">Alliance Académique</h3>
+        <ul class="partner-list">
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            Université d'État d'Haïti (UEH)
+          </li>
+          <li class="partner-list__item">
+            <span class="partner-list__dot"></span>
+            Labo de Recherche Scientifique en Intervention Humanitaire Appliquée
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     CTA BANNER — Wine
+===================================================== -->
+<div class="cta-wine" id="rejoindre">
+  <div class="container cta-wine__inner">
+    <div class="cta-wine__label">
+      <span></span>Passez à l'action<span></span>
+    </div>
+    <h2 class="cta-wine__heading">Prête à rejoindre notre mouvement ?</h2>
+    <p class="cta-wine__text">
+      Découvrez nos 4 champs d'intervention ou contactez-nous directement.
+    </p>
+    <div class="cta-wine__actions">
+      <a href="actions.html" class="btn btn-primary btn-lg">Nos Actions →</a>
+      <a href="contact.html" class="btn btn-outline-light btn-lg">Nous contacter</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="assets/images/logo.png" alt="Logo AFADETH" class="footer__logo-img logo-medal-glow" />
+        <div class="footer__brand-name">AFADETH</div>
+        <div class="footer__brand-tag">❀ Unir pour Servir ❀</div>
+        <p class="footer__brand-desc">Association des Femmes Dévouées de Thomassin. Organisation humanitaire fondée en 2006, Pétion-Ville, Haïti.</p>
+        <div class="footer__social">
+          <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" title="Facebook AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" title="Instagram AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" title="YouTube AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.96-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.96 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20.06 12 20.06 12 20.06s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="currentColor" stroke="none" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">Navigation</div>
+        <ul class="footer__links">
+          <li><a href="index.html"   class="footer__link">→ Accueil</a></li>
+          <li><a href="mission.html" class="footer__link">→ Mission</a></li>
+          <li><a href="actions.html" class="footer__link">→ Nos Actions</a></li>
+          <li><a href="galerie.html" class="footer__link">→ Galerie</a></li>
+          <li><a href="blog.html"    class="footer__link">→ Blog</a></li>
+          <li><a href="contact.html" class="footer__link">→ Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Sur cette page</div>
+        <ul class="footer__links">
+          <li><a href="#mission-vision" class="footer__link">→ Notre Vision</a></li>
+          <li><a href="#mission-vision" class="footer__link">→ Notre Mission</a></li>
+          <li><a href="#histoire"       class="footer__link">→ Notre Histoire</a></li>
+          <li><a href="#gouvernance"    class="footer__link">→ Gouvernance</a></li>
+          <li><a href="#partenaires"    class="footer__link">→ Partenaires</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Contact</div>
+        <div class="footer__contact-item"><span>📍</span><span>Laboule 22, #2, Pétion-Ville, Haïti</span></div>
+        <div class="footer__contact-item"><span>🌐</span><a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" style="color:inherit">Facebook AFADETH</a></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 AFADETH. Tous droits réservés.</p>
+      <div class="footer__legal">
+        <a href="#" class="footer__legal-link">Confidentialité</a>
+        <a href="#" class="footer__legal-link">Mentions légales</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(){
+    this.classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.body.style.overflow = this.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.navbar__mobile-link').forEach(l => {
+    l.addEventListener('click', () => {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Albums Photo — AFADETH Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <link rel="icon" href="../assets/images/logo.png" type="image/png"/>
+  <style>
+    .photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .photo-item{
+      position:relative;border-radius:var(--r);overflow:hidden;
+      aspect-ratio:1;background:var(--surf-2);border:1.5px solid var(--border);
+      cursor:pointer;transition:var(--t)
+    }
+    .photo-item:hover{border-color:var(--orange);box-shadow:0 4px 16px rgba(232,93,4,.2)}
+    .photo-item img{width:100%;height:100%;object-fit:cover}
+    .photo-item__del{
+      position:absolute;top:5px;right:5px;width:24px;height:24px;
+      border-radius:50%;background:rgba(0,0,0,.6);color:#fff;
+      font-size:.75rem;display:flex;align-items:center;justify-content:center;
+      transition:.15s;cursor:pointer;z-index:2
+    }
+    .photo-item__del:hover{background:var(--red)}
+    .photo-item__placeholder{
+      width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+      font-size:1.8rem;color:var(--text-3)
+    }
+    .cat-badge{
+      display:inline-flex;align-items:center;gap:4px;
+      padding:3px 10px;border-radius:12px;font-size:.62rem;font-weight:700;
+      letter-spacing:.05em;text-transform:uppercase
+    }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/images/logo.png" alt="AFADETH" class="sidebar-brand__logo"/>
+      <div><div class="sidebar-brand__name">AFADETH</div><div class="sidebar-brand__sub">Back-office</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="index.html" class="sidebar-link"><span class="sidebar-link__icon">📊</span>Dashboard</a>
+      <a href="albums.html" class="sidebar-link"><span class="sidebar-link__icon">🖼️</span>Albums photo</a>
+      <a href="articles.html" class="sidebar-link"><span class="sidebar-link__icon">📝</span>Articles blog</a>
+      <div class="sidebar-section">Communications</div>
+      <a href="contacts.html" class="sidebar-link">
+        <span class="sidebar-link__icon">💬</span>Messages
+        <span class="sidebar-badge" data-unread style="display:none"></span>
+      </a>
+      <div class="sidebar-section">Administration</div>
+      <a href="users.html" class="sidebar-link"><span class="sidebar-link__icon">👥</span>Utilisateurs</a>
+      <div class="sidebar-section">Site web</div>
+      <a href="../index.html" class="sidebar-link" target="_blank"><span class="sidebar-link__icon">🌐</span>Voir le site →</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sf-avatar" data-user-init>NV</div>
+      <div class="sf-info">
+        <div class="sf-name" data-user-name>Nancy VILCÉ</div>
+        <div class="sf-role">Administratrice</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-header__title" id="page-title">Albums photo <span>— Galerie AFADETH</span></div>
+    <button class="hbtn hbtn-ghost" id="btn-back" onclick="showAlbumList()" style="display:none">← Retour aux albums</button>
+    <button class="hbtn hbtn-primary" id="btn-new-album" onclick="openCreateAlbum()">✚ Nouvel album</button>
+    <button class="hbtn hbtn-primary" id="btn-add-photos" onclick="document.getElementById('photo-file-input').click()" style="display:none">📷 Ajouter des photos</button>
+  </header>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- ── Vue liste albums ── -->
+    <div id="view-albums">
+      <div class="toolbar">
+        <div class="search-bar" style="width:240px">
+          <input type="text" id="album-search" placeholder="Rechercher un album…" oninput="renderAlbums()"/>
+          <button>🔍</button>
+        </div>
+        <select class="form-select" id="cat-filter" onchange="renderAlbums()" style="width:auto;padding:7px 10px;font-size:.8rem">
+          <option value="">Toutes catégories</option>
+          <option value="evenements">Événements</option>
+          <option value="sante">Santé</option>
+          <option value="economie">Économie</option>
+          <option value="droits">Droits & VBG</option>
+          <option value="education">Éducation</option>
+        </select>
+        <div id="album-count" style="font-size:.8rem;color:var(--text-3);margin-left:4px"></div>
+      </div>
+      <div class="album-grid" id="album-grid"></div>
+    </div>
+
+    <!-- ── Vue détail album ── -->
+    <div id="view-detail" style="display:none">
+      <div class="admin-card" style="margin-bottom:18px">
+        <div class="card-body" style="display:flex;align-items:center;gap:18px">
+          <div id="detail-cover" style="width:80px;height:60px;border-radius:var(--r);overflow:hidden;background:linear-gradient(135deg,var(--orange),var(--copper));flex-shrink:0"></div>
+          <div style="flex:1">
+            <div id="detail-name" style="font-size:1.1rem;font-weight:700;color:var(--text)"></div>
+            <div id="detail-meta" style="font-size:.78rem;color:var(--text-3);margin-top:3px"></div>
+            <div id="detail-desc" style="font-size:.845rem;color:var(--text-2);margin-top:5px"></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline btn-sm" id="btn-edit-album">✏️ Modifier l'album</button>
+            <a id="btn-view-public" href="../galerie.html" target="_blank" class="btn btn-ghost btn-sm">🌐 Voir sur le site</a>
+          </div>
+        </div>
+      </div>
+      <!-- Drop zone + photo grid -->
+      <div class="admin-card">
+        <div class="card-head">
+          <div class="card-title" id="photo-count-label">Photos</div>
+          <button class="btn btn-primary btn-sm" onclick="document.getElementById('photo-file-input').click()">📷 Ajouter des photos</button>
+        </div>
+        <div class="card-body">
+          <!-- Drop zone -->
+          <div class="upload-zone" id="drop-zone" style="margin-bottom:16px">
+            <div class="upload-zone__icon">📸</div>
+            <div class="upload-zone__text">Glissez-déposez vos photos ici</div>
+            <div class="upload-zone__hint">ou cliquez sur « Ajouter des photos » · JPG, PNG, WEBP jusqu'à 10 Mo</div>
+          </div>
+          <input type="file" id="photo-file-input" multiple accept="image/*" style="display:none"/>
+          <!-- Photos grid -->
+          <div class="photo-grid" id="photo-grid"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal créer/modifier album -->
+<div class="modal-backdrop" id="modal-album">
+  <div class="modal">
+    <div class="modal__head">
+      <div class="modal__title" id="modal-album-title">Créer un album</div>
+      <button class="modal__close" data-modal-close="modal-album">✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="a-id"/>
+      <div class="form-field">
+        <label class="form-label">Nom de l'album <span>*</span></label>
+        <input class="form-input" id="a-name" type="text" placeholder="ex: Événements 2025"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Catégorie</label>
+        <select class="form-select" id="a-cat">
+          <option value="evenements">Événements</option>
+          <option value="sante">Santé</option>
+          <option value="economie">Économie</option>
+          <option value="droits">Droits & VBG</option>
+          <option value="education">Éducation</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="a-desc" rows="3" placeholder="Description courte de l'album…"></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Photo de couverture (URL ou upload)</label>
+        <input class="form-input" id="a-cover" type="text" placeholder="ex: ../assets/images/gallery/gallery_03.jpg"/>
+        <div class="form-hint">Entrez l'URL de l'image ou choisissez une photo depuis l'album après création.</div>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn-ghost" data-modal-close="modal-album">Annuler</button>
+      <button class="btn btn-primary" onclick="saveAlbumForm()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal photo detail -->
+<div class="modal-backdrop" id="modal-photo">
+  <div class="modal">
+    <div class="modal__head">
+      <div class="modal__title">Modifier la photo</div>
+      <button class="modal__close" data-modal-close="modal-photo">✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="ph-album-id"/>
+      <input type="hidden" id="ph-id"/>
+      <div style="border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px;aspect-ratio:16/9;background:var(--surf-2)">
+        <img id="ph-preview" src="" alt="" style="width:100%;height:100%;object-fit:cover"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Titre</label>
+        <input class="form-input" id="ph-title" type="text" placeholder="Titre de la photo"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Description</label>
+        <input class="form-input" id="ph-desc" type="text" placeholder="Courte description…"/>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn btn-primary btn-sm" onclick="setCover()">⭐ Définir comme couverture</button>
+      </div>
+    </div>
+    <div class="modal__foot">
+      <button class="btn btn-danger" onclick="deletePhoto()">🗑 Supprimer</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost" data-modal-close="modal-photo">Annuler</button>
+      <button class="btn btn-primary" onclick="savePhoto()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+const CAT_COLORS = {
+  evenements:'badge-orange',sante:'badge-green',economie:'badge-yellow',
+  droits:'badge-wine',education:'badge-blue'
+};
+let currentAlbumId = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAlbums();
+  if (new URLSearchParams(location.search).get('new') === '1') openCreateAlbum();
+  setupDropZone();
+  document.getElementById('photo-file-input').addEventListener('change', handleFileInput);
+});
+
+/* ── Album list ── */
+function renderAlbums() {
+  const q   = document.getElementById('album-search').value.toLowerCase();
+  const cat = document.getElementById('cat-filter').value;
+  let albums = getAlbums();
+  if (cat) albums = albums.filter(a=>a.cat===cat);
+  if (q)   albums = albums.filter(a=>a.name.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q));
+  document.getElementById('album-count').textContent = `${albums.length} album${albums.length!==1?'s':''}`;
+  const grid = document.getElementById('album-grid');
+  if (!albums.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1;padding:60px"><div class="empty__icon">🖼️</div><div class="empty__title">Aucun album</div><div class="empty__text">Créez votre premier album pour commencer.</div></div>`;
+    return;
+  }
+  grid.innerHTML = albums.map(a => `
+    <div class="album-card">
+      <div class="album-cover" onclick="openAlbum(${a.id})" style="cursor:pointer">
+        ${a.cover
+          ? `<img src="${a.cover}" alt="${a.name}" onerror="this.style.display='none'"/>`
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:rgba(255,255,255,.6)">🖼️</div>`}
+        <div class="album-cover__count">${a.photos.length} photo${a.photos.length!==1?'s':''}</div>
+        <div class="album-cover__cat">${CAT_LABELS[a.cat]||a.cat}</div>
+      </div>
+      <div class="album-body">
+        <div class="album-name">${a.name}</div>
+        <div class="album-meta">${fmtDate(a.date)} · <span class="badge ${CAT_COLORS[a.cat]||'badge-gray'}">${CAT_LABELS[a.cat]||a.cat}</span></div>
+      </div>
+      <div class="album-foot">
+        <button class="btn btn-outline btn-sm" onclick="openAlbum(${a.id})" style="flex:1;justify-content:center">📂 Ouvrir</button>
+        <button class="btn-icon" onclick="editAlbum(${a.id})" title="Modifier">✏️</button>
+        <button class="btn-icon danger" onclick="deleteAlbum(${a.id})" title="Supprimer">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ── Open album detail ── */
+function openAlbum(id) {
+  const album = getAlbums().find(a=>a.id===id);
+  if (!album) return;
+  currentAlbumId = id;
+  document.getElementById('view-albums').style.display = 'none';
+  document.getElementById('view-detail').style.display = 'block';
+  document.getElementById('btn-back').style.display = 'inline-flex';
+  document.getElementById('btn-new-album').style.display = 'none';
+  document.getElementById('page-title').innerHTML = `${album.name} <span>— Gestion des photos</span>`;
+  // Detail header
+  const cover = document.getElementById('detail-cover');
+  cover.innerHTML = album.cover ? `<img src="${album.cover}" style="width:100%;height:100%;object-fit:cover"/>` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem">🖼️</div>`;
+  document.getElementById('detail-name').textContent = album.name;
+  document.getElementById('detail-meta').textContent = `${CAT_LABELS[album.cat]||album.cat} · ${fmtDate(album.date)}`;
+  document.getElementById('detail-desc').textContent = album.desc||'';
+  document.getElementById('btn-edit-album').onclick = () => editAlbum(id);
+  renderPhotoGrid(album);
+}
+
+function showAlbumList() {
+  currentAlbumId = null;
+  document.getElementById('view-albums').style.display = 'block';
+  document.getElementById('view-detail').style.display = 'none';
+  document.getElementById('btn-back').style.display = 'none';
+  document.getElementById('btn-new-album').style.display = 'inline-flex';
+  document.getElementById('page-title').innerHTML = 'Albums photo <span>— Galerie AFADETH</span>';
+  renderAlbums();
+}
+
+/* ── Photo grid ── */
+function renderPhotoGrid(album) {
+  const label = document.getElementById('photo-count-label');
+  label.textContent = `${album.photos.length} photo${album.photos.length!==1?'s':''}`;
+  const grid = document.getElementById('photo-grid');
+  if (!album.photos.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-3)">
+      <div style="font-size:2rem;margin-bottom:8px">📸</div>
+      <div style="font-weight:600;color:var(--text-2)">Aucune photo dans cet album</div>
+      <div style="font-size:.845rem;margin-top:4px">Glissez des photos ici ou cliquez « Ajouter des photos »</div>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = album.photos.map(ph => `
+    <div class="photo-item" onclick="openPhotoModal(${album.id},${ph.id})">
+      ${ph.src
+        ? `<img src="${ph.src}" alt="${ph.title||''}" loading="lazy" onerror="this.style.display='none'"/>`
+        : `<div class="photo-item__placeholder">📷</div>`}
+      <div class="photo-item__del" onclick="event.stopPropagation();quickDeletePhoto(${album.id},${ph.id})" title="Supprimer">✕</div>
+      ${album.cover === ph.src ? `<div style="position:absolute;bottom:5px;left:6px;background:var(--orange);color:#fff;font-size:.55rem;font-weight:700;padding:2px 7px;border-radius:10px">COUVERTURE</div>` : ''}
+    </div>`).join('');
+}
+
+/* ── Drag & drop ── */
+function setupDropZone() {
+  const dz = document.getElementById('drop-zone');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag-over');
+    handleFiles(Array.from(e.dataTransfer.files));
+  });
+  dz.addEventListener('click', () => document.getElementById('photo-file-input').click());
+}
+function handleFileInput(e) { handleFiles(Array.from(e.target.files)); e.target.value=''; }
+function handleFiles(files) {
+  if (!currentAlbumId) return;
+  const imgFiles = files.filter(f=>f.type.startsWith('image/'));
+  if (!imgFiles.length) { showToast('Veuillez choisir des images (JPG, PNG, WEBP)','error'); return; }
+  imgFiles.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const albums = getAlbums();
+      const idx    = albums.findIndex(a=>a.id===currentAlbumId);
+      if (idx===-1) return;
+      const album = albums[idx];
+      const ph    = {id:nextPhotoId(album), src:e.target.result, title:file.name.replace(/\.[^.]+$/,''), desc:''};
+      album.photos.push(ph);
+      if (!album.cover) album.cover = ph.src;
+      saveAlbums(albums);
+      openAlbum(currentAlbumId);
+      showToast(`Photo ajoutée : ${ph.title}`,'success');
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ── Photo modal ── */
+function openPhotoModal(albumId, photoId) {
+  const album = getAlbums().find(a=>a.id===albumId);
+  if (!album) return;
+  const ph = album.photos.find(p=>p.id===photoId);
+  if (!ph) return;
+  document.getElementById('ph-album-id').value = albumId;
+  document.getElementById('ph-id').value       = photoId;
+  document.getElementById('ph-preview').src    = ph.src||'';
+  document.getElementById('ph-title').value    = ph.title||'';
+  document.getElementById('ph-desc').value     = ph.desc||'';
+  openModal('modal-photo');
+}
+function savePhoto() {
+  const albumId = parseInt(document.getElementById('ph-album-id').value);
+  const photoId = parseInt(document.getElementById('ph-id').value);
+  const albums  = getAlbums();
+  const aIdx    = albums.findIndex(a=>a.id===albumId);
+  if (aIdx===-1) return;
+  const pIdx    = albums[aIdx].photos.findIndex(p=>p.id===photoId);
+  if (pIdx===-1) return;
+  albums[aIdx].photos[pIdx].title = document.getElementById('ph-title').value;
+  albums[aIdx].photos[pIdx].desc  = document.getElementById('ph-desc').value;
+  saveAlbums(albums);
+  closeModal('modal-photo');
+  openAlbum(albumId);
+  showToast('Photo mise à jour','success');
+}
+function setCover() {
+  const albumId = parseInt(document.getElementById('ph-album-id').value);
+  const photoId = parseInt(document.getElementById('ph-id').value);
+  const albums  = getAlbums();
+  const aIdx    = albums.findIndex(a=>a.id===albumId);
+  if (aIdx===-1) return;
+  const ph = albums[aIdx].photos.find(p=>p.id===photoId);
+  if (!ph) return;
+  albums[aIdx].cover = ph.src;
+  saveAlbums(albums);
+  closeModal('modal-photo');
+  openAlbum(albumId);
+  showToast('Couverture de l\'album mise à jour','success');
+}
+function deletePhoto() {
+  const albumId = parseInt(document.getElementById('ph-album-id').value);
+  const photoId = parseInt(document.getElementById('ph-id').value);
+  confirmDelete('Supprimer cette photo ?', () => {
+    const albums = getAlbums();
+    const aIdx   = albums.findIndex(a=>a.id===albumId);
+    if (aIdx===-1) return;
+    albums[aIdx].photos = albums[aIdx].photos.filter(p=>p.id!==photoId);
+    saveAlbums(albums);
+    closeModal('modal-photo');
+    openAlbum(albumId);
+    showToast('Photo supprimée','success');
+  });
+}
+function quickDeletePhoto(albumId, photoId) {
+  confirmDelete('Supprimer cette photo ?', () => {
+    const albums = getAlbums();
+    const aIdx   = albums.findIndex(a=>a.id===albumId);
+    if (aIdx===-1) return;
+    albums[aIdx].photos = albums[aIdx].photos.filter(p=>p.id!==photoId);
+    saveAlbums(albums);
+    openAlbum(albumId);
+    showToast('Photo supprimée','success');
+  });
+}
+
+/* ── Album CRUD ── */
+function openCreateAlbum() {
+  document.getElementById('modal-album-title').textContent = 'Créer un album';
+  document.getElementById('a-id').value   = '';
+  document.getElementById('a-name').value = '';
+  document.getElementById('a-cat').value  = 'evenements';
+  document.getElementById('a-desc').value = '';
+  document.getElementById('a-cover').value= '';
+  openModal('modal-album');
+}
+function editAlbum(id) {
+  const a = getAlbums().find(x=>x.id===id);
+  if (!a) return;
+  document.getElementById('modal-album-title').textContent = 'Modifier l\'album';
+  document.getElementById('a-id').value   = id;
+  document.getElementById('a-name').value = a.name;
+  document.getElementById('a-cat').value  = a.cat;
+  document.getElementById('a-desc').value = a.desc||'';
+  document.getElementById('a-cover').value= a.cover||'';
+  openModal('modal-album');
+}
+function saveAlbumForm() {
+  const id   = document.getElementById('a-id').value;
+  const name = document.getElementById('a-name').value.trim();
+  if (!name) { showToast('Le nom de l\'album est requis','error'); return; }
+  const data = {
+    name, cat:document.getElementById('a-cat').value,
+    desc:document.getElementById('a-desc').value.trim(),
+    cover:document.getElementById('a-cover').value.trim(),
+    slug:name.toLowerCase().replace(/[^a-z0-9]+/g,'-')
+  };
+  const albums = getAlbums();
+  if (id) {
+    const idx = albums.findIndex(a=>a.id===parseInt(id));
+    if (idx!==-1) { Object.assign(albums[idx], data); saveAlbums(albums); showToast('Album modifié','success'); }
+  } else {
+    albums.unshift({id:nextAlbumId(), photos:[], date:nowISO().slice(0,10), ...data});
+    saveAlbums(albums);
+    showToast('Album créé avec succès','success');
+  }
+  closeModal('modal-album');
+  if (currentAlbumId) openAlbum(parseInt(id)||currentAlbumId); else renderAlbums();
+}
+function deleteAlbum(id) {
+  confirmDelete('Supprimer cet album et toutes ses photos ?', () => {
+    saveAlbums(getAlbums().filter(a=>a.id!==id));
+    showAlbumList();
+    showToast('Album supprimé','success');
+  });
+}
+</script>
+</body>
+</html>

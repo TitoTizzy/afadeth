@@ -1,0 +1,243 @@
+/* ============================================================
+   AFADETH — Module Galerie
+   ============================================================ */
+
+/* ---- Filtres — glassmorphism ---- */
+.gallery-filters{
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;flex-wrap:wrap;margin-bottom:3rem
+}
+.filter-btn{
+  padding:9px 20px;border-radius:var(--radius-full);
+  font-size:.8rem;font-weight:500;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.5);
+  color:var(--light-text-2);
+  transition:var(--transition);cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)
+}
+.filter-btn:hover{border-color:var(--orange);color:var(--orange);background:rgba(255,255,255,.9)}
+.filter-btn.active{
+  background:var(--gradient-brand);color:#fff;border-color:transparent;
+  box-shadow:0 4px 16px var(--orange-glow)
+}
+
+/* ---- Grid Masonry ---- */
+.gallery-grid{
+  columns:3 320px;column-gap:18px;
+  padding:4px
+}
+.gallery-item{
+  break-inside:avoid;margin-bottom:18px;
+  border-radius:var(--radius-lg);overflow:hidden;
+  position:relative;cursor:pointer;
+  transition:var(--transition);
+}
+.gallery-item:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
+.gallery-item.hidden{display:none}
+.gallery-item.fade-in{animation:fadeIn .45s ease forwards}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.gallery-item__img{
+  width:100%;display:block;
+  transition:transform var(--transition-slow)
+}
+.gallery-item:hover .gallery-item__img{transform:scale(1.05)}
+
+/* Placeholder gradients pour les images */
+.gallery-item__placeholder{
+  width:100%;display:block;
+  transition:transform var(--transition-slow)
+}
+.gallery-item:hover .gallery-item__placeholder{transform:scale(1.05)}
+
+/* Overlay */
+.gallery-item__overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(9,6,15,.82) 0%,transparent 55%);
+  opacity:0;transition:var(--transition);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:20px
+}
+.gallery-item:hover .gallery-item__overlay{opacity:1}
+.gallery-item__cat-pill{
+  display:inline-block;
+  font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:#fff;background:var(--gradient-brand);
+  padding:3px 12px;border-radius:var(--radius-full);margin-bottom:8px
+}
+.gallery-item__title{
+  font-family:'Cormorant Garamond',serif;font-size:1.15rem;
+  font-weight:600;font-style:italic;color:#fff;margin-bottom:4px;line-height:1.3
+}
+.gallery-item__desc-short{
+  font-size:.72rem;color:rgba(255,255,255,.65);line-height:1.5
+}
+/* Compat legacy */
+.gallery-item__cat{
+  font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--orange)
+}
+.gallery-item__zoom{
+  position:absolute;top:16px;right:16px;
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:#fff;
+  opacity:0;transform:scale(.8);
+  transition:var(--transition)
+}
+.gallery-item:hover .gallery-item__zoom{opacity:1;transform:scale(1)}
+
+/* Hauteurs variées pour effet masonry */
+.gallery-item:nth-child(3n+1) .gallery-item__placeholder{height:340px}
+.gallery-item:nth-child(3n+2) .gallery-item__placeholder{height:260px}
+.gallery-item:nth-child(3n)   .gallery-item__placeholder{height:300px}
+
+/* ---- Lightbox ---- */
+.lightbox{
+  position:fixed;inset:0;z-index:var(--z-lightbox);
+  background:rgba(6,4,12,.97);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
+  overflow:hidden
+}
+.lightbox.open{opacity:1;pointer-events:all}
+
+/* Stage — zone image */
+.lightbox__stage{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden
+}
+
+/* Image zoomable */
+.lightbox__img{
+  max-width:92vw;max-height:88vh;
+  object-fit:contain;display:block;
+  transform-origin:center center;
+  transition:transform .12s ease;
+  user-select:none;-webkit-user-drag:none;
+  cursor:zoom-in
+}
+.lightbox__img.lb-zoomed{cursor:grab}
+.lightbox__img.lb-panning{cursor:grabbing !important;transition:none}
+
+.lightbox__placeholder{
+  width:min(700px,88vw);height:min(500px,70vh);
+  display:block;border-radius:var(--radius-lg)
+}
+
+/* Fermer */
+.lightbox__close{
+  position:fixed;top:20px;right:24px;z-index:2;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.1);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.14);
+  color:#fff;font-size:1.25rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--transition)
+}
+.lightbox__close:hover{background:rgba(255,255,255,.22);transform:rotate(90deg)}
+
+/* Navigation */
+.lightbox__nav{
+  position:fixed;top:50%;transform:translateY(-50%);z-index:2;
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(255,255,255,.1);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.14);
+  color:#fff;font-size:1.5rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--transition)
+}
+.lightbox__nav:hover{background:rgba(255,255,255,.2);transform:translateY(-50%) scale(1.1)}
+.lightbox__prev{left:20px}
+.lightbox__next{right:20px}
+
+/* Barre de zoom (centre bas) */
+.lightbox__zoom-bar{
+  position:fixed;bottom:72px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:4px;
+  background:rgba(10,6,20,.7);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:100px;padding:5px 10px;z-index:2;
+  opacity:0;transition:opacity .3s
+}
+.lightbox.open .lightbox__zoom-bar{opacity:1}
+
+.lightbox__zoom-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.1);
+  color:#fff;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--transition)
+}
+.lightbox__zoom-btn:hover{background:rgba(255,255,255,.22)}
+.lb-zoom-reset svg{display:block}
+
+.lightbox__zoom-level{
+  font-size:.7rem;font-weight:600;letter-spacing:.05em;
+  color:rgba(255,255,255,.6);min-width:44px;text-align:center
+}
+
+/* Infos photo */
+.lightbox__info{
+  position:fixed;bottom:0;left:0;right:0;z-index:2;
+  padding:14px 40px 18px;
+  background:linear-gradient(to top,rgba(6,4,12,.95),transparent);
+  text-align:center;pointer-events:none
+}
+.lightbox__info-cat{
+  font-size:.7rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--orange);margin-bottom:3px
+}
+.lightbox__info-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.25rem;
+  font-weight:600;font-style:italic;color:#fff
+}
+.lightbox__info-desc{font-size:.76rem;color:rgba(255,255,255,.48);margin-top:2px}
+
+/* Compteur */
+.lightbox__counter{
+  position:fixed;top:26px;left:36px;z-index:2;
+  font-size:.74rem;font-weight:500;letter-spacing:.06em;
+  color:rgba(255,255,255,.4)
+}
+
+/* Hint zoom (double-clic) */
+.lightbox__hint{
+  position:fixed;top:26px;left:50%;transform:translateX(-50%);z-index:2;
+  font-size:.68rem;color:rgba(255,255,255,.28);
+  letter-spacing:.05em;pointer-events:none;
+  transition:opacity .5s ease
+}
+
+/* ---- Load More ---- */
+.gallery-load-more{text-align:center;margin-top:3rem}
+
+/* ---- Empty State ---- */
+.gallery-empty{
+  text-align:center;padding:60px 24px;
+  font-size:1.1rem;color:var(--light-text-2);opacity:.6
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:768px){
+  .gallery-grid{columns:2 240px;column-gap:12px}
+  .gallery-item{margin-bottom:12px}
+  .lightbox__prev{left:10px}
+  .lightbox__next{right:10px}
+  .lightbox__info{padding:16px 24px}
+}
+@media(max-width:480px){
+  .gallery-grid{columns:1;column-gap:0}
+}

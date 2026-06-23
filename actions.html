@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Les 4 champs d'intervention de l'AFADETH : autonomisation économique, santé reproductive, droits humains et VBG, éducation et leadership féminin." />
+  <title>Nos Actions — AFADETH</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/images/logo.png" type="image/png" />
+  <style>
+    /* ---- Action sections alternating backgrounds ---- */
+    .action-section{padding:80px 0}
+    .action-section--cream{background:var(--cream)}
+    .action-section--pale{background:var(--orange-pale)}
+
+    /* ---- Big ghost number ---- */
+    .action-number{
+      font-family:'Cormorant Garamond',serif;font-size:6rem;font-weight:700;
+      color:rgba(232,93,4,.08);line-height:1;position:absolute;top:-20px;right:0;
+      pointer-events:none;user-select:none
+    }
+
+    /* ---- Program tags ---- */
+    .program-tag{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 14px;border-radius:var(--radius-full);
+      background:var(--orange-pale);border:1px solid rgba(232,93,4,.25);
+      font-size:.78rem;font-weight:600;color:var(--orange);margin:4px
+    }
+    .program-tag::before{content:'→';font-size:.8rem}
+
+    /* ---- Impact pills (santé section) ---- */
+    .impact-pill{
+      display:flex;align-items:center;gap:14px;
+      padding:16px 20px;background:#fff;border-radius:var(--radius-md);
+      border:1px solid var(--light-border);border-left:4px solid var(--orange);
+      margin-bottom:12px;box-shadow:var(--shadow-sm)
+    }
+    .impact-pill__icon{
+      width:44px;height:44px;border-radius:50%;flex-shrink:0;
+      background:var(--gradient-copper);
+      display:flex;align-items:center;justify-content:center;font-size:1.15rem
+    }
+    .impact-pill__text{font-size:.9rem;color:var(--light-text-2);line-height:1.5}
+    .impact-pill__text strong{color:var(--light-text)}
+
+    /* ---- Program cards ---- */
+    .program-card{
+      background:#fff;border-radius:var(--radius-lg);padding:32px;
+      box-shadow:var(--shadow-md);border-top:3px solid var(--orange);
+      margin-bottom:20px
+    }
+    .program-card--gradient{
+      background:var(--gradient-brand);color:#fff;
+      border-top:3px solid rgba(255,255,255,.4)
+    }
+    .program-card--pale{
+      background:var(--orange-pale);
+      border-top:3px solid var(--orange)
+    }
+    .program-card__icon{
+      width:48px;height:48px;border-radius:50%;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;font-size:1.4rem
+    }
+    .program-card__icon--light{background:rgba(255,255,255,.22)}
+    .program-card__icon--brand{background:var(--gradient-brand)}
+    .program-card__header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .program-card__eyebrow{
+      font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+      opacity:.75;margin-bottom:2px
+    }
+    .program-card__title{
+      font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700
+    }
+    .program-card__title--dark{color:var(--light-text)}
+    .program-card__eyebrow--dark{color:var(--light-text-2)}
+    .program-card p{font-size:.9rem;line-height:1.7}
+    .program-card--gradient p{opacity:.87}
+    .program-card__badge{
+      font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--orange);font-weight:700;margin-bottom:6px
+    }
+    .program-card__subtitle{
+      font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+      font-weight:600;color:var(--light-text);margin-bottom:6px
+    }
+
+    /* ---- Droits sub-cards ---- */
+    .droits-card{
+      background:#fff;border-radius:var(--radius-lg);padding:24px;
+      box-shadow:var(--shadow-md);border-top:3px solid var(--orange)
+    }
+    .droits-card--gradient{
+      background:var(--gradient-brand);color:#fff;
+      border-top:3px solid rgba(255,255,255,.4)
+    }
+    .droits-card--pale{
+      background:var(--orange-pale);
+      border-top:3px solid var(--orange)
+    }
+    .droits-card h4{
+      font-family:'Cormorant Garamond',serif;font-size:1.2rem;
+      font-weight:700;margin-bottom:8px
+    }
+    .droits-card p{font-size:.875rem;line-height:1.65}
+    .droits-card--gradient p{opacity:.87}
+    .droits-card--pale p{color:var(--light-text-2)}
+    .droits-card--pale h4{color:var(--light-text)}
+    .droits-card--white p{color:var(--light-text-2)}
+    .droits-card--white h4{color:var(--light-text)}
+    .droits-icon{font-size:1.5rem;margin-bottom:10px}
+
+    /* ---- Décentralisation section ---- */
+    .decentral-section{
+      background:var(--gradient-earth);
+      position:relative;overflow:hidden;
+      padding:110px 0
+    }
+    .decentral-section::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 25% 50%,rgba(232,93,4,.22) 0%,transparent 60%);
+      pointer-events:none
+    }
+    .decentral-card{
+      background:var(--glass);
+      border:1px solid var(--glass-border);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      border-radius:var(--radius-lg);padding:32px;text-align:center
+    }
+    .decentral-card--accent{
+      background:rgba(232,93,4,.15);
+      border-color:rgba(232,93,4,.35)
+    }
+    .decentral-card__eyebrow{
+      font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--orange-light);font-weight:700;margin-bottom:8px
+    }
+    .decentral-card__name{
+      font-family:'Cormorant Garamond',serif;font-size:1.3rem;
+      font-weight:600;color:#fff;margin-bottom:10px
+    }
+    .decentral-card p{font-size:.875rem;color:rgba(255,255,255,.6);line-height:1.65}
+    .decentral-icon{font-size:2.5rem;margin-bottom:16px}
+
+    /* ---- CTA banner ---- */
+    .actions-cta{
+      background:var(--gradient-wine);
+      position:relative;overflow:hidden;padding:80px 0
+    }
+    .actions-cta::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 70% 50%,rgba(232,93,4,.18) 0%,transparent 55%);
+      pointer-events:none
+    }
+    .actions-cta__quote{
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1.8rem,3.5vw,3rem);
+      font-weight:600;color:#fff;
+      font-style:italic;margin-bottom:1rem
+    }
+    .actions-cta p{
+      color:rgba(255,255,255,.72);font-size:1rem;
+      max-width:480px;margin:0 auto 2rem;line-height:1.7
+    }
+    .actions-cta__btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/logo.png" alt="Logo AFADETH" class="navbar__logo-img logo-medal-glow" />
+      <div class="navbar__logo-text">
+        <span class="navbar__logo-name">AFADETH</span>
+        <span class="navbar__logo-tagline">Unir pour Servir</span>
+      </div>
+    </a>
+    <ul class="navbar__nav">
+      <li><a href="index.html"    class="navbar__link">Accueil</a></li>
+      <li><a href="mission.html"  class="navbar__link">Mission</a></li>
+      <li><a href="actions.html"  class="navbar__link active">Nos Actions</a></li>
+      <li><a href="galerie.html"  class="navbar__link">Galerie</a></li>
+      <li><a href="blog.html"     class="navbar__link">Blog</a></li>
+      <li><a href="contact.html"  class="navbar__link">Contact</a></li>
+    </ul>
+    <div class="navbar__cta">
+      <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
+        Admin
+      </a>    </div>
+    <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="navbar__mobile" id="mobile-menu">
+  <a href="index.html"   class="navbar__mobile-link">Accueil</a>
+  <a href="mission.html" class="navbar__mobile-link">Mission</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="actions.html" class="navbar__mobile-link">Nos Actions</a>
+  <a href="galerie.html" class="navbar__mobile-link">Galerie</a>
+  <a href="blog.html"    class="navbar__mobile-link">Blog</a>
+  <div class="navbar__mobile-divider"></div>
+  <a href="contact.html" class="navbar__mobile-link">Contact</a>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero__grid"></div>
+  <div class="container page-hero__content">
+    <div class="page-hero__breadcrumb">
+      <a href="index.html">Accueil</a><span>/</span>
+      <span style="color:rgba(255,255,255,.85)">Nos Actions</span>
+    </div>
+    <div class="section-label section-label--light">4 Champs d'Intervention</div>
+    <h1 class="page-hero__title">Nos <em>Actions</em></h1>
+    <p class="page-hero__desc">Des programmes concrets, mesurables et durables pour transformer la vie des femmes et des jeunes en Haïti.</p>
+  </div>
+</section>
+
+<!-- =====================================================
+     INTRO — VUE D'ENSEMBLE
+===================================================== -->
+<section class="section" style="background:var(--cream);padding-bottom:0">
+  <div class="container text-center">
+    <div class="section-label" style="justify-content:center">Vue d'ensemble</div>
+    <h2 class="reveal" style="font-size:clamp(2rem,3.5vw,3rem);margin-bottom:1.2rem">
+      4 piliers, <em style="font-style:italic;color:var(--orange)">1 vision</em>
+    </h2>
+    <p class="reveal d1" style="font-size:1.05rem;color:var(--light-text-2);max-width:600px;margin:0 auto 3rem;line-height:1.75">
+      Chaque champ d'intervention répond à un besoin précis identifié au sein de la communauté.
+      Ensemble, ils forment un écosystème de soutien complet pour l'émancipation des femmes haïtiennes.
+    </p>
+    <!-- Tabs raccourcis -->
+    <div class="reveal d2" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding-bottom:3rem">
+      <a href="#economie" class="btn btn-outline btn-sm">🌱 Économie</a>
+      <a href="#sante"    class="btn btn-outline btn-sm">🏥 Santé</a>
+      <a href="#droits"   class="btn btn-outline btn-sm">⚖️ Droits &amp; VBG</a>
+      <a href="#education" class="btn btn-outline btn-sm">📚 Éducation</a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     CHAMP 01 — ÉCONOMIE  (odd → cream/white)
+===================================================== -->
+<section class="action-section action-section--cream" id="economie" style="padding-top:40px">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+      <div class="reveal-l">
+        <div style="position:relative">
+          <div class="action-number">01</div>
+          <div class="section-label">Champ d'Intervention 01</div>
+          <h2 style="font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:1.2rem;color:var(--light-text)">
+            Autonomisation<br><em style="font-style:italic;color:var(--orange)">Économique &amp; Sociale</em>
+          </h2>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.2rem">
+            L'autonomisation économique des femmes est au cœur de la vision de l'AFADETH.
+            À travers deux programmes phares, l'association transforme les femmes en actrices
+            économiques de leur communauté.
+          </p>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.5rem">
+            De la modernisation agricole au développement de micro-entreprises, en passant
+            par les marchés solidaires, l'AFADETH accompagne chaque femme vers l'indépendance.
+          </p>
+          <div class="highlight-box">
+            <p><strong>+ de 1 000 femmes</strong> accompagnées dans leurs projets économiques.<br>
+            <strong>87 micro-entreprises</strong> créées depuis 2020.</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <!-- Programme 1 -->
+        <div class="program-card program-card--gradient">
+          <div class="program-card__header">
+            <div class="program-card__icon program-card__icon--light">🌱</div>
+            <div>
+              <div class="program-card__eyebrow">Programme phare</div>
+              <div class="program-card__title">Kore Fanm Agrikòl yo</div>
+            </div>
+          </div>
+          <p>
+            Modernisation de la production agricole avec formations techniques, accès aux intrants
+            et accompagnement vers les marchés. Plus de 350 femmes agricultrices formées à Fermathe.
+          </p>
+        </div>
+        <!-- Programme 2 -->
+        <div class="program-card">
+          <div class="program-card__header">
+            <div class="program-card__icon program-card__icon--brand">🤝</div>
+            <div>
+              <div class="program-card__eyebrow program-card__eyebrow--dark">Programme phare</div>
+              <div class="program-card__title program-card__title--dark">EKONOMI SOLIDÈ</div>
+            </div>
+          </div>
+          <p style="color:var(--light-text-2)">
+            Économie solidaire : tontines, coopératives, marchés communautaires et
+            soutien à la création de micro-entreprises féminines dans tous les secteurs.
+          </p>
+        </div>
+        <!-- Restaurant -->
+        <div class="program-card program-card--pale">
+          <div class="program-card__badge">Nouveau · 2024</div>
+          <div class="program-card__subtitle">🍽️ Restaurant Communautaire Solidaire</div>
+          <p style="color:var(--light-text-2)">15 000+ repas servis, 12 emplois créés pour des femmes vulnérables.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     CHAMP 02 — SANTÉ  (even → orange-pale)
+===================================================== -->
+<section class="action-section action-section--pale" id="sante">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+      <div>
+        <div class="section-label">Champ d'Intervention 02</div>
+        <!-- Impacts -->
+        <div class="impact-pill reveal d1">
+          <div class="impact-pill__icon">🏥</div>
+          <div class="impact-pill__text"><strong>Clinique Permanente</strong> · Sante Fanm AFADETH à Pétion-Ville</div>
+        </div>
+        <div class="impact-pill reveal d2">
+          <div class="impact-pill__icon">🚑</div>
+          <div class="impact-pill__text"><strong>Cliniques Mobiles</strong> · Services de proximité dans les zones reculées</div>
+        </div>
+        <div class="impact-pill reveal d3">
+          <div class="impact-pill__icon">🎗️</div>
+          <div class="impact-pill__text"><strong>Dépistage</strong> · Cancer du sein et du col de l'utérus</div>
+        </div>
+        <div class="impact-pill reveal d4">
+          <div class="impact-pill__icon">💊</div>
+          <div class="impact-pill__text"><strong>MST &amp; Hygiène menstruelle</strong> · Éducation et prévention</div>
+        </div>
+        <div class="impact-pill reveal d5">
+          <div class="impact-pill__icon">📊</div>
+          <div class="impact-pill__text"><strong>500+ consultations</strong> au premier trimestre 2025</div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div style="position:relative">
+          <div class="action-number">02</div>
+          <h2 style="font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:1.2rem;color:var(--light-text)">
+            Santé Globale<br><em style="font-style:italic;color:var(--orange)">&amp; Reproductive</em>
+          </h2>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.2rem">
+            La santé des femmes est un droit fondamental. La Clinique Permanente
+            <strong>« Sante Fanm AFADETH »</strong> offre des soins gynécologiques, prénataux
+            et de santé reproductive de qualité, accessibles à toutes.
+          </p>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.5rem">
+            Les cliniques mobiles itinérantes rejoignent les femmes là où elles se trouvent —
+            dans les zones rurales de Fermathe, Fort-Jacques et les sections communales éloignées.
+          </p>
+          <a href="blog.html" class="btn btn-primary">Lire nos bilans santé →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     CHAMP 03 — DROITS & VBG  (odd → cream/white)
+===================================================== -->
+<section class="action-section action-section--cream" id="droits">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+      <div class="reveal-l">
+        <div style="position:relative">
+          <div class="action-number">03</div>
+          <div class="section-label">Champ d'Intervention 03</div>
+          <h2 style="font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:1.2rem;color:var(--light-text)">
+            Protection, Droits Humains<br><em style="font-style:italic;color:var(--orange)">&amp; Lutte contre les VBG</em>
+          </h2>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.2rem">
+            Dans un contexte de vulnérabilité accrue en Haïti, la protection des femmes
+            contre les Violences Basées sur le Genre (VBG) est une priorité absolue de l'AFADETH.
+          </p>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.5rem">
+            L'Unité PSEA, renforcée grâce au partenariat avec <strong>Avocats Sans Frontières</strong>,
+            offre un accompagnement juridique complet : de la prise de plainte à la représentation
+            devant les tribunaux haïtiens.
+          </p>
+          <div class="highlight-box">
+            <p><strong>120 survivantes</strong> accompagnées en 2025.<br>
+            Normes <strong>PSEA strictes</strong> appliquées dans tous nos programmes.</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="droits-card droits-card--gradient">
+            <div class="droits-icon">🛡️</div>
+            <h4>Prévention</h4>
+            <p>Sensibilisation communautaire, formations sur les droits, ateliers dans les écoles et centres communautaires.</p>
+          </div>
+          <div class="droits-card droits-card--white">
+            <div class="droits-icon">⚖️</div>
+            <h4>Prise en Charge</h4>
+            <p>Accueil immédiat, écoute bienveillante, référencement médical, soutien psychosocial et accompagnement juridique.</p>
+          </div>
+          <div class="droits-card droits-card--pale">
+            <div class="droits-icon">🤝</div>
+            <h4>Accompagnement Juridique</h4>
+            <p>En partenariat avec Avocats Sans Frontières : représentation légale, plaidoyer et accès à la justice.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     CHAMP 04 — ÉDUCATION  (even → orange-pale)
+===================================================== -->
+<section class="action-section action-section--pale" id="education">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+      <div class="reveal-l">
+        <!-- AFADETH Jeunesse card -->
+        <div style="background:var(--gradient-hero);border-radius:var(--radius-xl);padding:36px;color:#fff;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-20px;right:-10px;font-family:'Cormorant Garamond',serif;font-size:8rem;font-weight:700;color:rgba(255,255,255,.05);line-height:1;pointer-events:none;user-select:none">04</div>
+          <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-light);margin-bottom:8px;font-weight:700">Branche officielle</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;margin-bottom:12px">AFADETH Jeunesse</h3>
+          <p style="font-size:.9rem;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:20px">
+            200+ jeunes femmes de 15 à 30 ans engagées dans des actions citoyennes,
+            des campagnes de sensibilisation et des parcours de leadership.
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="program-tag" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff">Leadership</span>
+            <span class="program-tag" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff">Mentorat</span>
+            <span class="program-tag" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff">Sensibilisation</span>
+            <span class="program-tag" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff">Citoyenneté</span>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div style="position:relative">
+          <div class="action-number">04</div>
+          <div class="section-label">Champ d'Intervention 04</div>
+          <h2 style="font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:1.2rem;color:var(--light-text)">
+            Éducation<br><em style="font-style:italic;color:var(--orange)">&amp; Leadership Féminin</em>
+          </h2>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.2rem">
+            Investir dans l'éducation des femmes et des filles, c'est investir dans l'avenir d'Haïti.
+            L'AFADETH soutient l'accès scolaire, lutte contre le harcèlement et forme les
+            leaders de demain.
+          </p>
+          <p style="font-size:1rem;color:var(--light-text-2);line-height:1.8;margin-bottom:1.5rem">
+            La branche <strong>AFADETH Jeunesse</strong>, coordonnée par Sherly ROSIER,
+            est le moteur de cette transformation générationnelle. Des ateliers de leadership,
+            des sessions de mentorat et des partenariats scolaires nourrissent une nouvelle
+            génération de femmes engagées.
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem">
+            <span class="program-tag">Accès scolaire</span>
+            <span class="program-tag">Lutte contre le harcèlement</span>
+            <span class="program-tag">Ateliers leadership</span>
+            <span class="program-tag">Mentorat professionnel</span>
+            <span class="program-tag">Campagnes dans les écoles</span>
+            <span class="program-tag">Citoyenneté active</span>
+          </div>
+          <a href="contact.html" class="btn btn-primary">Rejoindre AFADETH Jeunesse →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     DÉCENTRALISATION
+===================================================== -->
+<section class="decentral-section">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="text-center reveal" style="margin-bottom:3rem">
+      <div class="section-label section-label--light">Décentralisation Stratégique</div>
+      <h2 style="font-size:clamp(2rem,3.5vw,3rem);color:#fff">
+        3 sites, <em style="font-style:italic;color:var(--orange-light)">1 mission</em>
+      </h2>
+      <p style="font-size:1.05rem;color:rgba(255,255,255,.65);max-width:540px;margin:1rem auto 0;line-height:1.7">
+        La décentralisation permet à l'AFADETH de contourner les crises d'accès et l'insécurité
+        urbaine, tout en maintenant des services essentiels auprès des plus vulnérables.
+      </p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <div class="decentral-card reveal d1">
+        <div class="decentral-icon">🏢</div>
+        <div class="decentral-card__eyebrow">Siège Social</div>
+        <h3 class="decentral-card__name">Laboule 22, Pétion-Ville</h3>
+        <p>Centre de gouvernance, clinique permanente et programmes principaux.</p>
+      </div>
+      <div class="decentral-card decentral-card--accent reveal d2">
+        <div class="decentral-icon">🌿</div>
+        <div class="decentral-card__eyebrow">Antenne Agricole</div>
+        <h3 class="decentral-card__name">Belle-Vue la Montagne, Fermathe</h3>
+        <p>Programme Kore Fanm Agrikòl yo — formations agricoles et production.</p>
+      </div>
+      <div class="decentral-card reveal d3">
+        <div class="decentral-icon">📖</div>
+        <div class="decentral-card__eyebrow">Antenne Formation</div>
+        <h3 class="decentral-card__name">Rue Faubert #36, Centre-Ville</h3>
+        <p>Formations professionnelles, ateliers leadership et AFADETH Jeunesse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="actions-cta">
+  <div class="container" style="position:relative;z-index:1;text-align:center">
+    <div class="actions-cta__quote">
+      Soutenez nos programmes
+    </div>
+    <p>
+      Votre soutien permet à l'AFADETH de continuer ses programmes vitaux pour les femmes et les jeunes d'Haïti.
+    </p>
+    <div class="actions-cta__btns">
+      <a href="contact.html" class="btn btn-primary btn-lg">Nous contacter →</a>
+      <a href="galerie.html" class="btn btn-outline-light btn-lg">Voir notre impact</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="assets/images/logo.png" alt="Logo AFADETH" class="footer__logo-img logo-medal-glow" />
+        <div class="footer__brand-name">AFADETH</div>
+        <div class="footer__brand-tag">❀ Unir pour Servir ❀</div>
+        <p class="footer__brand-desc">Association des Femmes Dévouées de Thomassin. Organisation humanitaire fondée en 2006, Pétion-Ville, Haïti.</p>
+        <div class="footer__social">
+          <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" title="Facebook AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" title="Instagram AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" title="YouTube AFADETH"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.96-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.96 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20.06 12 20.06 12 20.06s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon fill="currentColor" stroke="none" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">Navigation</div>
+        <ul class="footer__links">
+          <li><a href="index.html"   class="footer__link">→ Accueil</a></li>
+          <li><a href="mission.html" class="footer__link">→ Mission</a></li>
+          <li><a href="actions.html" class="footer__link">→ Nos Actions</a></li>
+          <li><a href="galerie.html" class="footer__link">→ Galerie</a></li>
+          <li><a href="blog.html"    class="footer__link">→ Blog</a></li>
+          <li><a href="contact.html" class="footer__link">→ Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Nos Programmes</div>
+        <ul class="footer__links">
+          <li><a href="#economie"  class="footer__link">→ Économie solidaire</a></li>
+          <li><a href="#sante"     class="footer__link">→ Sante Fanm AFADETH</a></li>
+          <li><a href="#droits"    class="footer__link">→ Lutte anti-VBG</a></li>
+          <li><a href="#education" class="footer__link">→ AFADETH Jeunesse</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title">Contact</div>
+        <div class="footer__contact-item"><span>📍</span><span>Laboule 22, #2, Pétion-Ville, Haïti</span></div>
+        <div class="footer__contact-item"><span>🌐</span><a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" style="color:inherit">Facebook AFADETH</a></div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 AFADETH. Tous droits réservés.</p>
+      <div class="footer__legal">
+        <a href="#" class="footer__legal-link">Confidentialité</a>
+        <a href="#" class="footer__legal-link">Mentions légales</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('hamburger').addEventListener('click', function(){
+    this.classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open');
+    document.body.style.overflow = this.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.navbar__mobile-link').forEach(l => {
+    l.addEventListener('click', () => {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+</script>
+</body>
+</html>
