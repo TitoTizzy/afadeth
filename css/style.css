@@ -359,34 +359,59 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;line-height:1.12;font-weig
 
 /* Hamburger */
 .navbar__hamburger{
-  display:none;flex-direction:column;gap:6px;
-  padding:8px;background:none;border:none
+  display:none;flex-direction:column;gap:5px;
+  padding:10px;background:none;border:none;cursor:pointer;
+  border-radius:var(--radius-sm);min-width:44px;min-height:44px;
+  align-items:center;justify-content:center;
+  transition:background var(--transition)
 }
+.navbar__hamburger:hover{background:rgba(255,255,255,.1)}
 .navbar__hamburger span{
-  width:22px;height:1.5px;background:#fff;border-radius:2px;
-  transition:var(--transition);display:block
+  width:26px;height:2px;background:rgba(255,255,255,.9);border-radius:2px;display:block;
+  transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .25s ease,width .25s ease
 }
-.navbar__hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-.navbar__hamburger.open span:nth-child(2){opacity:0}
-.navbar__hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.navbar__hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.navbar__hamburger.open span:nth-child(2){transform:scaleX(0);opacity:0}
+.navbar__hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* Menu mobile */
 .navbar__mobile{
   position:fixed;inset:0;
-  background:rgba(15,6,8,.97);backdrop-filter:blur(28px);
+  background:rgba(8,2,4,.97);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
   z-index:calc(var(--z-navbar) - 1);
-  padding:130px 40px 60px;
-  display:flex;flex-direction:column;gap:24px;
-  transform:translateX(100%);transition:transform var(--transition-slow)
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;
+  padding:80px 32px 60px;
+  transform:translateX(100%);transition:transform .5s cubic-bezier(.25,.46,.45,.94);
+  overflow-y:auto
 }
 .navbar__mobile.open{transform:translateX(0)}
 .navbar__mobile-link{
-  font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:400;font-style:italic;
-  color:rgba(255,255,255,.45);transition:var(--transition);
-  border-bottom:1px solid rgba(184,115,51,.1);padding-bottom:20px
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.8rem,6vw,3rem);font-weight:400;font-style:italic;
+  color:rgba(255,255,255,.42);transition:color .25s ease,padding-left .25s ease;
+  border-bottom:1px solid rgba(184,115,51,.08);
+  padding:16px 0;width:100%;max-width:380px;text-align:center
 }
-.navbar__mobile-link:hover{color:#fff;padding-left:12px;color:var(--orange-light)}
-.navbar__mobile-divider{display:none}
+.navbar__mobile-link:hover,.navbar__mobile-link:active{
+  color:var(--orange-light);padding-left:8px
+}
+.navbar__mobile-divider{
+  width:100%;max-width:380px;height:1px;
+  background:rgba(184,115,51,.06);margin:6px 0
+}
+/* Close button — injecté par main.js */
+.navbar__mobile-close{
+  position:fixed;top:18px;right:18px;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.65);font-size:1.5rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--transition);z-index:calc(var(--z-navbar) - 1)
+}
+.navbar__mobile-close:hover{
+  background:rgba(232,93,4,.3);border-color:rgba(232,93,4,.6);
+  color:#fff;transform:scale(1.1)
+}
 
 /* ============================================================
    HERO — Éditorial Split Layout
@@ -1321,6 +1346,15 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;line-height:1.12;font-weig
   .footer__grid{grid-template-columns:1fr 1fr;gap:20px}
   .footer__grid>:first-child{grid-column:1/-1}
   .racines__grid{grid-template-columns:1fr}
+  /* Page hero mobile */
+  .page-hero{padding:110px 0 70px;min-height:auto}
+  .page-hero__title{font-size:clamp(2.2rem,8vw,3.8rem)}
+  .page-hero__desc{font-size:.95rem}
+  /* Blog / article grids */
+  .blog-article__grid,.article-layout{grid-template-columns:1fr}
+  .article-sidebar{display:none}
+  /* Actions page */
+  .actions-grid,.contact-layout{grid-template-columns:1fr}
 }
 @media(max-width:480px){
   .stats__inner{grid-template-columns:1fr 1fr;padding:28px 16px;margin-top:-32px}
@@ -1331,6 +1365,10 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;line-height:1.12;font-weig
   .hero__medal{width:180px;height:180px}
   .hero__medal-halo{width:200px;height:200px}
   .hero__split{gap:32px;padding:130px 0 60px}
+  .page-hero{padding:90px 0 56px}
+  .page-hero__title{font-size:clamp(2rem,9vw,3rem)}
+  .contact-layout{grid-template-columns:1fr}
+  .navbar__mobile-link{font-size:clamp(1.6rem,7vw,2.4rem);padding:14px 0}
 }
 
 /* ===== iPhone SE / petits Android — 375px ===== */
@@ -1357,6 +1395,11 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;line-height:1.12;font-weig
   .footer__grid{gap:24px}
   .section-label{font-size:.6rem;gap:8px}
   .section-label::before{width:22px}
+  .page-hero{padding:80px 0 48px}
+  .page-hero__title{font-size:clamp(1.8rem,9vw,2.6rem)}
+  .page-hero__desc{font-size:.85rem}
+  .page-hero__breadcrumb{font-size:.68rem}
+  .navbar__mobile-link{font-size:clamp(1.5rem,7vw,2.2rem);padding:12px 0}
 }
 
 /* ===== iPhone 5 / ultra-petit — 320px ===== */
