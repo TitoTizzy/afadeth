@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Journaux — AFADETH Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <link rel="icon" href="../assets/images/logo.png" type="image/png"/>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/images/logo.png" alt="AFADETH" class="sidebar-brand__logo"/>
+      <div><div class="sidebar-brand__name">AFADETH</div><div class="sidebar-brand__sub">Back-office</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="index.html" class="sidebar-link"><span class="sidebar-link__icon">📊</span>Dashboard</a>
+      <a href="albums.html" class="sidebar-link"><span class="sidebar-link__icon">🖼️</span>Albums photo</a>
+      <a href="articles.html" class="sidebar-link"><span class="sidebar-link__icon">📝</span>Articles blog</a>
+      <div class="sidebar-section">Communications</div>
+      <a href="contacts.html" class="sidebar-link">
+        <span class="sidebar-link__icon">💬</span>Messages
+        <span class="sidebar-badge" data-unread style="display:none"></span>
+      </a>
+      <div class="sidebar-section">Administration</div>
+      <a href="users.html" class="sidebar-link"><span class="sidebar-link__icon">👥</span>Utilisateurs</a>
+      <a href="logs.html" class="sidebar-link"><span class="sidebar-link__icon">📋</span>Journaux</a>
+      <div class="sidebar-section">Site web</div>
+      <a href="../index.html" class="sidebar-link" target="_blank"><span class="sidebar-link__icon">🌐</span>Voir le site →</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sf-avatar" data-user-init>A</div>
+      <div class="sf-info">
+        <div class="sf-name" data-user-name>Admin</div>
+        <div class="sf-role">Administratrice</div>
+      </div>
+      <button class="sf-logout" title="Déconnexion">⏻</button>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-header__title">Journaux <span>— Historique d'activité</span></div>
+    <button class="hbtn hbtn-ghost" onclick="loadLogs()">↺ Actualiser</button>
+  </header>
+
+  <!-- Main -->
+  <main class="admin-main">
+
+    <!-- Filtres -->
+    <div class="admin-card" style="margin-bottom:18px">
+      <div class="card-head"><div class="card-title">🔍 Filtres</div></div>
+      <div class="card-body" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+        <div class="form-field" style="min-width:170px">
+          <label class="form-label">Type</label>
+          <select class="form-select" id="filter-type">
+            <option value="">Tous les types</option>
+            <option value="auth">🔐 Authentification</option>
+            <option value="album">🖼️ Albums</option>
+            <option value="article">📝 Articles</option>
+            <option value="contact">💬 Messages</option>
+            <option value="user">👥 Utilisateurs</option>
+          </select>
+        </div>
+        <div class="form-field" style="min-width:150px">
+          <label class="form-label">Du</label>
+          <input class="form-input" type="date" id="filter-from"/>
+        </div>
+        <div class="form-field" style="min-width:150px">
+          <label class="form-label">Au</label>
+          <input class="form-input" type="date" id="filter-to"/>
+        </div>
+        <div class="form-field" style="flex:1;min-width:200px">
+          <label class="form-label">Utilisateur</label>
+          <input class="form-input" type="text" id="filter-user"
+                 placeholder="Filtrer par email…"
+                 onkeydown="if(event.key==='Enter')applyFilters()"/>
+        </div>
+        <div style="display:flex;gap:8px;padding-bottom:1px">
+          <button class="btn btn-primary" onclick="applyFilters()">✓ Filtrer</button>
+          <button class="btn btn-ghost" onclick="resetFilters()">✕ Réinitialiser</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des logs -->
+    <div class="admin-card">
+      <div class="card-head">
+        <div class="card-title" id="logs-count-title">📋 Journal d'activité</div>
+        <div style="font-size:.72rem;color:var(--text-3)" id="refresh-label">↺ Actualisation auto toutes les 15 s</div>
+      </div>
+      <div id="logs-loading" style="padding:48px;text-align:center;color:var(--text-3)">
+        <div style="font-size:1.8rem;margin-bottom:10px">⏳</div>Chargement…
+      </div>
+      <div id="logs-empty" style="display:none;padding:48px;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:12px">📋</div>
+        <div style="font-size:.9rem;font-weight:600;color:var(--text-2)">Aucune entrée trouvée</div>
+        <div style="font-size:.78rem;color:var(--text-3);margin-top:4px">Essayez d'élargir les filtres</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="admin-table" id="logs-table" style="display:none">
+          <thead>
+            <tr>
+              <th style="width:170px">Date / Heure</th>
+              <th style="width:140px">Type</th>
+              <th style="width:200px">Action</th>
+              <th style="width:220px">Utilisateur</th>
+              <th>Détails</th>
+            </tr>
+          </thead>
+          <tbody id="logs-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js"></script>
+<script>
+let _allLogs    = [];
+let _filters    = { type:'', dateFrom:'', dateTo:'', user:'' };
+let _refreshTimer = null;
+
+const TYPE_LABEL = {
+  auth:    '🔐 Auth',
+  album:   '🖼️ Album',
+  article: '📝 Article',
+  contact: '💬 Message',
+  user:    '👥 Utilisateur'
+};
+const TYPE_BADGE = {
+  auth:    'badge-orange',
+  album:   'badge-blue',
+  article: 'badge-green',
+  contact: 'badge-gray',
+  user:    'badge-wine'
+};
+
+async function loadLogs() {
+  try {
+    let q = sb.from('logs').select('*').order('created_at', { ascending:false }).limit(300);
+    if (_filters.type)     q = q.eq('type', _filters.type);
+    if (_filters.dateFrom) q = q.gte('created_at', _filters.dateFrom + 'T00:00:00');
+    if (_filters.dateTo)   q = q.lte('created_at', _filters.dateTo + 'T23:59:59');
+    if (_filters.user)     q = q.ilike('user_email', `%${_filters.user}%`);
+
+    const { data, error } = await q;
+    if (!error && data) { _allLogs = data; renderLogTable(); }
+  } catch(e) { console.error('[AFADETH] loadLogs:', e); }
+}
+
+function renderLogTable() {
+  const loading = document.getElementById('logs-loading');
+  const table   = document.getElementById('logs-table');
+  const empty   = document.getElementById('logs-empty');
+  const title   = document.getElementById('logs-count-title');
+  const tbody   = document.getElementById('logs-tbody');
+
+  loading.style.display = 'none';
+  title.textContent = `📋 Journal d'activité (${_allLogs.length} entrée${_allLogs.length !== 1 ? 's' : ''})`;
+
+  if (!_allLogs.length) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  table.style.display = '';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = _allLogs.map(log => `
+    <tr>
+      <td style="color:var(--text-3);font-size:.78rem;white-space:nowrap">${fmtDateTime(log.created_at)}</td>
+      <td><span class="badge ${TYPE_BADGE[log.type]||'badge-gray'}">${TYPE_LABEL[log.type]||log.type}</span></td>
+      <td style="font-weight:500;font-size:.82rem">${log.action}</td>
+      <td style="color:var(--text-2);font-size:.78rem">${log.user_email||'—'}</td>
+      <td style="color:var(--text-3);font-size:.78rem">${log.details||'—'}</td>
+    </tr>`).join('');
+}
+
+function applyFilters() {
+  _filters.type     = document.getElementById('filter-type').value;
+  _filters.dateFrom = document.getElementById('filter-from').value;
+  _filters.dateTo   = document.getElementById('filter-to').value;
+  _filters.user     = document.getElementById('filter-user').value.trim();
+  loadLogs();
+}
+
+function resetFilters() {
+  document.getElementById('filter-type').value  = '';
+  document.getElementById('filter-from').value  = '';
+  document.getElementById('filter-to').value    = '';
+  document.getElementById('filter-user').value  = '';
+  _filters = { type:'', dateFrom:'', dateTo:'', user:'' };
+  loadLogs();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadLogs();
+  _refreshTimer = setInterval(loadLogs, 15000);
+});
+</script>
+</body>
+</html>

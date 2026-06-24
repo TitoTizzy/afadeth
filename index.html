@@ -34,9 +34,20 @@
 
     <div class="navbar__cta">
       <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
-      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
-        Admin
-      </a>    </div>
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span class="lang-flag">🇫🇷</span><span class="lang-code">FR</span>
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="lang-menu">
+          <button class="lang-option lang-active" data-lang="fr" onclick="setLang('fr')">🇫🇷 Français</button>
+          <button class="lang-option" data-lang="en" onclick="setLang('en')">🇺🇸 English</button>
+          <button class="lang-option" data-lang="ht" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
+          <button class="lang-option" data-lang="es" onclick="setLang('es')">🇪🇸 Español</button>
+        </div>
+      </div>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">Admin</a>
+    </div>
 
     <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -52,6 +63,12 @@
   <a href="galerie.html" class="navbar__mobile-link">Galerie</a>
   <a href="blog.html"    class="navbar__mobile-link">Blog</a>
   <a href="contact.html" class="navbar__mobile-link">Contact</a>
+  <div class="mobile-lang-row">
+    <button class="mobile-lang-btn lang-active" data-lang="fr" onclick="setLang('fr')">🇫🇷 FR</button>
+    <button class="mobile-lang-btn" data-lang="en" onclick="setLang('en')">🇺🇸 EN</button>
+    <button class="mobile-lang-btn" data-lang="ht" onclick="setLang('ht')">🇭🇹 HT</button>
+    <button class="mobile-lang-btn" data-lang="es" onclick="setLang('es')">🇪🇸 ES</button>
+  </div>
 </div>
 
 <!-- =====================================================
@@ -75,24 +92,24 @@
     <div class="hero__left">
       <div class="hero__badge">
         <span class="hero__badge-dot"></span>
-        Fondée en 2006 · Thomassin, Haïti
+        <span data-i18n="hero.badge">Fondée en 2006 · Thomassin, Haïti</span>
       </div>
 
       <h1 class="hero__title">
-        <span class="hero__title-pour">Pour les</span>
+        <span class="hero__title-pour" data-i18n="hero.pour">Pour les</span>
         <em class="hero__title-main">Fanm.</em>
-        <span class="hero__title-sub">Par les Fanm.</span>
-        <span class="hero__title-org">Association des Femmes Dévouées de Thomassin</span>
+        <span class="hero__title-sub" data-i18n="hero.sub">Par les Fanm.</span>
+        <span class="hero__title-org" data-i18n="hero.org">Association des Femmes Dévouées de Thomassin</span>
       </h1>
 
-      <p class="hero__subtitle">
+      <p class="hero__subtitle" data-i18n="hero.subtitle">
         Depuis 2006, nous unissons les femmes de Thomassin pour transformer des vies —
         par la santé, l'économie, l'éducation et la lutte contre les violences basées sur le genre.
       </p>
 
       <div class="hero__actions">
-        <a href="mission.html" class="btn btn-primary btn-lg">Notre Mission</a>
-        <a href="contact.html" class="btn btn-outline-light btn-lg">Nous rejoindre</a>
+        <a href="mission.html" class="btn btn-primary btn-lg" data-i18n="hero.btn.mission">Notre Mission</a>
+        <a href="contact.html" class="btn btn-outline-light btn-lg" data-i18n="hero.btn.join">Nous rejoindre</a>
       </div>
     </div>
 
@@ -150,7 +167,7 @@
   <!-- Scroll indicator -->
   <div class="hero__scroll">
     <div class="hero__scroll-line"></div>
-    <span>Défiler</span>
+    <span data-i18n="hero.scroll">Défiler</span>
   </div>
 </section>
 
@@ -162,19 +179,19 @@
     <div class="stats__inner">
       <div class="stat-item reveal d1">
         <div class="stat-item__number" data-count="20" data-suffix=" ans">0</div>
-        <div class="stat-item__label">D'existence et d'engagement</div>
+        <div class="stat-item__label" data-i18n="stats.years">D'existence et d'engagement</div>
       </div>
       <div class="stat-item reveal d2">
         <div class="stat-item__number" data-count="3000" data-suffix="+">0</div>
-        <div class="stat-item__label">Femmes soutenues</div>
+        <div class="stat-item__label" data-i18n="stats.women">Femmes soutenues</div>
       </div>
       <div class="stat-item reveal d3">
         <div class="stat-item__number" data-count="4" data-suffix="">0</div>
-        <div class="stat-item__label">Champs d'intervention</div>
+        <div class="stat-item__label" data-i18n="stats.fields">Champs d'intervention</div>
       </div>
       <div class="stat-item reveal d4">
         <div class="stat-item__number" data-count="3" data-suffix="">0</div>
-        <div class="stat-item__label">Sites d'action</div>
+        <div class="stat-item__label" data-i18n="stats.sites">Sites d'action</div>
       </div>
     </div>
   </div>
@@ -189,9 +206,9 @@
 <section class="racines">
   <div class="container">
     <div class="racines__header reveal">
-      <div class="section-label section-label--light">Ki moun nou ye · Nos Racines</div>
-      <h2>Nées de la <em style="background:var(--gradient-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">terre haïtienne</em></h2>
-      <p>
+      <div class="section-label section-label--light" data-i18n="racines.label">Ki moun nou ye · Nos Racines</div>
+      <h2 data-i18n-html="racines.title">Nées de la <em style="background:var(--gradient-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">terre haïtienne</em></h2>
+      <p data-i18n="racines.desc">
         AFADETH puise ses forces dans les valeurs profondes de la paysannerie haïtienne —
         la solidarité du lakou, la résilience des fanm peyizan, l'amour de la tè a.
       </p>
@@ -201,8 +218,8 @@
 
       <div class="racines-card reveal d1">
         <span class="racines-card__icon">🌿</span>
-        <h3 class="racines-card__title">Le Lakou — l'esprit de communauté</h3>
-        <p class="racines-card__text">
+        <h3 class="racines-card__title" data-i18n="racines.lakou.title">Le Lakou — l'esprit de communauté</h3>
+        <p class="racines-card__text" data-i18n-html="racines.lakou.desc">
           Dans la tradition haïtienne, le <em>lakou</em> est la cour commune où les femmes se réunissent,
           s'entraident et partagent. AFADETH est notre lakou moderne — un espace de solidarité,
           de guérison et d'empowerment pour les femmes de Thomassin.
@@ -211,8 +228,8 @@
 
       <div class="racines-card reveal d2">
         <span class="racines-card__icon">🌺</span>
-        <h3 class="racines-card__title">Fanm Peyizan — la force des femmes rurales</h3>
-        <p class="racines-card__text">
+        <h3 class="racines-card__title" data-i18n="racines.fanm.title">Fanm Peyizan — la force des femmes rurales</h3>
+        <p class="racines-card__text" data-i18n="racines.fanm.desc">
           Les femmes paysannes haïtiennes font vivre leurs familles et leurs communautés avec
           une résilience extraordinaire. Nos programmes honorent cette force en leur donnant
           accès aux outils, aux ressources et à la reconnaissance qu'elles méritent.
@@ -221,8 +238,8 @@
 
       <div class="racines-card reveal d3">
         <span class="racines-card__icon">🤝</span>
-        <h3 class="racines-card__title">Unir pour Servir — la kominote</h3>
-        <p class="racines-card__text">
+        <h3 class="racines-card__title" data-i18n="racines.unir.title">Unir pour Servir — la kominote</h3>
+        <p class="racines-card__text" data-i18n-html="racines.unir.desc">
           Notre devise s'inspire du <em>konbit</em> haïtien — le travail collectif où chacune
           apporte sa contribution pour le bien de toutes. Depuis 2006, nous cultivons cette
           entraide au cœur des montagnes de Thomassin.
@@ -255,7 +272,7 @@
         </div>
         <div class="about__badge-card">
           <div class="number">2006</div>
-          <div class="label">Année de fondation</div>
+          <div class="label" data-i18n="about.badge_label">Année de fondation</div>
         </div>
         <div class="about__badge-2">
           <div class="num">♀</div>
@@ -265,14 +282,14 @@
 
       <!-- Texte -->
       <div class="about__content reveal-r">
-        <div class="section-label">Qui sommes-nous</div>
-        <h2>Une association <em>de femmes,</em><br>pour les femmes</h2>
+        <div class="section-label" data-i18n="about.label">Qui sommes-nous</div>
+        <h2 data-i18n-html="about.title">Une association <em>de femmes,</em><br>pour les femmes</h2>
 
-        <div class="pull-quote">
+        <div class="pull-quote" data-i18n="about.quote">
           « Unir pour Servir » — la devise qui guide chacune de nos actions depuis 2006.
         </div>
 
-        <p>
+        <p data-i18n="about.p1">
           AFADETH est née d'une vision simple et puissante : que les femmes de Thomassin —
           montagnes, champs et marchés — puissent accéder aux soins, à l'éducation
           et à des opportunités économiques dignes. Fondée par des femmes engagées
@@ -280,13 +297,13 @@
         </p>
 
         <div class="lakou-quote">
-          <p class="lakou-quote__text">
+          <p class="lakou-quote__text" data-i18n="about.lakou_quote">
             « Nan lakou a, nou fò ansanm. Dans notre lakou, nous sommes fortes ensemble. »
           </p>
-          <p class="lakou-quote__source">— Proverbe haïtien, cœur de notre mission</p>
+          <p class="lakou-quote__source" data-i18n="about.lakou_source">— Proverbe haïtien, cœur de notre mission</p>
         </div>
 
-        <p>
+        <p data-i18n="about.p2">
           Trois antennes — Pétion-Ville, Fermathe, Centre-Ville — pour toucher
           les fanm là où elles vivent, avec des programmes ancrés dans la réalité
           de la paysannerie haïtienne.
@@ -296,29 +313,29 @@
           <div class="timeline-item">
             <div class="timeline-item__dot">06</div>
             <div class="timeline-item__content">
-              <div class="timeline-item__year">2006 — Fondation</div>
-              <div class="timeline-item__text">Création de AFADETH à Thomassin, Pétion-Ville</div>
+              <div class="timeline-item__year" data-i18n="about.tl.founded">2006 — Fondation</div>
+              <div class="timeline-item__text" data-i18n="about.tl.founded_desc">Création de AFADETH à Thomassin, Pétion-Ville</div>
             </div>
           </div>
           <div class="timeline-item">
             <div class="timeline-item__dot">♀</div>
             <div class="timeline-item__content">
-              <div class="timeline-item__year">Croissance</div>
-              <div class="timeline-item__text">Extension à 3 sites, 4 programmes, 3 000+ femmes</div>
+              <div class="timeline-item__year" data-i18n="about.tl.growth">Croissance</div>
+              <div class="timeline-item__text" data-i18n="about.tl.growth_desc">Extension à 3 sites, 4 programmes, 3 000+ femmes</div>
             </div>
           </div>
           <div class="timeline-item">
             <div class="timeline-item__dot">★</div>
             <div class="timeline-item__content">
-              <div class="timeline-item__year">Aujourd'hui</div>
-              <div class="timeline-item__text">20 ans de services et d'autonomisation des femmes haïtiennes</div>
+              <div class="timeline-item__year" data-i18n="about.tl.today">Aujourd'hui</div>
+              <div class="timeline-item__text" data-i18n="about.tl.today_desc">20 ans de services et d'autonomisation des femmes haïtiennes</div>
             </div>
           </div>
         </div>
 
         <div style="margin-top:2.5rem;display:flex;gap:14px;flex-wrap:wrap">
-          <a href="mission.html" class="btn btn-wine">Notre vision →</a>
-          <a href="contact.html" class="btn btn-outline-wine">Nous rejoindre</a>
+          <a href="mission.html" class="btn btn-wine" data-i18n="about.btn.vision">Notre vision →</a>
+          <a href="contact.html" class="btn btn-outline-wine" data-i18n="about.btn.join">Nous rejoindre</a>
         </div>
       </div>
 
@@ -332,40 +349,40 @@
 <section class="fields section" id="champs">
   <div class="container">
     <div class="fields__header reveal">
-      <div class="section-label section-label--light">Nos Programmes</div>
-      <h2>4 Champs <em style="background:var(--gradient-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">d'intervention</em></h2>
-      <p>Des actions concrètes, menées par et pour les femmes haïtiennes</p>
+      <div class="section-label section-label--light" data-i18n="fields.label">Nos Programmes</div>
+      <h2 data-i18n-html="fields.title">4 Champs <em style="background:var(--gradient-brand);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">d'intervention</em></h2>
+      <p data-i18n="fields.subtitle">Des actions concrètes, menées par et pour les femmes haïtiennes</p>
     </div>
 
     <div class="fields__grid">
       <div class="field-card reveal d1">
         <div class="field-card__num">01</div>
         <div class="field-card__icon">💰</div>
-        <h3 class="field-card__title">Économie Solidaire</h3>
-        <p class="field-card__desc">Microcrédits, formations entrepreneuriales et coopératives d'épargne pour l'autonomie financière des femmes de Thomassin.</p>
+        <h3 class="field-card__title" data-i18n="fields.eco.title">Économie Solidaire</h3>
+        <p class="field-card__desc" data-i18n="fields.eco.desc">Microcrédits, formations entrepreneuriales et coopératives d'épargne pour l'autonomie financière des femmes de Thomassin.</p>
       </div>
       <div class="field-card reveal d2">
         <div class="field-card__num">02</div>
         <div class="field-card__icon">🌸</div>
-        <h3 class="field-card__title">Santé Fanm</h3>
-        <p class="field-card__desc">Cliniques mobiles, sensibilisation à la santé maternelle et reproductive, et accompagnement psychosocial dans toute la zone.</p>
+        <h3 class="field-card__title" data-i18n="fields.sante.title">Santé Fanm</h3>
+        <p class="field-card__desc" data-i18n="fields.sante.desc">Cliniques mobiles, sensibilisation à la santé maternelle et reproductive, et accompagnement psychosocial dans toute la zone.</p>
       </div>
       <div class="field-card reveal d3">
         <div class="field-card__num">03</div>
         <div class="field-card__icon">⚖️</div>
-        <h3 class="field-card__title">Droits & Lutte anti-VBG</h3>
-        <p class="field-card__desc">Aide juridique, refuges d'urgence et programmes de sensibilisation contre les violences basées sur le genre.</p>
+        <h3 class="field-card__title" data-i18n="fields.vbg.title">Droits & Lutte anti-VBG</h3>
+        <p class="field-card__desc" data-i18n="fields.vbg.desc">Aide juridique, refuges d'urgence et programmes de sensibilisation contre les violences basées sur le genre.</p>
       </div>
       <div class="field-card reveal d4">
         <div class="field-card__num">04</div>
         <div class="field-card__icon">📚</div>
-        <h3 class="field-card__title">AFADETH Jeunesse</h3>
-        <p class="field-card__desc">Bourses, cours de rattrapage, formations professionnelles et mentorat pour les jeunes filles et femmes en quête d'avenir.</p>
+        <h3 class="field-card__title" data-i18n="fields.youth.title">AFADETH Jeunesse</h3>
+        <p class="field-card__desc" data-i18n="fields.youth.desc">Bourses, cours de rattrapage, formations professionnelles et mentorat pour les jeunes filles et femmes en quête d'avenir.</p>
       </div>
     </div>
 
     <div style="text-align:center;margin-top:3rem">
-      <a href="actions.html" class="btn btn-outline-light btn-lg">Explorer tous nos programmes →</a>
+      <a href="actions.html" class="btn btn-outline-light btn-lg" data-i18n="fields.btn">Explorer tous nos programmes →</a>
     </div>
   </div>
 </section>
@@ -377,10 +394,10 @@
   <div class="container">
     <div class="gallery-preview__header reveal">
       <div>
-        <div class="section-label">Notre Galerie</div>
+        <div class="section-label" data-i18n="gallery.label">Notre Galerie</div>
         <h2>Moments <em style="font-style:italic;color:var(--wine)">forts</em></h2>
       </div>
-      <a href="galerie.html" class="btn btn-outline">Voir toutes les photos →</a>
+      <a href="galerie.html" class="btn btn-outline" data-i18n="gallery.see_all">Voir toutes les photos →</a>
     </div>
 
     <div class="gallery-preview__grid reveal">
@@ -457,13 +474,13 @@
     <div class="mission-banner__icon">
       <img src="assets/images/logo.png" alt="AFADETH" style="width:80px;height:80px;object-fit:contain;filter:brightness(0) invert(1) drop-shadow(0 0 20px rgba(255,255,255,.3));" />
     </div>
-    <p class="mission-banner__quote">
+    <p class="mission-banner__quote" data-i18n="mission.quote">
       « Unir les femmes haïtiennes pour bâtir une communauté
       plus juste, plus saine et plus prospère. »
     </p>
-    <p class="mission-banner__source">— Nancy VILCÉ, Présidente · AFADETH</p>
+    <p class="mission-banner__source" data-i18n="mission.source">— Nancy VILCÉ, Présidente · AFADETH</p>
     <div style="margin-top:2.5rem">
-      <a href="mission.html" class="btn btn-ghost btn-lg">Lire notre mission complète →</a>
+      <a href="mission.html" class="btn btn-ghost btn-lg" data-i18n="mission.btn">Lire notre mission complète →</a>
     </div>
   </div>
 </div>
@@ -475,10 +492,10 @@
   <div class="container">
     <div class="blog-preview__header reveal">
       <div>
-        <div class="section-label">Actualités</div>
-        <h2>Nos dernières <em style="font-style:italic;color:var(--wine)">nouvelles</em></h2>
+        <div class="section-label" data-i18n="blog.label">Actualités</div>
+        <h2 data-i18n-html="blog.title">Nos dernières <em style="font-style:italic;color:var(--wine)">nouvelles</em></h2>
       </div>
-      <a href="blog.html" class="btn btn-outline-wine">Voir tous les articles →</a>
+      <a href="blog.html" class="btn btn-outline-wine" data-i18n="blog.see_all">Voir tous les articles →</a>
     </div>
 
     <div class="blog-preview__grid">
@@ -547,7 +564,7 @@
 ===================================================== -->
 <section class="partners">
   <div class="container">
-    <div class="partners__title">Nos partenaires & soutiens</div>
+    <div class="partners__title" data-i18n="partners.title">Nos partenaires & soutiens</div>
     <div class="partners__logos reveal">
       <div class="partner-logo">MSPP</div>
       <div class="partner-logo">UNFPA Haïti</div>
@@ -564,17 +581,17 @@
 ===================================================== -->
 <section class="section" style="background:var(--orange-pale)">
   <div class="container text-center reveal">
-    <div class="section-label" style="justify-content:center">Rejoignez-nous</div>
-    <h2 style="font-size:clamp(2rem,4vw,3.4rem);font-style:italic;color:var(--dark-1);margin-bottom:1.2rem">
+    <div class="section-label" style="justify-content:center" data-i18n="cta.label">Rejoignez-nous</div>
+    <h2 style="font-size:clamp(2rem,4vw,3.4rem);font-style:italic;color:var(--dark-1);margin-bottom:1.2rem" data-i18n-html="cta.title">
       Ensemble, nous sommes <em style="color:var(--wine)">plus fortes</em>
     </h2>
-    <p style="font-size:1.05rem;color:var(--light-text-2);max-width:520px;margin:0 auto 2.5rem;line-height:1.8">
+    <p style="font-size:1.05rem;color:var(--light-text-2);max-width:520px;margin:0 auto 2.5rem;line-height:1.8" data-i18n="cta.desc">
       Que vous souhaitiez devenir membre, bénévole ou partenaire,
       chaque geste compte pour les femmes de Thomassin.
     </p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      <a href="contact.html" class="btn btn-primary btn-lg">Nous contacter</a>
-      <a href="actions.html" class="btn btn-outline-wine btn-lg">Voir nos actions</a>
+      <a href="contact.html" class="btn btn-primary btn-lg" data-i18n="cta.contact">Nous contacter</a>
+      <a href="actions.html" class="btn btn-outline-wine btn-lg" data-i18n="cta.actions">Voir nos actions</a>
     </div>
   </div>
 </section>
@@ -612,7 +629,7 @@
       </div>
 
       <div>
-        <div class="footer__col-title">Navigation</div>
+        <div class="footer__col-title" data-col="nav">Navigation</div>
         <ul class="footer__links">
           <li><a href="index.html"   class="footer__link">→ Accueil</a></li>
           <li><a href="mission.html" class="footer__link">→ Mission</a></li>
@@ -624,7 +641,7 @@
       </div>
 
       <div>
-        <div class="footer__col-title">Programmes</div>
+        <div class="footer__col-title" data-col="programs">Programmes</div>
         <ul class="footer__links">
           <li><a href="actions.html#economie"  class="footer__link">→ Économie solidaire</a></li>
           <li><a href="actions.html#sante"     class="footer__link">→ Santé Fanm</a></li>
@@ -634,7 +651,7 @@
       </div>
 
       <div>
-        <div class="footer__col-title">Contact</div>
+        <div class="footer__col-title" data-col="contact">Contact</div>
         <div class="footer__contact-item"><span>📍</span><span>Laboule 22, #2, Pétion-Ville, Haïti</span></div>
         <div class="footer__contact-item"><span>🌐</span>
           <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" style="color:inherit">
@@ -642,7 +659,7 @@
           </a>
         </div>
         <div style="margin-top:20px">
-          <a href="contact.html" class="btn btn-primary btn-sm">Nous contacter</a>
+          <a href="contact.html" class="btn btn-primary btn-sm footer__contact-us">Nous contacter</a>
         </div>
       </div>
 
@@ -651,13 +668,14 @@
     <div class="footer__bottom">
       <p class="footer__copy">© 2025 AFADETH — Association des Femmes Dévouées de Thomassin. Tous droits réservés.</p>
       <div class="footer__legal">
-        <a href="#">Confidentialité</a>
-        <a href="#">Mentions légales</a>
+        <a href="#" class="footer__legal-privacy">Confidentialité</a>
+        <a href="#" class="footer__legal-mentions">Mentions légales</a>
       </div>
     </div>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

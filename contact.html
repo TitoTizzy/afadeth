@@ -79,9 +79,20 @@
     </ul>
     <div class="navbar__cta">
       <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
-      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
-        Admin
-      </a>    </div>
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span class="lang-flag">🇫🇷</span><span class="lang-code">FR</span>
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="lang-menu">
+          <button class="lang-option lang-active" data-lang="fr" onclick="setLang('fr')">🇫🇷 Français</button>
+          <button class="lang-option" data-lang="en" onclick="setLang('en')">🇺🇸 English</button>
+          <button class="lang-option" data-lang="ht" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
+          <button class="lang-option" data-lang="es" onclick="setLang('es')">🇪🇸 Español</button>
+        </div>
+      </div>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">Admin</a>
+    </div>
     <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -96,6 +107,12 @@
   <a href="blog.html"    class="navbar__mobile-link">Blog</a>
   <div class="navbar__mobile-divider"></div>
   <a href="contact.html" class="navbar__mobile-link">Contact</a>
+  <div class="mobile-lang-row">
+    <button class="mobile-lang-btn lang-active" data-lang="fr" onclick="setLang('fr')">🇫🇷 FR</button>
+    <button class="mobile-lang-btn" data-lang="en" onclick="setLang('en')">🇺🇸 EN</button>
+    <button class="mobile-lang-btn" data-lang="ht" onclick="setLang('ht')">🇭🇹 HT</button>
+    <button class="mobile-lang-btn" data-lang="es" onclick="setLang('es')">🇪🇸 ES</button>
+  </div>
 </div>
 
 <!-- PAGE HERO -->
@@ -103,12 +120,12 @@
   <div class="page-hero__grid"></div>
   <div class="container page-hero__content">
     <div class="page-hero__breadcrumb">
-      <a href="index.html">Accueil</a><span>/</span>
+      <a href="index.html" data-i18n="contact.breadcrumb_home">Accueil</a><span>/</span>
       <span class="breadcrumb-current">Contact</span>
     </div>
-    <div class="section-label section-label--light">Nous rejoindre</div>
-    <h1 class="page-hero__title">Contactez <em>AFADETH</em></h1>
-    <p class="page-hero__desc">Que vous souhaitiez nous soutenir, collaborer, rejoindre notre réseau ou simplement en savoir plus — nous sommes là pour vous.</p>
+    <div class="section-label section-label--light" data-i18n="contact.label">Nous rejoindre</div>
+    <h1 class="page-hero__title" data-i18n-html="contact.title">Contactez <em>AFADETH</em></h1>
+    <p class="page-hero__desc" data-i18n="contact.desc">Que vous souhaitiez nous soutenir, collaborer, rejoindre notre réseau ou simplement en savoir plus — nous sommes là pour vous.</p>
   </div>
 </section>
 
@@ -121,68 +138,68 @@
 
       <!-- Formulaire -->
       <div class="reveal-l">
-        <div class="section-label">Envoyez-nous un message</div>
-        <h2 class="contact-h2">
+        <div class="section-label" data-i18n="contact.form.label">Envoyez-nous un message</div>
+        <h2 class="contact-h2" data-i18n-html="contact.form.title">
           Parlons de votre <em class="h2-em-orange">projet ensemble</em>
         </h2>
 
         <form id="contact-form" onsubmit="handleSubmit(event)">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
             <div class="form-group">
-              <label class="form-label" for="prenom">Prénom *</label>
+              <label class="form-label" for="prenom" data-i18n="form.prenom">Prénom *</label>
               <input class="form-control" type="text" id="prenom" name="prenom" placeholder="Marie" required />
             </div>
             <div class="form-group">
-              <label class="form-label" for="nom">Nom *</label>
+              <label class="form-label" for="nom" data-i18n="form.nom">Nom *</label>
               <input class="form-control" type="text" id="nom" name="nom" placeholder="JEAN" required />
             </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="email">Adresse email *</label>
+            <label class="form-label" for="email" data-i18n="form.email">Adresse email *</label>
             <input class="form-control" type="email" id="email" name="email" placeholder="marie@exemple.com" required />
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="telephone">Téléphone</label>
+            <label class="form-label" for="telephone" data-i18n="form.phone">Téléphone</label>
             <input class="form-control" type="tel" id="telephone" name="telephone" placeholder="+509 ···· ····" />
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="sujet">Objet de votre message *</label>
+            <label class="form-label" for="sujet" data-i18n="form.subject">Objet de votre message *</label>
             <select class="form-control" id="sujet" name="sujet" required>
-              <option value="" disabled selected>Sélectionnez un sujet</option>
-              <option value="soutien">Soutenir AFADETH</option>
-              <option value="partenariat">Proposition de partenariat</option>
-              <option value="adhesion">Adhérer à l'association</option>
-              <option value="jeunesse">AFADETH Jeunesse</option>
-              <option value="media">Demande médias / presse</option>
-              <option value="clinique">Clinique Sante Fanm</option>
-              <option value="autre">Autre demande</option>
+              <option value="" disabled selected data-i18n="form.subject.placeholder">Sélectionnez un sujet</option>
+              <option value="soutien" data-i18n="form.subject.soutien">Soutenir AFADETH</option>
+              <option value="partenariat" data-i18n="form.subject.partenariat">Proposition de partenariat</option>
+              <option value="adhesion" data-i18n="form.subject.adhesion">Adhérer à l'association</option>
+              <option value="jeunesse" data-i18n="form.subject.jeunesse">AFADETH Jeunesse</option>
+              <option value="media" data-i18n="form.subject.media">Demande médias / presse</option>
+              <option value="clinique" data-i18n="form.subject.clinique">Clinique Sante Fanm</option>
+              <option value="autre" data-i18n="form.subject.autre">Autre demande</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="message">Votre message *</label>
-            <textarea class="form-control" id="message" name="message" placeholder="Décrivez votre demande, votre projet ou vos questions…" required></textarea>
+            <label class="form-label" for="message" data-i18n="form.message">Votre message *</label>
+            <textarea class="form-control" id="message" name="message" data-i18n-placeholder="form.message.placeholder" placeholder="Décrivez votre demande, votre projet ou vos questions…" required></textarea>
           </div>
 
           <div class="consent-row">
             <input type="checkbox" id="consent" name="consent" required class="consent-check" />
-            <label for="consent" class="consent-label">
+            <label for="consent" class="consent-label" data-i18n="form.consent">
               J'accepte que mes données soient utilisées pour répondre à ma demande conformément à la politique de confidentialité de AFADETH.
             </label>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-lg submit-btn">
+          <button type="submit" class="btn btn-primary btn-lg submit-btn" data-i18n="form.submit">
             Envoyer mon message →
           </button>
         </form>
 
         <div id="form-success" class="form-success-box" style="display:none">
           <div class="form-success-icon">✅</div>
-          <div class="form-success-title">Message envoyé !</div>
-          <p class="form-success-text">Merci pour votre message. L'équipe AFADETH vous répondra dans les plus brefs délais.</p>
+          <div class="form-success-title" data-i18n="form.success.title">Message envoyé !</div>
+          <p class="form-success-text" data-i18n="form.success.text">Merci pour votre message. L'équipe AFADETH vous répondra dans les plus brefs délais.</p>
         </div>
       </div>
 
@@ -192,42 +209,42 @@
         <a href="https://www.facebook.com/profile.php?id=100077503592349" target="_blank" rel="noopener" class="social-card" style="margin-bottom:20px;text-decoration:none">
           <div class="social-card__icon">f</div>
           <div>
-            <div class="social-card__name">Suivez-nous sur Facebook</div>
+            <div class="social-card__name" data-i18n="contact.facebook.follow">Suivez-nous sur Facebook</div>
             <div class="social-card__handle">AFADETH Officiel</div>
-            <div style="font-size:.78rem;color:var(--light-text-2);margin-top:2px">Actualités, photos, événements</div>
+            <div style="font-size:.78rem;color:var(--light-text-2);margin-top:2px" data-i18n="contact.facebook.desc">Actualités, photos, événements</div>
           </div>
         </a>
 
         <!-- Présidente -->
         <div style="background:var(--gradient-brand);border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:20px">
-          <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-bottom:10px">Direction</div>
+          <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-bottom:10px" data-i18n="contact.direction">Direction</div>
           <div style="display:flex;align-items:center;gap:14px">
             <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;flex-shrink:0">NV</div>
             <div>
               <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700">Nancy VILCÉ</div>
-              <div style="font-size:.78rem;opacity:.8">Présidente — AFADETH</div>
+              <div style="font-size:.78rem;opacity:.8" data-i18n="contact.president.role">Présidente — AFADETH</div>
             </div>
           </div>
           <div style="height:1px;background:rgba(255,255,255,.2);margin:16px 0"></div>
-          <p style="font-size:.85rem;opacity:.8;line-height:1.65;font-style:italic">
+          <p style="font-size:.85rem;opacity:.8;line-height:1.65;font-style:italic" data-i18n="contact.president.quote">
             « Notre porte est toujours ouverte pour ceux qui partagent notre vision d'une Haïti plus juste pour les femmes. »
           </p>
         </div>
 
         <!-- Horaires indicatifs -->
         <div style="background:#fff;border:1px solid var(--light-border);border-radius:var(--radius-lg);padding:24px">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--light-text);margin-bottom:14px">🕐 Disponibilité</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--light-text);margin-bottom:14px" data-i18n="contact.schedule.title">🕐 Disponibilité</div>
           <div style="display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;justify-content:space-between;font-size:.875rem">
-              <span style="color:var(--light-text-2)">Lundi – Vendredi</span>
+              <span style="color:var(--light-text-2)" data-i18n="contact.schedule.weekday">Lundi – Vendredi</span>
               <span style="font-weight:600;color:var(--light-text)">8h – 17h</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-size:.875rem">
-              <span style="color:var(--light-text-2)">Samedi</span>
+              <span style="color:var(--light-text-2)" data-i18n="contact.schedule.saturday">Samedi</span>
               <span style="font-weight:600;color:var(--light-text)">8h – 13h</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-size:.875rem">
-              <span style="color:var(--light-text-2)">Dimanche</span>
+              <span style="color:var(--light-text-2)" data-i18n="contact.schedule.sunday">Dimanche</span>
               <span style="color:var(--light-text-2);font-style:italic">Fermé</span>
             </div>
           </div>
@@ -398,7 +415,7 @@
         </div>
       </div>
       <div>
-        <div class="footer__col-title">Navigation</div>
+        <div class="footer__col-title" data-col="nav">Navigation</div>
         <ul class="footer__links">
           <li><a href="index.html"   class="footer__link">→ Accueil</a></li>
           <li><a href="mission.html" class="footer__link">→ Mission</a></li>
@@ -425,8 +442,8 @@
     <div class="footer__bottom">
       <p class="footer__copy">© 2025 AFADETH. Tous droits réservés.</p>
       <div class="footer__legal">
-        <a href="#" class="footer__legal-link">Confidentialité</a>
-        <a href="#" class="footer__legal-link">Mentions légales</a>
+        <a href="#" class="footer__legal-link footer__legal-privacy">Confidentialité</a>
+        <a href="#" class="footer__legal-link footer__legal-mentions">Mentions légales</a>
       </div>
     </div>
   </div>
@@ -434,6 +451,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script>
   async function handleSubmit(e) {

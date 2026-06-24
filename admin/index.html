@@ -34,6 +34,7 @@
       </a>
       <div class="sidebar-section">Administration</div>
       <a href="users.html" class="sidebar-link"><span class="sidebar-link__icon">👥</span>Utilisateurs</a>
+      <a href="logs.html" class="sidebar-link"><span class="sidebar-link__icon">📋</span>Journaux</a>
       <div class="sidebar-section">Site web</div>
       <a href="../index.html" class="sidebar-link" target="_blank"><span class="sidebar-link__icon">🌐</span>Voir le site →</a>
     </nav>
@@ -107,6 +108,17 @@
       </div>
     </div>
 
+    <!-- Activité récente -->
+    <div class="admin-card" style="margin-top:18px">
+      <div class="card-head">
+        <div class="card-title">📋 Activité récente</div>
+        <a href="logs.html" class="btn btn-outline btn-sm">Voir tout</a>
+      </div>
+      <div id="logs-preview" style="padding:0">
+        <div style="padding:28px;text-align:center;color:var(--text-3)">Chargement…</div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -118,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderMessages();
   renderArticlesPreview();
   renderAlbumsPreview();
+  renderLogs();
 });
 
 function renderStats() {
@@ -213,6 +226,27 @@ function renderAlbumsPreview() {
         <div style="font-size:.68rem;color:var(--text-3)">${a.photos.length} photo${a.photos.length!==1?'s':''} · ${fmtDate(a.date)}</div>
       </div>
       <span class="badge badge-orange">${CAT_LABELS[a.cat]||a.cat}</span>
+    </div>`).join('');
+}
+
+async function renderLogs() {
+  const el = document.getElementById('logs-preview');
+  if (!el) return;
+  const typeIcon = { auth:'🔐', album:'🖼️', article:'📝', contact:'💬', user:'👥' };
+  const { data, error } = await sb.from('logs')
+    .select('*').order('created_at', { ascending:false }).limit(5);
+  if (error || !data || !data.length) {
+    el.innerHTML = `<div style="padding:28px;text-align:center;color:var(--text-3)"><div style="font-size:2rem;margin-bottom:8px">📋</div>Aucune activité récente</div>`;
+    return;
+  }
+  el.innerHTML = data.map(log => `
+    <div style="padding:10px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+      <div style="font-size:1.1rem;flex-shrink:0">${typeIcon[log.type]||'📌'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.8rem;font-weight:600;color:var(--text)">${log.action}</div>
+        <div style="font-size:.7rem;color:var(--text-3);margin-top:1px">${log.user_email}${log.details?' — '+log.details:''}</div>
+      </div>
+      <div style="font-size:.68rem;color:var(--text-3);white-space:nowrap">${fmtDateTime(log.created_at)}</div>
     </div>`).join('');
 }
 </script>

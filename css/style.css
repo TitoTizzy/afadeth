@@ -413,6 +413,55 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;line-height:1.12;font-weig
   color:#fff;transform:scale(1.1)
 }
 
+/* ── Sélecteur de langue ── */
+.lang-switcher{position:relative}
+.lang-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 9px;border-radius:6px;cursor:pointer;
+  border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.07);
+  color:rgba(255,255,255,.9);
+  font-size:.72rem;font-weight:600;letter-spacing:.04em;
+  font-family:'Inter',sans-serif;transition:var(--transition)
+}
+.lang-btn:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.38)}
+.lang-btn svg{opacity:.7;flex-shrink:0;transition:transform .2s}
+.lang-switcher.open .lang-btn svg{transform:rotate(180deg)}
+.lang-menu{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:#fff;border:1px solid rgba(0,0,0,.1);
+  border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);
+  padding:5px;min-width:150px;z-index:200;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .18s,transform .18s,visibility .18s
+}
+.lang-switcher.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0)}
+.lang-option{
+  display:flex;align-items:center;gap:8px;
+  width:100%;padding:8px 12px;border:none;background:none;
+  cursor:pointer;font-size:.83rem;color:#1a1a2e;
+  border-radius:7px;text-align:left;
+  font-family:'Inter',sans-serif;transition:background .15s
+}
+.lang-option:hover{background:#fff4ed}
+.lang-option.lang-active{color:var(--orange);font-weight:600;background:#fff4ed}
+.mobile-lang-row{
+  display:flex;gap:8px;justify-content:center;
+  padding:20px 0 10px;width:100%;max-width:380px
+}
+.mobile-lang-btn{
+  padding:9px 14px;border-radius:8px;cursor:pointer;
+  border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.07);
+  color:rgba(255,255,255,.75);
+  font-size:.78rem;font-weight:600;letter-spacing:.06em;
+  font-family:'Inter',sans-serif;transition:var(--transition)
+}
+.mobile-lang-btn:hover,.mobile-lang-btn.lang-active{
+  background:rgba(232,93,4,.25);border-color:rgba(232,93,4,.5);
+  color:#fff
+}
+
 /* ============================================================
    HERO — Éditorial Split Layout
    ============================================================ */
@@ -1318,14 +1367,20 @@ h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;line-height:1.12;font-weig
   .hero__medal-halo{width:260px;height:260px}
   .about__grid{grid-template-columns:1fr;gap:56px}
   .about__image-main{aspect-ratio:16/9}
-  .about__badge-card{bottom:-14px;right:-10px}
+  .about__badge-card{
+    position:static;
+    margin-top:20px;
+    display:inline-flex;flex-direction:column;align-items:flex-start
+  }
   .about__badge-2{display:none}
   .card-grid-3{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:768px){
-  :root{--section-padding:70px}
+@media(max-width:1064px){
   .navbar__nav,.navbar__cta{display:none}
   .navbar__hamburger{display:flex}
+}
+@media(max-width:768px){
+  :root{--section-padding:70px}
   .hero__split{padding:140px 0 70px}
   .hero__title-main{font-size:clamp(4rem,14vw,7rem)}
   .stats__inner{

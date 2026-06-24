@@ -264,9 +264,20 @@
     </ul>
     <div class="navbar__cta">
       <a href="contact.html" class="btn btn-primary btn-sm">Nous soutenir</a>
-      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">
-        Admin
-      </a>    </div>
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-btn" onclick="toggleLangMenu(event)">
+          <span class="lang-flag">🇫🇷</span><span class="lang-code">FR</span>
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="lang-menu">
+          <button class="lang-option lang-active" data-lang="fr" onclick="setLang('fr')">🇫🇷 Français</button>
+          <button class="lang-option" data-lang="en" onclick="setLang('en')">🇺🇸 English</button>
+          <button class="lang-option" data-lang="ht" onclick="setLang('ht')">🇭🇹 Kreyòl</button>
+          <button class="lang-option" data-lang="es" onclick="setLang('es')">🇪🇸 Español</button>
+        </div>
+      </div>
+      <a href="admin/index.html" class="btn-admin" title="Espace administrateur">Admin</a>
+    </div>
     <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -282,6 +293,12 @@
   <a href="blog.html"    class="navbar__mobile-link">Blog</a>
   <div class="navbar__mobile-divider"></div>
   <a href="contact.html" class="navbar__mobile-link">Contact</a>
+  <div class="mobile-lang-row">
+    <button class="mobile-lang-btn lang-active" data-lang="fr" onclick="setLang('fr')">🇫🇷 FR</button>
+    <button class="mobile-lang-btn" data-lang="en" onclick="setLang('en')">🇺🇸 EN</button>
+    <button class="mobile-lang-btn" data-lang="ht" onclick="setLang('ht')">🇭🇹 HT</button>
+    <button class="mobile-lang-btn" data-lang="es" onclick="setLang('es')">🇪🇸 ES</button>
+  </div>
 </div>
 
 <!-- =====================================================
@@ -457,6 +474,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script src="js/galerie.js"></script>
 </body>

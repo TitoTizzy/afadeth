@@ -12,6 +12,7 @@ let _albumsCache   = null;
 let _articlesCache = null;
 let _contactsCache = null;
 let _usersCache    = null;
+let _currentUserEmail = '';
 
 /* ── Seeds (fallback hors-ligne) ── */
 const ALBUMS_SEED = [
@@ -176,15 +177,20 @@ function saveUsers(users)       { _usersCache    = users;    _pushUsers(users); 
 /* ── Push albums ── */
 async function _pushAlbums(albums) {
   try {
-    const { data:existing } = await sb.from('albums').select('id');
+    const { data:existing } = await sb.from('albums').select('id, name');
     const existingIds = new Set((existing||[]).map(r=>r.id));
     const newIds      = new Set(albums.map(a=>a.id));
 
     for (const id of existingIds) {
-      if (!newIds.has(id)) await sb.from('albums').delete().eq('id', id);
+      if (!newIds.has(id)) {
+        const name = (existing||[]).find(r=>r.id===id)?.name || `Album #${id}`;
+        await sb.from('albums').delete().eq('id', id);
+        logAction('album', 'Suppression album', `"${name}"`);
+      }
     }
 
     for (const a of albums) {
+      const isNew = !existingIds.has(a.id);
       const slug = a.slug || a.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
       await sb.from('albums').upsert({
         id:          a.id,
@@ -208,6 +214,7 @@ async function _pushAlbums(albums) {
           sort_order:  i,
         })));
       }
+      if (isNew) logAction('album', 'Création album', `"${a.name}"`);
     }
   } catch(e) { console.error('[AFADETH] push albums:', e); }
 }
@@ -215,15 +222,20 @@ async function _pushAlbums(albums) {
 /* ── Push articles ── */
 async function _pushArticles(articles) {
   try {
-    const { data:existing } = await sb.from('articles').select('id');
+    const { data:existing } = await sb.from('articles').select('id, titre');
     const existingIds = new Set((existing||[]).map(r=>r.id));
     const newIds      = new Set(articles.map(a=>a.id));
 
     for (const id of existingIds) {
-      if (!newIds.has(id)) await sb.from('articles').delete().eq('id', id);
+      if (!newIds.has(id)) {
+        const titre = (existing||[]).find(r=>r.id===id)?.titre || `Article #${id}`;
+        await sb.from('articles').delete().eq('id', id);
+        logAction('article', 'Suppression article', `"${titre}"`);
+      }
     }
 
     for (const a of articles) {
+      const isNew = !existingIds.has(a.id);
       const slug = a.slug || a.title.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);
       await sb.from('articles').upsert({
         id:          a.id,
@@ -238,6 +250,7 @@ async function _pushArticles(articles) {
         status:      a.status === 'publie' ? 'publie' : 'brouillon',
         published_at: a.status === 'publie' ? (a.published_at || new Date().toISOString()) : null,
       }, { onConflict:'id' });
+      if (isNew) logAction('article', 'Création article', `"${a.title || a.titre || ''}"`);
     }
   } catch(e) { console.error('[AFADETH] push articles:', e); }
 }
@@ -262,15 +275,21 @@ async function _pushContacts(contacts) {
 /* ── Push users ── */
 async function _pushUsers(users) {
   try {
-    const { data:existing } = await sb.from('admin_users').select('id');
+    const { data:existing } = await sb.from('admin_users').select('id, prenom, nom');
     const existingIds = new Set((existing||[]).map(r=>r.id));
     const newIds      = new Set(users.map(u=>u.id));
 
     for (const id of existingIds) {
-      if (!newIds.has(id)) await sb.from('admin_users').delete().eq('id', id);
+      if (!newIds.has(id)) {
+        const rec = (existing||[]).find(r=>r.id===id);
+        const name = rec ? `${rec.prenom} ${rec.nom}` : `Utilisateur #${id}`;
+        await sb.from('admin_users').delete().eq('id', id);
+        logAction('user', 'Suppression utilisateur', `"${name}"`);
+      }
     }
 
     for (const u of users) {
+      const isNew = !existingIds.has(u.id);
       await sb.from('admin_users').upsert({
         id:     u.id,
         email:  u.email,
@@ -279,8 +298,21 @@ async function _pushUsers(users) {
         role:   u.role,
         actif:  u.actif,
       }, { onConflict:'id' });
+      if (isNew) logAction('user', 'Création utilisateur', `"${u.prenom} ${u.nom}" (${u.email})`);
     }
   } catch(e) { console.error('[AFADETH] push users:', e); }
+}
+
+/* ── Journal d'activité ── */
+async function logAction(type, action, details) {
+  try {
+    await sb.from('logs').insert({
+      type,
+      action,
+      user_email: _currentUserEmail,
+      details:    details || ''
+    });
+  } catch(e) { console.warn('[AFADETH] logAction:', e); }
 }
 
 /* ── Messages non lus ── */
@@ -377,6 +409,7 @@ function _refreshUserDisplay() {
 
 /* ── Déconnexion ── */
 async function logout() {
+  await logAction('auth', 'Déconnexion', '');
   await sb.auth.signOut();
   window.location.href = 'login.html';
 }
@@ -392,8 +425,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* 2. Afficher l'email de l'utilisateur connecté */
   const userEmail = session.user.email || '';
+  _currentUserEmail = userEmail;
   document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = userEmail; });
   document.querySelectorAll('[data-user-init]').forEach(el => { el.textContent = userEmail[0]?.toUpperCase() || 'A'; });
+  if (!sessionStorage.getItem('admin_session_logged')) {
+    sessionStorage.setItem('admin_session_logged', '1');
+    logAction('auth', 'Connexion', 'Session admin démarrée');
+  }
 
   /* 3. Bouton déconnexion */
   document.querySelectorAll('.sf-logout').forEach(btn => {
@@ -415,7 +453,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* 5. Re-render la page courante */
   const fns = [
     'renderAlbums','renderList','renderTable',
-    'renderStats','renderMessages','renderArticlesPreview','renderAlbumsPreview'
+    'renderStats','renderMessages','renderArticlesPreview','renderAlbumsPreview','renderLogs'
   ];
   fns.forEach(fn => { if (typeof window[fn]==='function') window[fn](); });
 });
