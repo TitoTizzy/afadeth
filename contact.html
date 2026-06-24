@@ -466,11 +466,27 @@
       message:   document.getElementById('message').value.trim(),
     };
 
+    const btn = e.target.querySelector('[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
+
+    let insertOk = false;
     try {
       const { error } = await window.sb.from('contacts').insert(payload);
-      if (error) console.warn('[AFADETH] contact insert failed:', error);
+      if (error) {
+        console.error('[AFADETH] contact insert failed:', error);
+        btn.disabled = false;
+        btn.textContent = 'Envoyer le message';
+        alert('Erreur lors de l\'envoi : ' + (error.message || JSON.stringify(error)) + '\n\nVeuillez réessayer ou contacter directement contactafadeth06@gmail.com');
+        return;
+      }
+      insertOk = true;
     } catch(err) {
-      console.warn('[AFADETH] contact insert exception:', err);
+      console.error('[AFADETH] contact insert exception:', err);
+      btn.disabled = false;
+      btn.textContent = 'Envoyer le message';
+      alert('Erreur réseau. Veuillez réessayer.');
+      return;
     }
 
     const form    = document.getElementById('contact-form');
