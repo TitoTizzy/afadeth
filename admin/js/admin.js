@@ -14,61 +14,11 @@ let _contactsCache = null;
 let _usersCache    = null;
 let _currentUserEmail = '';
 
-/* ── Seeds (fallback hors-ligne) ── */
-const ALBUMS_SEED = [
-  {
-    id:1, name:'Événements 2025', slug:'evenements-2025', cat:'evenements',
-    desc:'Cérémonies, rassemblements et événements officiels de l\'AFADETH en 2025.',
-    cover:'../assets/images/gallery/gallery_03.jpg', date:'2025-06-15',
-    photos:[
-      {id:1,src:'../assets/images/gallery/gallery_01.jpg',title:'Félicitation — Nouvelle Présidente',desc:'L\'AFADETH félicite sa Présidente'},
-      {id:2,src:'../assets/images/gallery/gallery_02.jpg',title:'Message Officiel AFADETH',desc:'Communication officielle — Pétion-Ville'},
-      {id:3,src:'../assets/images/gallery/gallery_03.jpg',title:'Grande Cérémonie AFADETH',desc:'Rassemblement des membres et partenaires'},
-      {id:4,src:'../assets/images/gallery/gallery_04.jpg',title:'Remise de Distinctions',desc:'Cérémonie de reconnaissance des membres méritantes'},
-    ]
-  },
-  {
-    id:2, name:'Santé & Clinique', slug:'sante-clinique', cat:'sante',
-    desc:'Activités de la Clinique Permanente Sante Fanm AFADETH et programmes de santé communautaire.',
-    cover:'../assets/images/gallery/gallery_05.jpg', date:'2025-05-20',
-    photos:[
-      {id:5,src:'../assets/images/gallery/gallery_05.jpg',title:'Activité Communautaire',desc:'Programme santé et bien-être — Thomassin'},
-      {id:6,src:'../assets/images/gallery/gallery_06.jpg',title:'Journée de la Femme',desc:'Célébration du 8 mars — AFADETH en action'},
-      {id:7,src:'../assets/images/gallery/gallery_07.jpg',title:'Formation des Bénévoles',desc:'Renforcement des capacités des membres'},
-    ]
-  },
-  {
-    id:3, name:'Économie Solidaire', slug:'economie-solidaire', cat:'economie',
-    desc:'Le programme Kore Fanm Agrikòl yo et les initiatives économiques de l\'AFADETH.',
-    cover:'../assets/images/gallery/gallery_08.jpg', date:'2025-04-10',
-    photos:[
-      {id:8,src:'../assets/images/gallery/gallery_08.jpg',title:'Rencontre Annuelle des Membres',desc:'Assemblée et bilan des activités de l\'association'},
-    ]
-  },
-  {id:4,name:'Droits & Protection VBG',slug:'droits-vbg',cat:'droits',desc:'Sensibilisation et accompagnement juridique dans la lutte contre les VBG.',cover:'',date:'2025-03-08',photos:[]},
-  {id:5,name:'AFADETH Jeunesse',slug:'afadeth-jeunesse',cat:'education',desc:'Ateliers leadership et activités de la branche jeunesse.',cover:'',date:'2025-02-14',photos:[]}
-];
-
-const ARTICLES_SEED = [
-  {id:1,title:'L\'autonomisation économique des femmes : bilan 2024',cat:'economie',date:'2025-06-12',author:'Nancy VILCÉ',status:'publie',featured:true,excerpt:'Plus de 1 000 femmes ont bénéficié de nos programmes d\'économie solidaire cette année.',content:'<p>En 2024, l\'AFADETH a franchi une étape historique...</p>',tags:['Économie','Femmes','Entrepreneuriat'],cover:''},
-  {id:2,title:'Clinique Sante Fanm AFADETH : 500 consultations en 3 mois',cat:'sante',date:'2025-05-28',author:'Abigail EDOUARD',status:'publie',featured:false,excerpt:'Notre clinique permanente à Pétion-Ville a réalisé 500 consultations gynécologiques.',content:'<p>La Clinique Permanente Sante Fanm AFADETH continue de démontrer son impact vital...</p>',tags:['Santé','Clinique','Femmes'],cover:''},
-  {id:3,title:'Protection et droits : notre programme anti-VBG en action',cat:'droits',date:'2025-05-15',author:'Annette G. JOSEPH',status:'publie',featured:false,excerpt:'L\'unité PSEA de l\'AFADETH a accompagné 120 survivantes en 2025.',content:'<p>La lutte contre les Violences Basées sur le Genre reste au cœur de la mission...</p>',tags:['VBG','Droits','PSEA'],cover:''},
-  {id:4,title:'AFADETH Jeunesse : forger les leaders de demain',cat:'education',date:'2025-05-03',author:'Sherly ROSIER',status:'publie',featured:false,excerpt:'La branche jeunesse de l\'AFADETH forme une nouvelle génération de femmes leaders.',content:'<p>AFADETH Jeunesse incarne l\'avenir de l\'organisation...</p>',tags:['Jeunesse','Leadership','Éducation'],cover:''},
-  {id:5,title:'Renouvellement du partenariat stratégique avec l\'UNFPA',cat:'evenements',date:'2025-04-20',author:'Nancy VILCÉ',status:'publie',featured:false,excerpt:'L\'AFADETH et l\'UNFPA ont signé un accord de partenariat renforcé pour 2025-2027.',content:'<p>La signature du nouvel accord de partenariat avec l\'UNFPA marque une étape importante...</p>',tags:['UNFPA','Partenariat','Santé'],cover:''},
-  {id:6,title:'Un an après : le restaurant solidaire transforme des vies',cat:'economie',date:'2025-04-08',author:'Abigail EDOUARD',status:'publie',featured:false,excerpt:'Lancé en 2024, le Restaurant Communautaire Solidaire AFADETH a servi plus de 15 000 repas.',content:'<p>Le Restaurant Communautaire Solidaire AFADETH célèbre son premier anniversaire...</p>',tags:['Restaurant','Solidarité','Emploi'],cover:''},
-];
-
-const CONTACTS_SEED = [
-  {id:1,prenom:'Marie',nom:'JEAN',email:'marie.jean@gmail.com',telephone:'+509 3812 4567',sujet:'adhesion',message:'Bonjour, je souhaite adhérer à l\'AFADETH.',date:'2025-06-23T14:32:00',lu:false,archived:false},
-  {id:2,prenom:'Rose-Marie',nom:'PIERRE',email:'rosemarie.pierre@yahoo.com',telephone:'',sujet:'partenariat',message:'Notre ONG "Fanm Solid" souhaite explorer une collaboration avec l\'AFADETH.',date:'2025-06-22T09:15:00',lu:true,archived:false},
-  {id:3,prenom:'Claudine',nom:'LORIVAL',email:'claudine@entreprise.ht',telephone:'+509 2222 3344',sujet:'soutien',message:'Nous souhaitons faire un don à l\'AFADETH pour soutenir la clinique Sante Fanm.',date:'2025-06-20T16:45:00',lu:true,archived:false},
-  {id:4,prenom:'Jean-Pierre',nom:'MOREAU',email:'jp.moreau@presse-ht.com',telephone:'',sujet:'media',message:'Journaliste pour Presse-HT. Je souhaiterais interviewer la présidente de l\'AFADETH.',date:'2025-06-18T11:20:00',lu:false,archived:false},
-];
-
-const USERS_SEED = [
-  {id:1,prenom:'Myrtho',nom:'Charles',email:'myrthocharles95@gmail.com',role:'admin',created:'2025-06-01',actif:true,init:'MC'},
-  {id:2,prenom:'Nancy',nom:'Vilcé',email:'contactafadeth06@gmail.com',role:'admin',created:'2025-06-01',actif:true,init:'NV'},
-];
+/* ── Seeds — intentionnellement vides : on utilise uniquement les données Supabase ── */
+const ALBUMS_SEED   = [];
+const ARTICLES_SEED = [];
+const CONTACTS_SEED = [];
+const USERS_SEED    = [];
 
 /* ── Mappers Supabase → format local ── */
 function _mapAlbum(row) {
@@ -135,25 +85,29 @@ async function _loadAlbums() {
   const { data, error } = await sb.from('albums')
     .select('*, photos(*)')
     .order('date', { ascending:false, nullsFirst:false });
-  if (!error && data) _albumsCache = data.map(_mapAlbum);
+  if (error) { console.warn('[AFADETH] loadAlbums:', error.message); _albumsCache = []; return; }
+  _albumsCache = (data||[]).map(_mapAlbum);
 }
 
 async function _loadArticles() {
   const { data, error } = await sb.from('articles')
     .select('*').order('created_at', { ascending:false });
-  if (!error && data) _articlesCache = data.map(_mapArticle);
+  if (error) { console.warn('[AFADETH] loadArticles:', error.message); _articlesCache = []; return; }
+  _articlesCache = (data||[]).map(_mapArticle);
 }
 
 async function _loadContacts() {
   const { data, error } = await sb.from('contacts')
     .select('*').order('created_at', { ascending:false });
-  if (!error && data) _contactsCache = data.map(_mapContact);
+  if (error) { console.warn('[AFADETH] loadContacts:', error.message); _contactsCache = []; return; }
+  _contactsCache = (data||[]).map(_mapContact);
 }
 
 async function _loadUsers() {
   const { data, error } = await sb.from('admin_users')
     .select('*').order('id');
-  if (!error && data) _usersCache = data.map(_mapUser);
+  if (error) { console.warn('[AFADETH] loadUsers:', error.message); _usersCache = []; return; }
+  _usersCache = (data||[]).map(_mapUser);
 }
 
 /* ── Getters synchrones (lisent le cache) ── */
