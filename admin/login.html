@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion — AFADETH Admin</title>
+  <link rel="icon" href="../assets/images/logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #0D0D10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: #17171C;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .login-logo img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+    .login-logo-text { display: flex; flex-direction: column; }
+    .login-logo-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .login-logo-sub {
+      font-size: .65rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+    }
+
+    .login-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.9);
+      margin-bottom: 6px;
+    }
+    .login-sub {
+      font-size: .82rem;
+      color: rgba(255,255,255,.35);
+      margin-bottom: 32px;
+    }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,.05);
+      border: 1.5px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: .95rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-input::placeholder { color: rgba(255,255,255,.2); }
+    .form-input:focus {
+      border-color: #E85D04;
+      box-shadow: 0 0 0 3px rgba(232,93,4,.15);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      margin-top: 8px;
+      background: #E85D04;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: .95rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-login:hover { background: #C04A00; }
+    .btn-login:active { transform: scale(.98); }
+    .btn-login:disabled { opacity: .5; cursor: not-allowed; }
+
+    .error-box {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(198,40,40,.12);
+      border: 1px solid rgba(198,40,40,.3);
+      border-radius: 8px;
+      font-size: .85rem;
+      color: #FF7070;
+    }
+    .error-box.show { display: block; }
+
+    .login-footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: .75rem;
+      color: rgba(255,255,255,.2);
+      text-align: center;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .btn-login.loading .spinner { display: block; }
+    .btn-login.loading .btn-text { opacity: .6; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-logo">
+    <img src="../assets/images/logo.png" alt="Logo AFADETH" />
+    <div class="login-logo-text">
+      <span class="login-logo-name">AFADETH</span>
+      <span class="login-logo-sub">Back-office</span>
+    </div>
+  </div>
+
+  <div class="login-title">Connexion administrateur</div>
+  <div class="login-sub">Accès réservé aux membres autorisés</div>
+
+  <form id="login-form" onsubmit="handleLogin(event)">
+    <div class="form-group">
+      <label class="form-label" for="email">Adresse e-mail</label>
+      <input class="form-input" type="email" id="email" name="email"
+             placeholder="votre@email.com" required autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="password">Mot de passe</label>
+      <input class="form-input" type="password" id="password" name="password"
+             placeholder="••••••••" required autocomplete="current-password" />
+    </div>
+    <button class="btn-login" type="submit" id="btn-submit">
+      <div class="spinner"></div>
+      <span class="btn-text">Se connecter</span>
+    </button>
+    <div class="error-box" id="error-box"></div>
+  </form>
+
+  <div class="login-footer">AFADETH &copy; 2025 — Pétion-Ville, Haïti</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const _U = 'https://yhdtvdgpjmefacrphxsi.supabase.co';
+  const _K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloZHR2ZGdwam1lZmFjcnBoeHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNDYyMTYsImV4cCI6MjA5NzgyMjIxNn0.d4n8dO72uF_IWbAJ7Cx4rskHnmJ7UVr1KSdC_iAP5E4';
+  const sb = supabase.createClient(_U, _K);
+
+  /* Déjà connecté → rediriger directement */
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (session) window.location.replace('index.html');
+  });
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-submit');
+    const errBox = document.getElementById('error-box');
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    errBox.classList.remove('show');
+
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      errBox.textContent = error.message === 'Invalid login credentials'
+        ? 'Email ou mot de passe incorrect.'
+        : error.message;
+      errBox.classList.add('show');
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    } else {
+      window.location.replace('index.html');
+    }
+  }
+</script>
+</body>
+</html>

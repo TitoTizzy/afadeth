@@ -375,13 +375,35 @@ function _refreshUserDisplay() {
   document.querySelectorAll('[data-user-init]').forEach(el=>{el.textContent=u.init||(u.prenom[0]||'A');});
 }
 
+/* ── Déconnexion ── */
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = 'login.html';
+}
+
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', async () => {
+  /* 1. Vérifier l'authentification */
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    window.location.replace('login.html');
+    return;
+  }
+
+  /* 2. Afficher l'email de l'utilisateur connecté */
+  const userEmail = session.user.email || '';
+  document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = userEmail; });
+  document.querySelectorAll('[data-user-init]').forEach(el => { el.textContent = userEmail[0]?.toUpperCase() || 'A'; });
+
+  /* 3. Bouton déconnexion */
+  document.querySelectorAll('.sf-logout').forEach(btn => {
+    btn.addEventListener('click', logout);
+  });
+
   initToast();
   setActiveNav();
-  refreshBadges();
-  _refreshUserDisplay();
 
+  /* 4. Charger les données depuis Supabase */
   try {
     await Promise.all([_loadAlbums(), _loadArticles(), _loadContacts(), _loadUsers()]);
   } catch(e) {
@@ -389,9 +411,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   refreshBadges();
-  _refreshUserDisplay();
 
-  /* Re-render la page courante avec les données fraîches */
+  /* 5. Re-render la page courante */
   const fns = [
     'renderAlbums','renderList','renderTable',
     'renderStats','renderMessages','renderArticlesPreview','renderAlbumsPreview'
