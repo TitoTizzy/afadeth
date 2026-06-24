@@ -68,7 +68,7 @@
       <div class="admin-card">
         <div class="card-head">
           <div class="card-title">💬 Derniers messages reçus</div>
-          <a href="contacts.html" class="btn btn-outline btn-sm">Tout voir</a>
+          <a href="contacts.html" class="btn btn-outline btn-sm">Voir tous les messages</a>
         </div>
         <div id="msg-list" style="padding:0"></div>
       </div>
@@ -112,7 +112,7 @@
     <div class="admin-card" style="margin-top:18px">
       <div class="card-head">
         <div class="card-title">📋 Activité récente</div>
-        <a href="logs.html" class="btn btn-outline btn-sm">Voir tout</a>
+        <a href="logs.html" class="btn btn-outline btn-sm">Voir plus</a>
       </div>
       <div id="logs-preview" style="padding:0">
         <div style="padding:28px;text-align:center;color:var(--text-3)">Chargement…</div>
@@ -182,7 +182,7 @@ function renderStats() {
 }
 
 function renderMessages() {
-  const contacts = getContacts().filter(c=>!c.archived).slice(0,6);
+  const contacts = getContacts().filter(c=>!c.archived).slice(0,5);
   const el = document.getElementById('msg-list');
   if (!contacts.length) {
     el.innerHTML = `<div class="empty" style="padding:36px"><div class="empty__icon">💬</div><div class="empty__title">Aucun message</div></div>`;

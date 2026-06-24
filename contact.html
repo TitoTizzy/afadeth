@@ -467,9 +467,10 @@
     };
 
     try {
-      await window.sb.from('contacts').insert(payload);
+      const { error } = await window.sb.from('contacts').insert(payload);
+      if (error) console.warn('[AFADETH] contact insert failed:', error);
     } catch(err) {
-      console.warn('[AFADETH] contact insert failed:', err);
+      console.warn('[AFADETH] contact insert exception:', err);
     }
 
     const form    = document.getElementById('contact-form');

@@ -430,6 +430,14 @@ async function logout() {
   window.location.href = 'login.html';
 }
 
+/* ── Sidebar collapsible ── */
+function toggleSidebar() {
+  const layout = document.querySelector('.admin-layout');
+  if (!layout) return;
+  const collapsed = layout.classList.toggle('sb-collapsed');
+  try { localStorage.setItem('afadeth_sb', collapsed ? '1' : ''); } catch(e) {}
+}
+
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', async () => {
   /* 1. Vérifier l'authentification */
@@ -456,6 +464,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initToast();
   setActiveNav();
+
+  /* Sidebar : restaurer l'état réduit + bind clic logo */
+  if (localStorage.getItem('afadeth_sb') === '1')
+    document.querySelector('.admin-layout')?.classList.add('sb-collapsed');
+  document.querySelector('.sidebar-brand')?.addEventListener('click', toggleSidebar);
 
   /* 4. Charger les données depuis Supabase */
   try {
