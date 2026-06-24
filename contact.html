@@ -432,32 +432,27 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/main.js"></script>
 <script>
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    /* Save submission to localStorage so admin dashboard shows it */
+    const payload = {
+      prenom:    document.getElementById('prenom').value.trim(),
+      nom:       document.getElementById('nom').value.trim(),
+      email:     document.getElementById('email').value.trim(),
+      telephone: document.getElementById('telephone').value.trim(),
+      sujet:     document.getElementById('sujet').value,
+      message:   document.getElementById('message').value.trim(),
+    };
+
     try {
-      const raw = localStorage.getItem('afadeth_contacts');
-      const existing = raw ? JSON.parse(raw) : null;
-      /* If localStorage is empty, admin.js will seed it on first open — push onto seed IDs */
-      const contacts = existing || [];
-      const maxId    = contacts.length ? Math.max(...contacts.map(c => c.id||0)) : 4;
-      contacts.unshift({
-        id:        maxId + 1,
-        prenom:    document.getElementById('prenom').value.trim(),
-        nom:       document.getElementById('nom').value.trim(),
-        email:     document.getElementById('email').value.trim(),
-        telephone: document.getElementById('telephone').value.trim(),
-        sujet:     document.getElementById('sujet').value,
-        message:   document.getElementById('message').value.trim(),
-        date:      new Date().toISOString(),
-        lu:        false,
-        archived:  false
-      });
-      localStorage.setItem('afadeth_contacts', JSON.stringify(contacts));
-    } catch(err) {}
+      await window.sb.from('contacts').insert(payload);
+    } catch(err) {
+      console.warn('[AFADETH] contact insert failed:', err);
+    }
 
     const form    = document.getElementById('contact-form');
     const success = document.getElementById('form-success');

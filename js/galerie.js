@@ -48,18 +48,44 @@ const LOCAL_ALBUMS = [
 /* Normalize paths: admin stores ../assets/… but we're at root */
 function fixPath(s) { return (s||'').replace(/^\.\.\//,''); }
 
-function readAlbums() {
+/* ── Cache Supabase ── */
+let _albums = null;
+
+function getAlbumsCache() { return _albums || LOCAL_ALBUMS; }
+
+async function _fetchAlbums() {
   try {
-    const raw = localStorage.getItem('afadeth_albums');
-    if (raw) {
-      return JSON.parse(raw).map(a => ({
-        ...a,
-        cover:  fixPath(a.cover),
-        photos: (a.photos||[]).map(p => ({...p, src: fixPath(p.src)}))
+    const { data, error } = await window.sb.from('albums')
+      .select('*, photos(*)')
+      .order('date', { ascending:false, nullsFirst:false });
+    if (!error && data && data.length) {
+      _albums = data.map(row => ({
+        id:     row.id,
+        name:   row.name,
+        cat:    row.cat,
+        date:   row.date   || '',
+        desc:   row.description || '',
+        cover:  row.cover_url   || '',
+        photos: (row.photos || [])
+          .sort((a,b) => (a.sort_order||0) - (b.sort_order||0))
+          .map(p => ({id:p.id, src:p.src_url, title:p.title||'', desc:p.description||''}))
       }));
     }
   } catch(e) {}
-  return LOCAL_ALBUMS;
+  if (!_albums) {
+    /* fallback: localStorage puis seed */
+    try {
+      const raw = localStorage.getItem('afadeth_albums');
+      if (raw) {
+        _albums = JSON.parse(raw).map(a => ({
+          ...a,
+          cover:  fixPath(a.cover),
+          photos: (a.photos||[]).map(p => ({...p, src:fixPath(p.src)}))
+        }));
+      }
+    } catch(e) {}
+    if (!_albums) _albums = LOCAL_ALBUMS;
+  }
 }
 
 /* ── State ── */
@@ -77,7 +103,7 @@ const CAT_COL = {
 function buildAlbumsView() {
   const grid = document.getElementById('albums-grid');
   if (!grid) return;
-  const albums = readAlbums();
+  const albums = getAlbumsCache();
 
   grid.innerHTML = albums.map(a => `
     <div class="galerie-album-card reveal" onclick="openAlbum(${a.id})" style="cursor:pointer">
@@ -101,7 +127,7 @@ function buildAlbumsView() {
 
 /* ── Open album ── */
 function openAlbum(id) {
-  const album = readAlbums().find(a => a.id === id);
+  const album = getAlbumsCache().find(a => a.id === id);
   if (!album) return;
 
   filteredItems = [...album.photos];
@@ -356,7 +382,9 @@ function updateLightbox() {
 }
 
 /* ── Init ── */
-document.addEventListener('DOMContentLoaded', () => {
-  buildAlbumsView();
+document.addEventListener('DOMContentLoaded', async () => {
   buildLightbox();
+  buildAlbumsView(); /* rendu immédiat avec seed */
+  await _fetchAlbums();
+  buildAlbumsView(); /* re-rendu avec données Supabase */
 });

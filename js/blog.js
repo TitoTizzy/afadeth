@@ -2,8 +2,8 @@
    AFADETH — Module Blog
    ============================================================ */
 
-/* ---- Données mock (remplacé par Supabase en phase 2) ---- */
-const BLOG_DATA = [
+/* ---- Données statiques (fallback hors-ligne) ---- */
+const BLOG_DATA_LOCAL = [
   {
     id:1, slug:'autonomisation-economique-femmes-2024',
     title:'L\'autonomisation économique des femmes : bilan 2024',
@@ -80,14 +80,68 @@ const BLOG_DATA = [
   },
 ];
 
+/* BLOG_DATA est mutable — Supabase le remplace au chargement */
+let BLOG_DATA = BLOG_DATA_LOCAL;
+
 const BLOG_CATS = { Tous:null, Économie:'Économie', Santé:'Santé', 'Droits & VBG':'Droits & VBG', Éducation:'Éducation', Partenariats:'Partenariats' };
+
+/* Mapping slug Supabase → label affiché */
+const _CAT_LABEL = {
+  evenements:'Événements', sante:'Santé', economie:'Économie',
+  droits:'Droits & VBG', education:'Éducation'
+};
+const _CAT_GRADIENT = {
+  evenements:'linear-gradient(135deg,#004D40,#26A69A)',
+  sante:     'linear-gradient(135deg,#4A148C,#7B1FA2)',
+  economie:  'linear-gradient(135deg,#880E4F,#C2185B)',
+  droits:    'linear-gradient(135deg,#BF360C,#E85D04)',
+  education: 'linear-gradient(135deg,#1A237E,#3949AB)'
+};
+
+function _fmtDateFr(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function _readTime(html) {
+  const words = (html||'').replace(/<[^>]*>/g,'').trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words/200)) + ' min';
+}
+
+async function _loadBlogData() {
+  if (!window.sb) return;
+  try {
+    const { data, error } = await window.sb.from('articles')
+      .select('*')
+      .eq('status','publie')
+      .order('published_at', { ascending:false, nullsFirst:false });
+    if (!error && data && data.length) {
+      BLOG_DATA = data.map((row,i) => ({
+        id:         row.id,
+        slug:       row.slug,
+        title:      row.titre,
+        excerpt:    row.resume  || '',
+        content:    row.contenu || '',
+        cat:        _CAT_LABEL[row.cat] || row.cat,
+        date:       _fmtDateFr(row.published_at || row.created_at),
+        author:     row.auteur,
+        authorRole: '',
+        readTime:   _readTime(row.contenu),
+        gradient:   _CAT_GRADIENT[row.cat] || 'linear-gradient(135deg,#880E4F,#C2185B)',
+        featured:   i === 0,
+        tags:       row.tags || [],
+        cover_url:  row.cover_url || ''
+      }));
+    }
+  } catch(e) {}
+}
 
 const ITEMS_PER_PAGE = 4;
 let currentPage = 1;
 let currentCat = null;
 let searchQuery = '';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   /* Blog listing page */
   if (document.getElementById('articles-container')) {
@@ -96,12 +150,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initSidebar();
     initReadingBar();
+    /* Recharge depuis Supabase puis re-rend */
+    await _loadBlogData();
+    renderFeatured();
+    renderArticles();
+    initSidebar();
   }
 
   /* Single article page */
   if (document.getElementById('article-content')) {
     loadArticle();
     initReadingBar();
+    await _loadBlogData();
+    loadArticle();
   }
 
 });
