@@ -236,11 +236,14 @@ async function renderLogs() {
     const typeIcon = { auth:'🔐', album:'🖼️', article:'📝', contact:'💬', user:'👥' };
     const { data, error } = await sb.from('logs')
       .select('*').order('created_at', { ascending:false }).limit(5);
-    if (error || !data || !data.length) {
+    const logs = (!error && data && data.length)
+      ? data
+      : JSON.parse(localStorage.getItem('afadeth_logs')||'[]').slice(0,5);
+    if (!logs.length) {
       el.innerHTML = `<div style="padding:28px;text-align:center;color:var(--text-3)"><div style="font-size:2rem;margin-bottom:8px">📋</div>Aucune activité récente</div>`;
       return;
     }
-    el.innerHTML = data.map(log => `
+    el.innerHTML = logs.map(log => `
       <div style="padding:10px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
         <div style="font-size:1.1rem;flex-shrink:0">${typeIcon[log.type]||'📌'}</div>
         <div style="flex:1;min-width:0">

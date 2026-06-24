@@ -159,7 +159,14 @@ async function _loadUsers() {
 /* ── Getters synchrones (lisent le cache) ── */
 function getAlbums()   { return _albumsCache   ?? ALBUMS_SEED; }
 function getArticles() { return _articlesCache ?? ARTICLES_SEED; }
-function getContacts() { return _contactsCache ?? CONTACTS_SEED; }
+function getContacts() {
+  const base = _contactsCache ?? CONTACTS_SEED;
+  try {
+    const readIds = JSON.parse(localStorage.getItem('afadeth_read_ids')||'[]');
+    if (!readIds.length) return base;
+    return base.map(c => readIds.includes(c.id) ? {...c, lu:true} : c);
+  } catch(e) { return base; }
+}
 function getUsers()    { return _usersCache    ?? USERS_SEED; }
 
 /* ── Générateurs d'ID ── */
@@ -171,7 +178,14 @@ function nextUserId()       { const u=getUsers();    return u.length ? Math.max(
 /* ── Sauvegarde : met à jour le cache puis sync Supabase ── */
 function saveAlbums(albums)     { _albumsCache   = albums;   _pushAlbums(albums); }
 function saveArticles(articles) { _articlesCache = articles; _pushArticles(articles); }
-function saveContacts(contacts) { _contactsCache = contacts; _pushContacts(contacts); }
+function saveContacts(contacts) {
+  _contactsCache = contacts;
+  try {
+    const readIds = contacts.filter(c=>c.lu).map(c=>c.id);
+    localStorage.setItem('afadeth_read_ids', JSON.stringify(readIds));
+  } catch(e) {}
+  _pushContacts(contacts);
+}
 function saveUsers(users)       { _usersCache    = users;    _pushUsers(users); }
 
 /* ── Push albums ── */
@@ -305,14 +319,16 @@ async function _pushUsers(users) {
 
 /* ── Journal d'activité ── */
 async function logAction(type, action, details) {
+  const entry = { id: Date.now(), type, action, user_email: _currentUserEmail, details: details||'', created_at: new Date().toISOString() };
   try {
-    await sb.from('logs').insert({
-      type,
-      action,
-      user_email: _currentUserEmail,
-      details:    details || ''
-    });
-  } catch(e) { console.warn('[AFADETH] logAction:', e); }
+    const ls = JSON.parse(localStorage.getItem('afadeth_logs')||'[]');
+    ls.unshift(entry);
+    if (ls.length > 300) ls.splice(300);
+    localStorage.setItem('afadeth_logs', JSON.stringify(ls));
+  } catch(e) {}
+  try {
+    await sb.from('logs').insert({ type, action, user_email: _currentUserEmail, details: details||'' });
+  } catch(e) { console.warn('[AFADETH] logAction Supabase:', e); }
 }
 
 /* ── Messages non lus ── */

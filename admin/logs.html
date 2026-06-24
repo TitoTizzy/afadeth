@@ -154,12 +154,21 @@ async function loadLogs() {
     if (_filters.user)     q = q.ilike('user_email', `%${_filters.user}%`);
 
     const { data, error } = await q;
-    if (error) console.error('[AFADETH] loadLogs:', error);
-    _allLogs = data || [];
+    if (!error && data && data.length) {
+      _allLogs = data;
+    } else {
+      if (error) console.warn('[AFADETH] loadLogs Supabase:', error);
+      let local = JSON.parse(localStorage.getItem('afadeth_logs')||'[]');
+      if (_filters.type)     local = local.filter(l => l.type === _filters.type);
+      if (_filters.dateFrom) local = local.filter(l => l.created_at >= _filters.dateFrom+'T00:00:00');
+      if (_filters.dateTo)   local = local.filter(l => l.created_at <= _filters.dateTo+'T23:59:59');
+      if (_filters.user)     local = local.filter(l => (l.user_email||'').toLowerCase().includes(_filters.user.toLowerCase()));
+      _allLogs = local.slice(0, 300);
+    }
     renderLogTable();
   } catch(e) {
     console.error('[AFADETH] loadLogs exception:', e);
-    _allLogs = [];
+    _allLogs = JSON.parse(localStorage.getItem('afadeth_logs')||'[]');
     renderLogTable();
   }
 }
