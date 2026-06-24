@@ -146,8 +146,10 @@
               <div class="rte-toolbar" id="rte-toolbar">
                 <select class="rte-sel" id="rte-block" onchange="applyBlock(this.value)">
                   <option value="p">Paragraphe</option>
+                  <option value="h1">Titre H1</option>
                   <option value="h2">Titre H2</option>
                   <option value="h3">Titre H3</option>
+                  <option value="pre">Code</option>
                   <option value="blockquote">Citation</option>
                 </select>
                 <div class="rte-sep"></div>
@@ -156,14 +158,26 @@
                 <button class="rte-btn" onmousedown="e(event,'underline')" title="Souligné"><u>U</u></button>
                 <button class="rte-btn" onmousedown="e(event,'strikeThrough')" title="Barré"><s>S</s></button>
                 <div class="rte-sep"></div>
+                <button class="rte-btn" onmousedown="e(event,'justifyLeft')" title="Aligner à gauche" style="font-size:.75rem">⬅</button>
+                <button class="rte-btn" onmousedown="e(event,'justifyCenter')" title="Centrer" style="font-size:.75rem">↔</button>
+                <button class="rte-btn" onmousedown="e(event,'justifyRight')" title="Aligner à droite" style="font-size:.75rem">➡</button>
+                <div class="rte-sep"></div>
                 <button class="rte-btn" onmousedown="e(event,'insertUnorderedList')" title="Liste à puces">≡</button>
                 <button class="rte-btn" onmousedown="e(event,'insertOrderedList')" title="Liste numérotée">1.</button>
                 <div class="rte-sep"></div>
                 <button class="rte-btn" onmousedown="eLink(event)" title="Lien">🔗</button>
-                <button class="rte-btn" onmousedown="eImg(event)" title="Image">🖼</button>
+                <button class="rte-btn" onmousedown="eImg(event)" title="Insérer une image depuis votre appareil">🖼</button>
+                <button class="rte-btn" onmousedown="eHr(event)" title="Ligne de séparation" style="font-size:.9rem">—</button>
+                <div class="rte-sep"></div>
+                <label class="rte-btn" title="Couleur du texte" style="position:relative;overflow:hidden;cursor:pointer">
+                  <u style="text-decoration-color:var(--orange)">A</u>
+                  <input type="color" id="rte-color" value="#E85D04" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" onchange="applyColor(this.value)"/>
+                </label>
                 <div class="rte-sep"></div>
                 <button class="rte-btn" onmousedown="e(event,'removeFormat')" title="Effacer formatage">✕f</button>
               </div>
+              <!-- Input fichier caché pour images inline -->
+              <input type="file" id="rte-img-input" accept="image/*" style="display:none" onchange="insertRteImage(this)"/>
               <!-- Éditor zone -->
               <div class="rte-body" id="rte-body" contenteditable="true"
                    onkeydown="handleRteKey(event)"
@@ -414,8 +428,27 @@ function eLink(ev) {
 }
 function eImg(ev) {
   ev.preventDefault();
-  const url = prompt('URL de l\'image :','https://');
-  if (url) document.execCommand('insertImage', false, url);
+  document.getElementById('rte-img-input').click();
+}
+function insertRteImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('rte-body').focus();
+    document.execCommand('insertImage', false, ev.target.result);
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+function eHr(ev) {
+  ev.preventDefault();
+  document.getElementById('rte-body').focus();
+  document.execCommand('insertHorizontalRule', false, null);
+}
+function applyColor(color) {
+  document.getElementById('rte-body').focus();
+  document.execCommand('foreColor', false, color);
 }
 function handleRteKey(e) {
   if (e.key === 'Tab') { e.preventDefault(); document.execCommand('insertHTML',false,'&nbsp;&nbsp;&nbsp;&nbsp;'); }

@@ -111,8 +111,8 @@ function _mapContact(row) {
     telephone: row.telephone || '',
     sujet:     row.sujet     || '',
     message:   row.message,
-    lu:        row.lu,
-    archived:  row.archived,
+    lu:        row.lu       ?? false,
+    archived:  row.archived ?? false,
     date:      row.created_at || ''
   };
 }
