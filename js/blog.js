@@ -113,7 +113,7 @@ async function _loadBlogData() {
   try {
     const { data, error } = await window.sb.from('articles')
       .select('*')
-      .eq('status','publie')
+      .in('status',['publie','published'])
       .order('published_at', { ascending:false, nullsFirst:false });
     if (!error && data && data.length) {
       BLOG_DATA = data.map((row,i) => ({

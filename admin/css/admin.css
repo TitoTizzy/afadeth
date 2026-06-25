@@ -52,6 +52,7 @@ body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
   background:var(--bg);color:var(--text);line-height:1.5
 }
+body:not(.admin-ready){visibility:hidden}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;border:none;background:none;font-family:inherit}
 ul{list-style:none}

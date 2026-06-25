@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/admin.css?v=3"/>
+  <link rel="stylesheet" href="css/admin.css?v=4"/>
   <link rel="icon" href="../assets/images/logo.png" type="image/png"/>
 </head>
 <body>
@@ -118,7 +118,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/admin.js?v=3"></script>
+<script src="../js/supabase-client.js?v=4"></script>
+<script src="js/admin.js?v=4"></script>
 <script>
 let activeId = null;
 const params = new URLSearchParams(location.search);
@@ -126,8 +127,12 @@ const params = new URLSearchParams(location.search);
 document.addEventListener('DOMContentLoaded', () => {
   renderList();
   const id = params.get('id');
-  if (id) openMsg(parseInt(id));
+  if (id) openMsg(id);
 });
+
+function msgId(id) {
+  return String(id);
+}
 
 function renderList() {
   const q      = document.getElementById('search-input').value.toLowerCase();
@@ -150,9 +155,9 @@ function renderList() {
     return;
   }
   el.innerHTML = contacts.map(c => `
-    <div class="msg-row${c.lu?'':' unread'}${activeId===c.id?' active':''}"
-         style="${activeId===c.id?'background:var(--orange-pale);border-left:3px solid var(--orange)':''}"
-         onclick="openMsg(${c.id})">
+    <div class="msg-row${c.lu?'':' unread'}${msgId(activeId)===msgId(c.id)?' active':''}"
+         style="${msgId(activeId)===msgId(c.id)?'background:var(--orange-pale);border-left:3px solid var(--orange)':''}"
+         data-message-id="${escAttr(c.id)}" onclick="openMsgFromRow(this)">
       ${!c.lu?'<div class="msg-dot"></div>':'<div style="width:7px"></div>'}
       <div class="avatar av-sm">${c.prenom[0]}${c.nom[0]}</div>
       <div style="flex:1;min-width:0">
@@ -166,9 +171,13 @@ function renderList() {
     </div>`).join('');
 }
 
+function openMsgFromRow(row) {
+  openMsg(row.dataset.messageId);
+}
+
 function openMsg(id) {
   const contacts = getContacts();
-  const idx = contacts.findIndex(c=>c.id===id);
+  const idx = contacts.findIndex(c=>msgId(c.id)===msgId(id));
   if (idx === -1) return;
   // Mark as read
   if (!contacts[idx].lu) {
@@ -176,7 +185,7 @@ function openMsg(id) {
     saveContacts(contacts);
     refreshBadges();
   }
-  activeId = id;
+  activeId = contacts[idx].id;
   renderList();
   const c = contacts[idx];
   document.getElementById('msg-detail').innerHTML = `
@@ -200,17 +209,17 @@ function openMsg(id) {
       <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap">
         <a href="mailto:${c.email}?subject=Re: ${encodeURIComponent(SUJET[c.sujet]||'')} — AFADETH"
            class="btn btn-primary">📧 Répondre par email</a>
-        <button class="btn btn-${c.lu?'outline':'ghost'}" onclick="toggleRead(${c.id})">
+        <button class="btn btn-${c.lu?'outline':'ghost'}" onclick="toggleRead('${escAttr(c.id)}')">
           ${c.lu?'◯ Marquer non lu':'● Marquer lu'}
         </button>
-        <button class="btn btn-danger" onclick="deleteMsg(${c.id})">🗑 Supprimer</button>
+        <button class="btn btn-danger" onclick="deleteMsg('${escAttr(c.id)}')">🗑 Supprimer</button>
       </div>
     </div>`;
 }
 
 function toggleRead(id) {
   const contacts = getContacts();
-  const idx = contacts.findIndex(c=>c.id===id);
+  const idx = contacts.findIndex(c=>msgId(c.id)===msgId(id));
   if (idx===-1) return;
   contacts[idx].lu = !contacts[idx].lu;
   saveContacts(contacts);
@@ -222,7 +231,7 @@ function toggleRead(id) {
 
 function deleteMsg(id) {
   confirmDelete('Supprimer ce message définitivement ?', () => {
-    const contacts = getContacts().filter(c=>c.id!==id);
+    const contacts = getContacts().filter(c=>msgId(c.id)!==msgId(id));
     saveContacts(contacts);
     activeId = null;
     renderList();
@@ -241,7 +250,10 @@ function markAllRead() {
 }
 
 function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s) {
+  return escHtml(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 </script>
 </body>

@@ -190,14 +190,40 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js?v=4"></script>
 <script>
-  const _U = 'https://yhdtvdgpjmefacrphxsi.supabase.co';
-  const _K = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloZHR2ZGdwam1lZmFjcnBoeHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNDYyMTYsImV4cCI6MjA5NzgyMjIxNn0.d4n8dO72uF_IWbAJ7Cx4rskHnmJ7UVr1KSdC_iAP5E4';
-  const sb = supabase.createClient(_U, _K);
+  const sb = window.sb;
+  const reasonText = {
+    auth: 'Veuillez vous connecter pour acceder au back-office.',
+    forbidden: 'Votre compte n\'est pas autorise a acceder au back-office.',
+    config: 'Configuration Supabase introuvable. Verifiez la cle du site.'
+  };
+
+  function showLoginError(message) {
+    const errBox = document.getElementById('error-box');
+    errBox.textContent = message;
+    errBox.classList.add('show');
+  }
+
+  async function isAllowedAdmin(session) {
+    if (!session?.user?.email) return false;
+    const { data, error } = await sb.from('admin_users')
+      .select('id')
+      .ilike('email', session.user.email)
+      .eq('actif', true)
+      .maybeSingle();
+    return !error && !!data;
+  }
 
   /* Déjà connecté → rediriger directement */
   sb.auth.getSession().then(({ data: { session } }) => {
-    if (session) window.location.replace('index.html');
+    const reason = new URLSearchParams(location.search).get('reason');
+    if (reason && reasonText[reason]) showLoginError(reasonText[reason]);
+    if (!session) return;
+    isAllowedAdmin(session).then(async allowed => {
+      if (allowed) window.location.replace('index.html');
+      else await sb.auth.signOut();
+    });
   });
 
   async function handleLogin(e) {
@@ -212,7 +238,7 @@
     const email    = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
-    const { error } = await sb.auth.signInWithPassword({ email, password });
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
     if (error) {
       errBox.textContent = error.message === 'Invalid login credentials'
@@ -221,8 +247,18 @@
       errBox.classList.add('show');
       btn.classList.remove('loading');
       btn.disabled = false;
-    } else {
+      return;
+    }
+
+    const allowed = await isAllowedAdmin(data.session);
+    if (allowed) {
       window.location.replace('index.html');
+    } else {
+      await sb.auth.signOut();
+      errBox.textContent = 'Compte connecte, mais non autorise pour le back-office.';
+      errBox.classList.add('show');
+      btn.classList.remove('loading');
+      btn.disabled = false;
     }
   }
 </script>

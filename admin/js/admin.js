@@ -3,9 +3,7 @@
    ============================================================ */
 
 /* ── Supabase ── */
-const _SB_URL  = 'https://yhdtvdgpjmefacrphxsi.supabase.co';
-const _SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloZHR2ZGdwam1lZmFjcnBoeHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNDYyMTYsImV4cCI6MjA5NzgyMjIxNn0.d4n8dO72uF_IWbAJ7Cx4rskHnmJ7UVr1KSdC_iAP5E4';
-const sb = supabase.createClient(_SB_URL, _SB_KEY);
+const sb = window.sb;
 
 /* ── Caches (rend les getters synchrones) ── */
 let _albumsCache   = null;
@@ -43,7 +41,7 @@ function _mapArticle(row) {
     cat:     row.cat,
     date:    (row.published_at || row.created_at || '').slice(0,10),
     author:  row.auteur,
-    status:  row.status,
+    status:  _toUiStatus(row.status),
     excerpt: row.resume   || '',
     content: row.contenu  || '',
     tags:    row.tags     || [],
@@ -65,6 +63,57 @@ function _mapContact(row) {
     archived:  row.archived ?? false,
     date:      row.created_at || ''
   };
+}
+
+function _toDbStatus(status) {
+  return status === 'published' || status === 'publie' ? 'publie' : 'brouillon';
+}
+
+function _toUiStatus(status) {
+  return status === 'publie' || status === 'published' ? 'published' : 'draft';
+}
+
+function _slugify(s) {
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function _goLogin(reason) {
+  const qs = reason ? `?reason=${encodeURIComponent(reason)}` : '';
+  window.location.replace(`login.html${qs}`);
+}
+
+async function _requireAdminSession() {
+  if (!sb) {
+    _goLogin('config');
+    return null;
+  }
+
+  const { data: { session }, error:sessionError } = await sb.auth.getSession();
+  if (sessionError || !session?.user?.email) {
+    await sb.auth.signOut().catch(()=>{});
+    _goLogin('auth');
+    return null;
+  }
+
+  const email = session.user.email.toLowerCase();
+  const { data:adminUser, error:adminError } = await sb.from('admin_users')
+    .select('email, prenom, nom, role, actif')
+    .ilike('email', email)
+    .eq('actif', true)
+    .maybeSingle();
+
+  if (adminError || !adminUser) {
+    await sb.auth.signOut().catch(()=>{});
+    _goLogin('forbidden');
+    return null;
+  }
+
+  return { session, adminUser };
 }
 
 function _mapUser(row) {
@@ -159,7 +208,7 @@ async function _pushAlbums(albums) {
 
     for (const a of albums) {
       const isNew = !existingIds.has(a.id);
-      const slug = a.slug || a.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      const slug = a.slug || _slugify(a.name);
       await sb.from('albums').upsert({
         id:          a.id,
         name:        a.name,
@@ -204,7 +253,11 @@ async function _pushArticles(articles) {
 
     for (const a of articles) {
       const isNew = !existingIds.has(a.id);
-      const slug = a.slug || a.title.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);
+      const dbStatus = _toDbStatus(a.status);
+      const slug = a.slug || _slugify(a.title).slice(0,80);
+      const publishedAt = dbStatus === 'publie'
+        ? (a.published_at || (a.date ? a.date + 'T00:00:00.000Z' : new Date().toISOString()))
+        : null;
       await sb.from('articles').upsert({
         id:          a.id,
         titre:       a.title || a.titre || '',
@@ -215,8 +268,8 @@ async function _pushArticles(articles) {
         resume:      a.excerpt || a.resume  || '',
         contenu:     a.content || a.contenu || '',
         tags:        a.tags  || [],
-        status:      a.status === 'publie' ? 'publie' : 'brouillon',
-        published_at: a.status === 'publie' ? (a.published_at || new Date().toISOString()) : null,
+        status:      dbStatus,
+        published_at: publishedAt,
       }, { onConflict:'id' });
       if (isNew) logAction('article', 'Création article', `"${a.title || a.titre || ''}"`);
     }
@@ -394,18 +447,17 @@ function toggleSidebar() {
 
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', async () => {
-  /* 1. Vérifier l'authentification */
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    window.location.replace('login.html');
-    return;
-  }
+  /* 1. Verifier l'authentification */
+  const guard = await _requireAdminSession();
+  if (!guard) return;
+  const { session, adminUser } = guard;
 
-  /* 2. Afficher l'email de l'utilisateur connecté */
+  /* 2. Afficher l'utilisateur connecte */
   const userEmail = session.user.email || '';
   _currentUserEmail = userEmail;
-  document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = userEmail; });
-  document.querySelectorAll('[data-user-init]').forEach(el => { el.textContent = userEmail[0]?.toUpperCase() || 'A'; });
+  const displayName = `${adminUser.prenom || ''} ${adminUser.nom || ''}`.trim() || userEmail;
+  document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = displayName; });
+  document.querySelectorAll('[data-user-init]').forEach(el => { el.textContent = (adminUser.prenom?.[0] || userEmail[0] || 'A').toUpperCase(); });
   if (!sessionStorage.getItem('admin_session_logged')) {
     sessionStorage.setItem('admin_session_logged', '1');
     logAction('auth', 'Connexion', 'Session admin démarrée');
@@ -439,4 +491,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     'renderStats','renderMessages','renderArticlesPreview','renderAlbumsPreview','renderLogs'
   ];
   fns.forEach(fn => { if (typeof window[fn]==='function') window[fn](); });
+  document.body.classList.add('admin-ready');
 });
